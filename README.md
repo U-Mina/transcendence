@@ -1,5 +1,5 @@
 # ft_trancedence
 
-## /dev branch
+## `/dev` branch
 ### all feature branches should branch off from `/dev`
 ### merge back to `/dev` with pull request
