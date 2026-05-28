@@ -1,4 +1,5 @@
-# transcendence
+# ft_trancedence
 
-## NOTE
-this is the production branch. Everything comes to /main need to be fully tested, abd ready for eval already
+## /dev branch
+### all feature branches should branch off from `/dev`
+### merge back to `/dev` with pull request
