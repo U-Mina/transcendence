@@ -1,8 +1,20 @@
 # transcendence
 
-## NOTE
+## `main`
 this is the **production branch**
 Everything comes to `/main` need to be fully tested, ready for eval already
+
+## `dev`
+all feature branches should branch off from `dev` merge back to `dev` with pull request use `feat/xxx` as branch name
+
+## `backend` - ewu' branch
+- `/services`
+- `/api-gateway`
+- `docker yml/yaml`
+
+## `frontend`
+
+## `database`
 
 ## Structure of README - TODO
 
