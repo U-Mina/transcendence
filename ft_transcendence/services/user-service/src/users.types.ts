@@ -5,7 +5,7 @@
 
 // internal user interface with all necessary data
 export interface UserDTO {
-    id: number;
+    id: string;
     intraName: string;
     email: string;
     intraUrl: string;
