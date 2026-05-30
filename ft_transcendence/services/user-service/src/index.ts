@@ -1,4 +1,3 @@
-// import type { FastifyInstance } from 'fastify';
 import Fastify from "fastify";
 import { healthCheckRoutes } from "./routes/health.routes.js";
 
@@ -8,19 +7,20 @@ const fastify = Fastify({
 })
 
 // start the server
-const startServer = async () => {
+const start = async () => {
     try {
         // register routes
-        await fastify.register(healthCheckRoutes);
+        fastify.register(healthCheckRoutes);
+
         // start listening, host is 0.0.0.0 for docker container to access the service
-        await fastify.listen({ port: 3001, host: '0.0.0.0' });
-    } catch (err) {
-        fastify.log.error(err);
+        fastify.listen({ port: 3001, host: "0.0.0.0" });
+    } catch (error) {
+        fastify.log.error(error);
         process.exit(1);
     }
 };
 
-startServer();
+start();
 
 // old school way, just leave here for ref
 // fastify.listen({ port: 3000 }, (err, address ) => {
