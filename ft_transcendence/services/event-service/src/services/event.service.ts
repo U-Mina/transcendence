@@ -1,7 +1,7 @@
 /**
  * event service implementation
  */
-import type { EventDTO } from "../event.types";
+import type { EventDTO, GeneralEventCard } from "../event.types";
 
 
 /**
@@ -12,35 +12,35 @@ class EventService {
     private mockEvents: EventDTO[] = [
         {
             id: "www",
-            name: "event-01",
-            //time stamp
+            eventName: "event-01",
             eventTime: new Date("2001-01-01"),
             createdAt: new Date(),
             updatedAt: new Date(),
             description: "test event 01",
-            createdBy: "user-01",
+            creatorName: "user-01",
+            creatorId: "hsajkkdka",
         },
         {
             id: "eee",
-            name: "event-02",
-            //time stamp
+            eventName: "event-02",
             eventTime: new Date("2001-01-02"),
             createdAt: new Date(),
             updatedAt: new Date(),
             description: "test event 02",
-            createdBy: "user-02",
+            creatorName: "user-02",
+            creatorId: "jasdhla",
         },
         {
             id: "rrr",
-            name: "event-03",
-            //time stamp
+            eventName: "event-03",
             eventTime: new Date("2001-01-03"),
             createdAt: new Date(),
             updatedAt: new Date(),
             description: "test event 03",
-            createdBy: "user-03",
+            creatorName: "user-03",
+            creatorId: "kshdaa",
         }
-    ]
+    ];
     
     // get single event by id
     async getEventById(eventId: string): Promise<EventDTO | undefined> {
@@ -51,8 +51,9 @@ class EventService {
     }
 
     // get all events
-    async getAllEvents(): Promise<EventDTO[] | undefined> {
-        return this.mockEvents;
+    async getAllEvents(): Promise<GeneralEventCard[] | undefined> {
+        // strip out the sensitive data from eventDTO
+        return this.mockEvents.map(({ id, creatorId, safetyCheck, ...generalCard }) => generalCard);
     }
 }
 
