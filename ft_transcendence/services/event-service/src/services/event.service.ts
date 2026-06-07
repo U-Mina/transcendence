@@ -3,7 +3,6 @@
  */
 import type { EventDTO, GeneralEventCard } from "../event.types";
 
-
 /**
  * using an export class to avoid huge import of evenry function
 */
@@ -11,7 +10,7 @@ class EventService {
     // mock data, make c++ style, in class private
     private mockEvents: EventDTO[] = [
         {
-            id: "www",
+            eventId: "www",
             eventName: "event-01",
             eventTime: new Date("2001-01-01"),
             createdAt: new Date(),
@@ -21,7 +20,7 @@ class EventService {
             creatorId: "hsajkkdka",
         },
         {
-            id: "eee",
+            eventId: "eee",
             eventName: "event-02",
             eventTime: new Date("2001-01-02"),
             createdAt: new Date(),
@@ -31,7 +30,7 @@ class EventService {
             creatorId: "jasdhla",
         },
         {
-            id: "rrr",
+            eventId: "rrr",
             eventName: "event-03",
             eventTime: new Date("2001-01-03"),
             createdAt: new Date(),

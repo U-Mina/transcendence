@@ -4,7 +4,7 @@
 
 export interface EventDTO {
     // event id, unique identifier
-    id: string;
+    eventId: string;
     eventName: string;
     // may create an enum for category
     category?: string;
