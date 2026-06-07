@@ -46,13 +46,13 @@ class EventService {
         if (!eventId) {
             throw new Error("Event ID not valid.");
         }
-        return this.mockEvents.find(eve => eve.id === eventId);
+        return this.mockEvents.find(eve => eve.eventId === eventId);
     }
 
     // get all events
     async getAllEvents(): Promise<GeneralEventCard[] | undefined> {
         // strip out the sensitive data from eventDTO
-        return this.mockEvents.map(({ id, creatorId, safetyCheck, ...generalCard }) => generalCard);
+        return this.mockEvents.map(({ eventId, creatorId, safetyCheck, ...generalCard }) => generalCard);
     }
 }
 
