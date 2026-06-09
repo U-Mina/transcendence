@@ -1,34 +1,54 @@
 /**
  * mock data array for event
  */
-
-export interface EventDTO {
+// the info displayed to all user. expose to frontend
+export interface EventCard {
     // event id, unique identifier
     eventId: string;
     eventName: string;
+    eventTime: Date;
+    endTime: Date;
     // may create an enum for category
     category?: string;
-    //time stamp
-    eventTime: Date;
-    createdAt: Date;
-    updatedAt: Date;
-    description: string;
-    creatorId: string;
-    creatorName: string;
-    // optional
+    description?: string;
     location?: string;
-    // safety check - if an event is being reported
-    safetyCheck?: boolean;
 }
 
-// the info displayed to all user
-export interface GeneralEventCard {
-    eventName: string;
-    category?: string;
-    eventTime: Date;
+// the event card view for creator of the card
+export interface CreatorEventCard extends EventCard {
+    //time stamp
+    creatorId: string;
     createdAt: Date;
     updatedAt: Date;
-    description: string;
-    creatorName: string;
+}
+
+// internal event card with all infor
+export interface InternalEventCard extends CreatorEventCard {
+    // safety check - if an event being reported
+    safetyCheck: boolean;
+}
+
+// the data structure for creating new event
+export interface CreateEventDTO {
+    // creator id only before JWT, later it will be in POST request body itself
+    creatorId: string;
+    eventName: string;
+    eventTime: Date;
+    // endTime: Date;
+    // maxParticipants?: number;
+    category?: string;
+    description?: string;
+    location?: string;
+}
+
+// on updating, all filed opyional cuz user may only update ONE item
+export interface UpdateEventDTO {
+    // creator id only before JWT, later it will be in POST request body itself
+    creatorId: string;
+    eventName?: string;
+    eventTime?: Date;
+    endTime?: Date;
+    category?: string;
+    description?: string;
     location?: string;
 }
