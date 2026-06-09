@@ -7,36 +7,23 @@ import { eventService } from "../services/event.service";
 export async function EventServiceRoutes(fastify: FastifyInstance) {
     // get event by id
     fastify.get(
-        "/:id",
+        "/:eventId",
         async (
             request: FastifyRequest<{
-                Params: { id: string }
+                Params: { eventId: string }
             }>,
             reply: FastifyReply,
         ) => {
-            // case 1: :id === createdById
-            const targetEventId  = request.params.id;
-            const eve = await eventService.getEventById(targetEventId);
+            // a dummy userId for now, later will be: request.user.id
+            const userId = request.headers["dummy-userId-before-JWT"] as string;
+            const { eventId } = request.params;
+            const event = await eventService.getEventById(userId, eventId);
 
-            if (!eve) {
+            if (!event) {
                 return reply.status(404).send({ error: "Event not found." });
             }
 
-            // mock user id
-            const currentUserId = 'user-01';
-            if (currentUserId === eve.creatorId) {
-                return reply.status(200).send(eve);
-            } else {
-                // case 2: not created by this user
-                /**
-                 * may cause lint problem
-                 * can also do: 
-                 * { id: _, creatorId: __, safetyCheck: ___, ...generalEvent } = eve;
-                 * like the map out in .service.ts
-                */
-                const { eventId, creatorId, safetyCheck, ...generalEvent } = eve;
-                return reply.status(200).send(generalEvent);
-            }
+            return reply.status(200).send(event);
         },
     );
 
@@ -44,15 +31,15 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
     fastify.get(
         "/",
         async (
-            request: FastifyRequest,
+            _: FastifyRequest,
             reply: FastifyReply,
         ) => {
-            const eves = await eventService.getAllEvents();
+            const events = await eventService.getAllEvents();
             // if (!eves || eves.length === 0) {
             //     return reply.status(404).send({ error: "Events not found. " });
             // }
             // even on empty, the get all event is still valid!
-            return reply.status(200).send(eves || []);
+            return reply.status(200).send(events || []);
         },
     );
 }
