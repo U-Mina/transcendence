@@ -88,11 +88,36 @@ class EventService {
     // POST to create new event
     //IMPORTANT!! this HAS TO BE CHANGE AFTER JWT implement
     // async createEvent(creatorId, eventInput): Promise<EventDTO | undefine> {}
-    async createEvent(eventInput: CreateEventDTO): Promise<EventCard | undefined> {
-        // fastify will check the exitence of all field
+    async createEvent(eventInput: CreateEventDTO): Promise<EventOwnerView | undefined> {
         const curTime = Date.now();
-        
-        return
+        const startTime = eventInput.startTime;
+        const endTime = eventInput.endTime;
+        // event time logic check
+        if (curTime > new Date(startTime).getTime()) {
+            throw new Error("Invalid start time of event.");
+        }
+        if (new Date(startTime).getTime() > new Date(endTime).getTime()) {
+            throw new Error("Invalid event time span.");
+        }
+
+        // create internal event entity and push to db
+        const newEventEntity: InternalEventEntity = {
+            safetyCheck: false,
+            eventId: crypto.randomUUID(),
+            // temp creatorid, should come from JWT auth, now as placeholder
+            creatorId: crypto.randomUUID(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            ...eventInput
+        };
+        this.mockEvents.push(newEventEntity);
+
+        const {
+            safetyCheck,
+            ...creatorView
+        } = newEventEntity;
+
+        return creatorView;
     }
 
     

@@ -41,7 +41,7 @@ export interface CreateEventDTO {
 // on updating, all filed opyional cuz user may only update ONE item
 export interface UpdateEventDTO {
     // creator id only before JWT, later it will be in POST request body itself
-    creatorId: string;
+    // creatorId: string;
     eventName?: string;
     startTime?: Date;
     endTime?: Date;
