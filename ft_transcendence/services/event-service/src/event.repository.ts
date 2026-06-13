@@ -2,7 +2,7 @@
  * for a easier adaption to real data base
  * for CRUD ops
  */
-import { InternalEventEntity } from "./event.types"
+import { InternalEventEntity, UpdateEventDTO } from "./event.types"
 
 class EventRepository {
     // mock data, make c++ style, in class private
@@ -63,14 +63,21 @@ class EventRepository {
         return event;
     }
 
-    // update event (update)
-    async updateEvent(eventId: string, updatedEvent: InternalEventEntity): Promise<InternalEventEntity | undefined> {
+    // update event
+    async updateEvent(eventId: string, eventInput: UpdateEventDTO): Promise<InternalEventEntity | undefined> {
        const index = this.mockEvents.findIndex(eve => eve.eventId === eventId);
        if (index === -1) {
         return undefined;
        }
-       this.mockEvents[index] = updatedEvent;
-       return updatedEvent;
+
+       const newEventEntity: InternalEventEntity = {
+        ...this.mockEvents[index],
+        ...eventInput,
+        updatedAt: new Date(),
+       };
+       this.mockEvents[index] = newEventEntity;
+
+       return newEventEntity;
     }
 
     // delete (popout from repo.ts), here can return full event-data, but this will be too waste of mem
