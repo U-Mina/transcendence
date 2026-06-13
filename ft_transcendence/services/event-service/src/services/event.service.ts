@@ -13,7 +13,7 @@ class eventService {
     // NOTE: Service should usually return the appropriate response shape already.
     async getEventById(userId: string, eventId: string): Promise<EventCard| EventOwnerView | undefined> {
         if (!eventId) {
-            throw new Error("Event not found.");
+            throw new Error("Event ID not found.");
         }
         // fetch the entire internal-event-entity
        const event = await eventRepository.getEventById(eventId);
@@ -86,19 +86,39 @@ class eventService {
     }
 
     // PUT, update alredy exiting event
-    async updateEvent(eventId: string, eventInput: UpdateEventDTO): Promise<EventOwnerView | undefined> {
-        
+    // for now, we still need to pass userId manually for identity check, after JWT no
+    async updateEvent(
+        eventId: string,
+        userId: string,
+        eventInput: UpdateEventDTO
+    ): Promise<EventOwnerView | undefined> {
         // check does this event exist or not
-        
+        const event = await eventRepository.getEventById(eventId);
+        if (event === undefined) {
+            throw new Error("Event not found.");
+        }
         // check identity of the 'update-tor', is she/he elighble to update this event
+        if (event.creatorId !== userId) {
+            throw new Error("Forbidden operation.");
+        }
+        // normal event time check
+        const startTime = eventInput.startTime ?? event.startTime;
+        const endTime = eventInput.endTime ?? event.endTime;
+        if ((new Date(endTime).getTime() < new Date(startTime).getTime()) || new Date(startTime).getTime() < Date.now()) {
+            throw new Error ("Invalid event time.");
+        }
 
-        
-        return 
+        const updatedEvent = await eventRepository.updateEvent(eventId, eventInput);
+        if (updatedEvent === undefined) {
+            throw new Error ("Fail to update event.");
+        }
+        const {
+            safetyCheck,
+            ...creatorView
+        } = updatedEvent;
+
+        return creatorView;
     }
-
-    
-
-
 }
 
 // singleton structure, avoid thousand time of visting db
