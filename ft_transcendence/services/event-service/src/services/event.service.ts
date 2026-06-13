@@ -1,49 +1,14 @@
 /**
  * event service implementation
  */
+import { log } from "node:console";
 import type { EventCard, EventOwnerView, InternalEventEntity, CreateEventDTO, UpdateEventDTO } from "../event.types";
+import { eventRepository } from "../event.repository";
 
 /**
  * using an export class to avoid huge import of evenry function
 */
-class EventService {
-    // mock data, make c++ style, in class private
-    private mockEvents: InternalEventEntity[] = [
-        {
-            eventId: "www",
-            eventName: "event-01",
-            startTime: new Date("2001-01-01"),
-            endTime: new Date("2001-01-02"),
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            description: "test event 01",
-            creatorId: "hsajkkdka",
-            safetyCheck: false,
-        },
-        {
-            eventId: "eee",
-            eventName: "event-02",
-            startTime: new Date("2001-01-02"),
-            endTime: new Date("2001-01-03"),
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            description: "test event 02",
-            creatorId: "jasdhla",
-            safetyCheck: false,
-        },
-        {
-            eventId: "rrr",
-            eventName: "event-03",
-            startTime: new Date("2001-01-03"),
-            endTime: new Date("2001-01-05"),
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            description: "test event 03",
-            creatorId: "kshdaa",
-            safetyCheck: true,
-        }
-    ];
-    
+class eventService {
     // get single event by id
     // NOTE: Service should usually return the appropriate response shape already.
     async getEventById(userId: string, eventId: string): Promise<EventCard| EventOwnerView | undefined> {
@@ -51,16 +16,14 @@ class EventService {
             throw new Error("Event not found.");
         }
         // fetch the entire internal-event-entity
-        const event = this.mockEvents.find(
-            eve => eve.eventId === eventId
-        );
+       const event = await eventRepository.getEventById(eventId);
 
         // the event does not exist
         if (!event) {
             return undefined;
         }
 
-        if (userId === event?.creatorId) {
+        if (userId === event.creatorId) {
             const {
                 safetyCheck,
                 ...creatorView
@@ -73,7 +36,7 @@ class EventService {
 
     // get all events
     async getAllEvents(): Promise<EventCard[] | undefined> {
-        return this.mockEvents.map(event => {
+        return ((await eventRepository.getAll()).map(event => {
             const {
                 safetyCheck,
                 creatorId,
@@ -81,8 +44,8 @@ class EventService {
                 updatedAt,
                 ...publicView
             } = event;
-            return publicView
-        });
+            return publicView;
+        }));
     }
 
     // POST to create new event
@@ -92,6 +55,7 @@ class EventService {
         const curTime = Date.now();
         const startTime = eventInput.startTime;
         const endTime = eventInput.endTime;
+
         // event time logic check
         if (curTime > new Date(startTime).getTime()) {
             throw new Error("Invalid start time of event.");
@@ -110,7 +74,8 @@ class EventService {
             updatedAt: new Date(),
             ...eventInput
         };
-        this.mockEvents.push(newEventEntity);
+        // push to db
+        await eventRepository.createEvent(newEventEntity);
 
         const {
             safetyCheck,
@@ -120,10 +85,21 @@ class EventService {
         return creatorView;
     }
 
+    // PUT, update alredy exiting event
+    async updateEvent(eventId: string, eventInput: UpdateEventDTO): Promise<EventOwnerView | undefined> {
+        
+        // check does this event exist or not
+        
+        // check identity of the 'update-tor', is she/he elighble to update this event
+
+        
+        return 
+    }
+
     
 
 
 }
 
 // singleton structure, avoid thousand time of visting db
-export const eventService = new EventService();
+export const EventService = new eventService();
