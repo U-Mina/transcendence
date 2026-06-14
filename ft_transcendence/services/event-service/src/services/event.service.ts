@@ -8,7 +8,7 @@ import { eventRepository } from "../event.repository";
 /**
  * using an export class to avoid huge import of evenry function
 */
-class eventService {
+class EventService {
     // get single event by id
     // NOTE: Service should usually return the appropriate response shape already.
     async getEventById(userId: string, eventId: string): Promise<EventCard| EventOwnerView | undefined> {
@@ -119,7 +119,20 @@ class eventService {
 
         return creatorView;
     }
+
+    // detele an event, now still pass userId manualy
+    async deleteEvent(userId: string, eventId: string) {
+        // check the deletor === creator
+        const matchedEvent = await eventRepository.getEventById(eventId);
+        if (!matchedEvent) {
+            throw new Error("Event not found.");
+        }
+        if (matchedEvent.creatorId !== userId) {
+            throw new Error("Forbidden operation.");
+        }
+        return await eventRepository.deleteEvent(eventId);  
+    }
 }
 
 // singleton structure, avoid thousand time of visting db
-export const EventService = new eventService();
+export const eventService = new EventService();

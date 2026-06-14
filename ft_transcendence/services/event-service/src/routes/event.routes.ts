@@ -2,7 +2,7 @@
  * routes for event-service
  */
 import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
-import { EventService } from "../services/event.service";
+import { eventService } from "../services/event.service";
 import { CreateEventDTO, UpdateEventDTO } from "../event.types"
 
 export async function EventServiceRoutes(fastify: FastifyInstance) {
@@ -20,7 +20,7 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
                 // a dummy userId for now, later will be: request.user.id
                 const userId = request.headers["dummy-userId-before-JWT"] as string;
                 const { eventId } = request.params;
-                const event = await EventService.getEventById(userId, eventId);
+                const event = await eventService.getEventById(userId, eventId);
     
                 if (!event) {
                     return reply.status(404).send({ error: "Event not found." });
@@ -40,7 +40,7 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const events = await EventService.getAllEvents();
+                const events = await eventService.getAllEvents();
                 // if (!eves || eves.length === 0) {
                 //     return reply.status(404).send({ error: "Events not found. " });
                 // }
@@ -62,7 +62,7 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const newEvent = await EventService.createEvent(request.body);
+                const newEvent = await eventService.createEvent(request.body);
                 if (!newEvent) {
                     return reply.status(500).send({ error: "Fail to create new Event." });
                 }
@@ -88,13 +88,56 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
         ) => {
             try {
                 // TODO: no manual pass userId later
-                const updatedEvent = await EventService.updateEvent(request.params.eventId, request.params.userId, request.body);
+                const updatedEvent = await eventService.updateEvent(request.params.eventId, request.params.userId, request.body);
                 if (!updatedEvent) {
                     return reply.status(500).send({ error: "Fail to update event." });
                 }
                 return reply.status(200).send(updatedEvent);
             } catch (error) {
-                return reply.status(500).send({ error: "Fail to update event. "});
+                if (error instanceof Error) {
+                    if (error.message.includes("not found")) {
+                        return reply.status(404).send({ error: error.message });
+                    } else if (error.message.includes("forbidden")) {
+                        return reply.status(403).send({ error: error.message });
+                    } else {
+                        return reply.status(500).send({ error: "Fail to update event. "});
+                    }
+                }
+            }
+        },
+    );
+
+    // delete an event
+    fastify.delete(
+        "/events/:eventId",
+        async (
+            request: FastifyRequest<{
+                Params: {
+                    eventId: string,
+                }
+            }>,
+            reply: FastifyReply,
+        ) => {
+            try {
+                // temp userId
+                const userId = request.headers["temp-user-id-before-jwt"] as string;
+                const { eventId } = request.params;
+                const deletion = await eventService.deleteEvent(userId, eventId);
+                // return value is not true, mean deletion fail
+                if (!deletion) {
+                    return reply.status(404).send({ error: "Event not found." });
+                }
+                return reply.status(200).send({ msg: "Successfully deleted event." });
+            } catch (error) {
+                if (error instanceof Error) {
+                    if (error.message.includes("not found")) {
+                        return reply.status(404).send({ error: error.message });
+                    } else if (error.message.includes("forbidden")) {
+                        return reply.status(403).send({ error: error.message });
+                    } else {
+                        return reply.status(500).send({ error: "Fail to delete." });
+                    }
+                }
             }
         },
     );
