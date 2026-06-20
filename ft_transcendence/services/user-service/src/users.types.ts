@@ -4,7 +4,7 @@
  */
 
 // frontend visible user's data
-export interface UserProfile {
+export interface PublicUserProfile {
     userName: string;
     userEmail: string;
     // opional phone number
@@ -14,7 +14,7 @@ export interface UserProfile {
 }
 
 // internal user interface with all necessary data, this will be the payload
-export interface InternalUserEntity extends UserProfile {
+export interface InternalUserEntity extends PublicUserProfile {
     id: string;
     createdAt: Date;
     updatedAt: Date;
@@ -29,6 +29,5 @@ export interface CreateUserDTO {
 
 export interface UpdateUserDTO {
     userName?: string;
-    userEmail?: string;
     userContact?: string;
 }

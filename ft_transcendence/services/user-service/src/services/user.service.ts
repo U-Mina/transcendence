@@ -3,52 +3,68 @@
  * - get: take /:id as parameter, search through and return user object (undefined if not found)
  * - formatter: take UserDTO and return UserProfile obj
  */
-import type { UserDTO, UserProfile } from "../users.types.js";
-
-// mock data array
-const mockUsers: UserDTO[] = [
-    {
-        id: "1",
-        intraName: "e1",
-        email: "ewu1@42hn.de",
-        intraUrl: "42hn1.com",
-        createdAt: "06062026",
-    },
-    {
-        id: "2",
-        intraName: "e2",
-        email: "ewu2@42hn.de",
-        intraUrl: "42hn2.com",
-        createdAt: "05062026",
-    },
-    {
-        id: "3",
-        intraName: "e3",
-        email: "ewu3@42hn.de",
-        intraUrl: "42hn3.com",
-        createdAt: "07062026",
+import { userRepository } from "../user.repository";
+import type { InternalUserEntity, CreateUserDTO, UpdateUserDTO, PublicUserProfile} from "../users.types";
+// the current id will extract from JWT later, now statically pass
+export async function getUserById(targetId: string, currentUserId: string): Promise<InternalUserEntity | PublicUserProfile | undefined> {
+    const user = await userRepository.getUserById(targetId);
+    if (!user) {
+        throw new Error("User not found.");
     }
-]
 
-// promise the return type
-export async function getUserById(targetId: string): Promise<UserDTO | undefined> {
-    if (!targetId) {
-        throw new Error("ID not valid");
+    // looking at own profile, return full data
+    if (currentUserId === user.id) {
+        return user;
     }
-    return mockUsers.find(u => u.id === targetId);
+
+    const {
+        createdAt,
+        updatedAt,
+        id,
+        ...publicProfile
+    } = user;
+    return publicProfile;
 }
 
-// extract the needed data from users to format userProfile info, no async
-export function formatUserProfile(user: UserDTO): UserProfile {
-    if (!user) {
-        throw new Error("Invalid userDTO.");
-    }
+// this should ONLY (if any) be used by ADMIN role!!
+export async function getAllUser(): Promise<InternalUserEntity[] | undefined> {
+    return await userRepository.getAllUser();
+}
 
-    // formulate the return object
-    const profile: UserProfile = {
-        intraName: user.intraName,
-        intraUrl: user.intraUrl
+// create new user
+export async function createNewUser(userProfile: CreateUserDTO): Promise<InternalUserEntity | undefined> {
+    const newUser: InternalUserEntity = {
+        id: crypto.randomUUID(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        ...userProfile
     };
+    // push to db
+    await userRepository.createNewUser(newUser);
 
-    return profile;
+    return newUser;
+}
+
+// update user
+// temp pass userId for authR check
+export async function updateUser(userId: string, targetProfileId: string, updatedInfo: UpdateUserDTO): Promise<InternalUserEntity | undefined> {
+    // one MUST ONLY edit their won profile
+    if (userId !== targetProfileId) {
+        throw new Error("Forbbiden operation.");
+    }
+    return await userRepository.updateUser(targetProfileId, updatedInfo);
+}
+
+// delete user profile, ONLY Admin or user-self can do this
+// manual pass cur-Id for now
+export async function deleteUser(currentId: string, targetId: string) {
+    const matchedUser = await userRepository.getUserById(targetId);
+    if (!matchedUser) {
+        throw new Error("User not found.");
+    }
+    if (matchedUser.id !== currentId) {
+        throw new Error("Foriden operation.");
+    }
+    // true == delete, fals == fail
+    return await userRepository.deleteUser(targetId);
 }
