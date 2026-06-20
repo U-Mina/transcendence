@@ -4,54 +4,41 @@
  * - /GET profile
  * - /Post to update profile
  */
-import { type FastifyInstance, type FastifyRequest } from "fastify";
-import { getUserById, formatUserProfile } from "../services/user.service.js";
+import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
+import { userService } from "../services/user.service";
 
 export async function userServiceRoutes(fastify: FastifyInstance) {
-    // get internal whole userDTO
+    // get internal whole userEntity
+    // dashboard is /home
     fastify.get(
-        "/:id",
+        "/users/:userId",
         async (
             request: FastifyRequest<{
-                Params: { id: string };
+                Params: { userId: string }
             }>,
-            reply,
+            reply: FastifyReply,
         ) => {
             try {
-                const { id } = request.params;
-                const user = await getUserById(id);
+                const current_user_id = request.headers["dummy-id-before-JWT"] as string;
+                const { userId } = request.params;
+               const userProfile = await userService.getUserById(userId, current_user_id);
+               if (!userProfile) {
+                return reply.status(404).send({ error: "User not found." });
+               }
+               // service knows what to reture: full view or public view
+               return reply.status(200).send(userProfile);
 
-                if (!user) {
-                    return reply.status(404).send({ error: "User not found." });
-                }
-                return reply.status(200).send(user);
             } catch (error) {
-                return reply.status(500).send({ error: "Fail to fetch userDTO." });
-            }
-        },
-    );
-
-    // get frontend userProfile
-    fastify.get(
-        "/:id/profile",
-        async (
-            request: FastifyRequest<{
-                Params: { id: string }
-            }>,
-            reply,
-        ) => {
-            try {
-                const { id } = request.params;
-                const user = await getUserById(id);
-                if (!user) {
-                    return reply.status(404).send({ error: "User not found. "});
+                if (error instanceof Error) {
+                    if (error.message.includes("not found")) {
+                        return reply.status(404).send({ error: error.message});
+                    } else if (error.message.includes("forbidden")) {
+                        return reply.status(403).send({ error: error.message });
+                    } else {
+                        return reply.status(500).send({ error: error.message });
+                    }
                 }
-
-                const profile = formatUserProfile(user);
-                return reply.status(200).send(profile);
-            } catch (error) {
-                return reply.status(500).send({ error: "Fail to find user profile." })
             }
-        },
-    );
+        }
+    )
 }

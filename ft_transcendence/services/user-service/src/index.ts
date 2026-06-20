@@ -1,5 +1,4 @@
 import Fastify from "fastify";
-import { healthCheckRoutes } from "./routes/health.routes.js";
 
 // create a fastify instance
 const fastify = Fastify({
@@ -9,9 +8,6 @@ const fastify = Fastify({
 // start the server
 const start = async () => {
     try {
-        // register routes
-        fastify.register(healthCheckRoutes);
-
         // start listening, host is 0.0.0.0 for docker container to access the service
         fastify.listen({ port: 3001, host: "0.0.0.0" });
     } catch (error) {
