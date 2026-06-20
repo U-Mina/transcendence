@@ -34,7 +34,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
                 if (error instanceof Error) {
                     if (error.message.includes("not found")) {
                         return reply.status(404).send({ error: error.message});
-                    } else if (error.message.includes("forbidden")) {
+                    } else if (error.message.includes("Forbidden")) {
                         return reply.status(403).send({ error: error.message });
                     } else {
                         return reply.status(500).send({ error: error.message });
@@ -94,7 +94,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const current_user_id = request.headers["mock-jwt-userId"] as string;
+                const current_user_id = request.headers["dummy-id-before-JWT"] as string;
                 const { userId } = request.params;
                 const updatedUser = await userService.updateUser(current_user_id, userId, request.body);
                 if (!updatedUser) {
@@ -105,7 +105,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
                 if (err instanceof Error) {
                     if (err.message.includes("not found")) {
                         return reply.status(404).send({ error: err.message });
-                    } else if (err.message.includes("forbidden")) {
+                    } else if (err.message.includes("Forbidden")) {
                         return reply.status(403).send({ error: err.message });
                     } else {
                         return reply.status(500).send({ error: err.message });
@@ -127,7 +127,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const current_user_id = request.headers["before JWT temp placeholder"] as string;
+                const current_user_id = request.headers["dummy-id-before-JWT"] as string;
                 const { userId } = request.params;
                 const deleted = await userService.deleteUser(current_user_id, userId);
                 if (!deleted) {
@@ -138,7 +138,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
                 if (error instanceof Error) {
                     if (error.message.includes("not found")) {
                         return reply.status(404).send({ error: error.message });
-                    } else if (error.message.includes("forbidden")) {
+                    } else if (error.message.includes("Forbidden")) {
                         return reply.status(403).send({ error: error.message });
                     } else {
                         return reply.status(500).send({ error: "Fail to delete user profile." });
