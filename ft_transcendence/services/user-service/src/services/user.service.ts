@@ -50,6 +50,10 @@ class UserService {
     // update user
     // temp pass userId for authR check
     async updateUser(userId: string, targetProfileId: string, updatedInfo: UpdateUserDTO): Promise<InternalUserEntity | undefined> {
+        const findUser = userRepository.getUserById(targetProfileId);
+        if (!findUser) {
+            throw new Error("User not found.");
+        }
         // one MUST ONLY edit their won profile
         if (userId !== targetProfileId) {
             throw new Error("Forbbiden operation.");
