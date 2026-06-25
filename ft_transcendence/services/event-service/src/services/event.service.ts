@@ -1,7 +1,6 @@
 /**
  * event service implementation
  */
-import { log } from "node:console";
 import type { EventCard, EventOwnerView, InternalEventEntity, CreateEventDTO, UpdateEventDTO } from "../event.types";
 import { eventRepository } from "../event.repository";
 
@@ -51,7 +50,7 @@ class EventService {
     // POST to create new event
     //IMPORTANT!! this HAS TO BE CHANGE AFTER JWT implement
     // async createEvent(creatorId, eventInput): Promise<EventDTO | undefine> {}
-    async createEvent(eventInput: CreateEventDTO): Promise<EventOwnerView | undefined> {
+    async createEvent(creatorId: string, eventInput: CreateEventDTO): Promise<EventOwnerView | undefined> {
         const curTime = Date.now();
         const startTime = eventInput.startTime;
         const endTime = eventInput.endTime;
@@ -68,8 +67,7 @@ class EventService {
         const newEventEntity: InternalEventEntity = {
             safetyCheck: false,
             eventId: crypto.randomUUID(),
-            // temp creatorid, should come from JWT auth, now as placeholder
-            creatorId: crypto.randomUUID(),
+            creatorId,
             createdAt: new Date(),
             updatedAt: new Date(),
             ...eventInput
