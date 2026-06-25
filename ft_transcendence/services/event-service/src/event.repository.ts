@@ -15,7 +15,7 @@ class EventRepository {
             createdAt: new Date(),
             updatedAt: new Date(),
             description: "test event 01",
-            creatorId: "hsajkkdka",
+            creatorId: "1",
             safetyCheck: false,
         },
         {
@@ -26,7 +26,7 @@ class EventRepository {
             createdAt: new Date(),
             updatedAt: new Date(),
             description: "test event 02",
-            creatorId: "jasdhla",
+            creatorId: "2",
             safetyCheck: false,
         },
         {
@@ -37,7 +37,7 @@ class EventRepository {
             createdAt: new Date(),
             updatedAt: new Date(),
             description: "test event 03",
-            creatorId: "kshdaa",
+            creatorId: "3",
             safetyCheck: true,
         }
     ];
