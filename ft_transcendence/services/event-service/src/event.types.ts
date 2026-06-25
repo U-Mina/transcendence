@@ -1,7 +1,7 @@
 /**
  * mock data array for event
  */
-// the info displayed to all user. expose to frontend
+// the info CARD displayed to all user expose to frontend
 export interface EventCard {
     // event id, unique identifier
     eventId: string;
@@ -12,18 +12,34 @@ export interface EventCard {
     category?: string;
     description?: string;
     location?: string;
+    // comments / questins session
+    comment?: string;
 }
 
-// the event card view for creator of the card
-export interface EventOwnerView extends EventCard {
+// the event view for creator of the card ONLY
+export interface EventManageView extends EventCard {
     creatorId: string;
     // time stamp
     createdAt: Date;
     updatedAt: Date;
 }
 
+// user-info object embeded in the detailed event-view
+export interface UserSummary {
+    // userId: string;
+    userName: string;
+    itraName?: string;
+    intraUrl?: string;
+}
+
+// the view of showing the relation of 'event' - 'user'
+// public event detail plus small creator profile
+export interface EventDetailView extends EventCard {
+    creator: UserSummary;
+}
+
 // internal event card with all infor
-export interface InternalEventEntity extends EventOwnerView {
+export interface InternalEventEntity extends EventManageView {
     // safety check - if an event being reported
     safetyCheck: boolean;
 }
