@@ -18,7 +18,7 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
         ) => {
             try {
                 // a dummy userId for now, later will be: request.user.id
-                const userId = request.headers["dummy-userId-before-JWT"] as string;
+                const userId = request.headers["x-user"] as string;
                 const { eventId } = request.params;
                 const event = await eventService.getEventById(userId, eventId);
     
@@ -62,7 +62,8 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const newEvent = await eventService.createEvent(request.body);
+                const creatorId = request.headers["x-user"] as string;
+                const newEvent = await eventService.createEvent(creatorId, request.body);
                 if (!newEvent) {
                     return reply.status(500).send({ error: "Fail to create new Event." });
                 }
@@ -80,7 +81,6 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
             request: FastifyRequest<{
                 Params: {
                     eventId: string,
-                    userId: string,
                 },
                 Body: UpdateEventDTO,
             }>,
@@ -88,7 +88,8 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
         ) => {
             try {
                 // TODO: no manual pass userId later
-                const updatedEvent = await eventService.updateEvent(request.params.eventId, request.params.userId, request.body);
+                const userId = request.headers["x-user"] as string;
+                const updatedEvent = await eventService.updateEvent(request.params.eventId, userId, request.body);
                 if (!updatedEvent) {
                     return reply.status(500).send({ error: "Fail to update event." });
                 }
@@ -120,7 +121,7 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
         ) => {
             try {
                 // temp userId
-                const userId = request.headers["temp-user-id-before-jwt"] as string;
+                const userId = request.headers["x-user"] as string;
                 const { eventId } = request.params;
                 const deletion = await eventService.deleteEvent(userId, eventId);
                 // return value is not true, mean deletion fail

@@ -21,7 +21,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const current_user_id = request.headers["dummy-id-before-JWT"] as string;
+                const current_user_id = request.headers["x-user"] as string;
                 const { userId } = request.params;
                const userProfile = await userService.getUserById(userId, current_user_id);
                if (!userProfile) {
@@ -83,7 +83,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
 
     // update existing
     fastify.put(
-        "/users/:userId",
+        "/user/:userId",
         async (
             request: FastifyRequest<{
                 Params: {
@@ -94,7 +94,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const current_user_id = request.headers["dummy-id-before-JWT"] as string;
+                const current_user_id = request.headers["x-user"] as string;
                 const { userId } = request.params;
                 const updatedUser = await userService.updateUser(current_user_id, userId, request.body);
                 if (!updatedUser) {
@@ -127,7 +127,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const current_user_id = request.headers["dummy-id-before-JWT"] as string;
+                const current_user_id = request.headers["x-user"] as string;
                 const { userId } = request.params;
                 const deleted = await userService.deleteUser(current_user_id, userId);
                 if (!deleted) {
