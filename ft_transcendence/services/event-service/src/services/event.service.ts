@@ -1,7 +1,7 @@
 /**
  * event service implementation
  */
-import type { EventCard, EventOwnerView, InternalEventEntity, CreateEventDTO, UpdateEventDTO } from "../event.types";
+import type { EventCard, EventManageView, UserSummary, EventDetailView, InternalEventEntity, CreateEventDTO, UpdateEventDTO } from "../event.types";
 import { eventRepository } from "../event.repository";
 
 /**
@@ -10,7 +10,7 @@ import { eventRepository } from "../event.repository";
 class EventService {
     // get single event by id
     // NOTE: Service should usually return the appropriate response shape already.
-    async getEventById(userId: string, eventId: string): Promise<EventCard| EventOwnerView | undefined> {
+    async getEventById(userId: string, eventId: string): Promise<EventCard| EventManageView | undefined> {
         if (!eventId) {
             throw new Error("Event ID not found.");
         }
@@ -50,7 +50,7 @@ class EventService {
     // POST to create new event
     //IMPORTANT!! this HAS TO BE CHANGE AFTER JWT implement
     // async createEvent(creatorId, eventInput): Promise<EventDTO | undefine> {}
-    async createEvent(creatorId: string, eventInput: CreateEventDTO): Promise<EventOwnerView | undefined> {
+    async createEvent(creatorId: string, eventInput: CreateEventDTO): Promise<EventManageView | undefined> {
         const curTime = Date.now();
         const startTime = eventInput.startTime;
         const endTime = eventInput.endTime;
@@ -89,7 +89,7 @@ class EventService {
         eventId: string,
         userId: string,
         eventInput: UpdateEventDTO
-    ): Promise<EventOwnerView | undefined> {
+    ): Promise<EventManageView | undefined> {
         // check does this event exist or not
         const event = await eventRepository.getEventById(eventId);
         if (event === undefined) {
@@ -129,6 +129,36 @@ class EventService {
             throw new Error("Forbidden operation.");
         }
         return await eventRepository.deleteEvent(eventId);  
+    }
+
+    // helper to connect with user-service, display user-info of the CREATOR of event card
+    // only be called inside current class
+    // architecture note: even if the user-service (get-user-info) failed, event-service still works
+    private async getEventCreatorSummary(creatorId: string): Promise<UserSummary | undefined> {
+        const userServiceUrl = process.env.USER_SERVICE_URL ?? "http://localhost:3001";
+
+        try {
+            // this is the 'GET' request (check in user-routes), which returns user-profile
+            const response = await fetch(`${userServiceUrl}/users/${creatorId}`);
+            if (!response.ok) {
+                throw new Error("Fail to get user service.");
+            }
+            
+            // convert response to json
+            const user = await response.json();
+            // extract needed info
+            const userSumForEvent = {
+                userName: user.userName,
+                intraName: user.intraName ?? undefined,
+                intraUrl: user.intraUrl ?? undefined, 
+            };
+            return userSumForEvent;
+
+        } catch {
+            return {
+                userName: "User service is currently unavailable."
+            }
+        }
     }
 }
 
