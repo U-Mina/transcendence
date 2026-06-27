@@ -10,7 +10,7 @@ import { eventRepository } from "../event.repository";
 class EventService {
     // get single event by id
     // NOTE: Service should usually return the appropriate response shape already.
-    async getEventById(userId: string, eventId: string): Promise<EventDetailView | undefined> {
+    async getEventById(eventId: string): Promise<EventDetailView | undefined> {
         const eve = await eventRepository.getEventById(eventId);
         if (!eve) {
             return undefined;
@@ -19,9 +19,6 @@ class EventService {
         
         // find the creator of even, to provide creator-info
         const eveCreatorSum = await this.getEventCreatorSummary(eve.creatorId);
-        // if (!eveCreatorSum) {
-        //     return undefined;
-        // }
         const {
             creatorId,
             safetyCheck,

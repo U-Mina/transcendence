@@ -20,7 +20,7 @@ export async function EventServiceRoutes(fastify: FastifyInstance) {
                 // a dummy userId for now, later will be: request.user.id
                 const userId = request.headers["x-user"] as string;
                 const { eventId } = request.params;
-                const event = await eventService.getEventById(userId, eventId);
+                const event = await eventService.getEventById(eventId);
     
                 if (!event) {
                     return reply.status(404).send({ error: "Event not found." });
