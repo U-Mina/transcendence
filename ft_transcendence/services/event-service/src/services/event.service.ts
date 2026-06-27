@@ -19,9 +19,9 @@ class EventService {
         
         // find the creator of even, to provide creator-info
         const eveCreatorSum = await this.getEventCreatorSummary(eve.creatorId);
-        if (!eveCreatorSum) {
-            return undefined;
-        }
+        // if (!eveCreatorSum) {
+        //     return undefined;
+        // }
         const {
             creatorId,
             safetyCheck,
@@ -36,29 +36,6 @@ class EventService {
         };
         return detailCard;
     }
-
-    // async getEventById(userId: string, eventId: string): Promise<EventCard| EventManageView | undefined> {
-    //     if (!eventId) {
-    //         throw new Error("Event ID not found.");
-    //     }
-    //     // fetch the entire internal-event-entity
-    //    const event = await eventRepository.getEventById(eventId);
-
-    //     // the event does not exist
-    //     if (!event) {
-    //         return undefined;
-    //     }
-
-    //     if (userId === event.creatorId) {
-    //         const {
-    //             safetyCheck,
-    //             ...creatorView
-    //         } = event;
-    //         return creatorView;
-    //     }
-    //     const { safetyCheck, creatorId, createdAt, updatedAt, ...publicView } = event;
-    //     return publicView;
-    // }
 
     // get all events
     async getAllEvents(): Promise<EventCard[] | undefined> {
@@ -161,7 +138,7 @@ class EventService {
     // helper to connect with user-service, display user-info of the CREATOR of event card
     // only be called inside current class
     // architecture note: even if the user-service (get-user-info) failed, event-service still works
-    private async getEventCreatorSummary(creatorId: string): Promise<UserSummary | undefined> {
+    private async getEventCreatorSummary(creatorId: string): Promise<UserSummary> {
         const userServiceUrl = process.env.USER_SERVICE_URL ?? "http://localhost:3001";
 
         try {
@@ -183,6 +160,7 @@ class EventService {
             return userSumForEvent;
 
         } catch {
+            // this is the fallback, so return type never be unfined
             return {
                 userName: "User service is currently unavailable."
             }
