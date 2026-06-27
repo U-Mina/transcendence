@@ -28,7 +28,7 @@ export interface EventManageView extends EventCard {
 export interface UserSummary {
     // userId: string;
     userName: string;
-    itraName?: string;
+    intraName?: string;
     intraUrl?: string;
 }
 
