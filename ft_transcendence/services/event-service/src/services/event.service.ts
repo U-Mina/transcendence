@@ -10,28 +10,55 @@ import { eventRepository } from "../event.repository";
 class EventService {
     // get single event by id
     // NOTE: Service should usually return the appropriate response shape already.
-    async getEventById(userId: string, eventId: string): Promise<EventCard| EventManageView | undefined> {
-        if (!eventId) {
-            throw new Error("Event ID not found.");
-        }
-        // fetch the entire internal-event-entity
-       const event = await eventRepository.getEventById(eventId);
-
-        // the event does not exist
-        if (!event) {
+    async getEventById(userId: string, eventId: string): Promise<EventDetailView | undefined> {
+        const eve = await eventRepository.getEventById(eventId);
+        if (!eve) {
             return undefined;
         }
-
-        if (userId === event.creatorId) {
-            const {
-                safetyCheck,
-                ...creatorView
-            } = event;
-            return creatorView;
+        // this method, we do not care about the creator at all, every one have the same event view with short user-info
+        
+        // find the creator of even, to provide creator-info
+        const eveCreatorSum = await this.getEventCreatorSummary(eve.creatorId);
+        if (!eveCreatorSum) {
+            return undefined;
         }
-        const { safetyCheck, creatorId, createdAt, updatedAt, ...publicView } = event;
-        return publicView;
+        const {
+            creatorId,
+            safetyCheck,
+            createdAt,
+            updatedAt,
+            ...publicEventInfo
+        } = eve;
+
+        const detailCard: EventDetailView = {
+            ...publicEventInfo,
+            creator: eveCreatorSum
+        };
+        return detailCard;
     }
+
+    // async getEventById(userId: string, eventId: string): Promise<EventCard| EventManageView | undefined> {
+    //     if (!eventId) {
+    //         throw new Error("Event ID not found.");
+    //     }
+    //     // fetch the entire internal-event-entity
+    //    const event = await eventRepository.getEventById(eventId);
+
+    //     // the event does not exist
+    //     if (!event) {
+    //         return undefined;
+    //     }
+
+    //     if (userId === event.creatorId) {
+    //         const {
+    //             safetyCheck,
+    //             ...creatorView
+    //         } = event;
+    //         return creatorView;
+    //     }
+    //     const { safetyCheck, creatorId, createdAt, updatedAt, ...publicView } = event;
+    //     return publicView;
+    // }
 
     // get all events
     async getAllEvents(): Promise<EventCard[] | undefined> {
@@ -146,6 +173,7 @@ class EventService {
             
             // convert response to json
             const user = await response.json();
+
             // extract needed info
             const userSumForEvent = {
                 userName: user.userName,
