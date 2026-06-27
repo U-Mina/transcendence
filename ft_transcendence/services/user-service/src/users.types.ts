@@ -7,6 +7,8 @@
 export interface PublicUserProfile {
     userName: string;
     userEmail: string;
+    // TODO: better data type maybe??
+    friendList?: string;
     // opional phone number
     userContact?: string;
     intraName?: string;
