@@ -142,7 +142,7 @@ class EventService {
             // this is the 'GET' request (check in user-routes), which returns user-profile
             const response = await fetch(`${userServiceUrl}/users/${creatorId}`);
             if (!response.ok) {
-                throw new Error("Fail to get user service.");
+                throw new Error(`Fail to get user service. Response status: ${response.status}`);
             }
             
             // convert response to json
