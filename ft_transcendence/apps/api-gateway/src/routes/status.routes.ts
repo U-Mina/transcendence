@@ -1,4 +1,5 @@
 /**
+ * @public not protected routes, namely, vistor/evaluator can visit
  * this is to check the health of api gateway and availability of internal service
  */
 import { proxyToService } from "../services/proxy.service";
