@@ -5,7 +5,7 @@ import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fa
 import { eventService } from "../services/event.service";
 import type { CreateEventDTO, UpdateEventDTO } from "../event.types"
 
-export async function EventServiceRoutes(fastify: FastifyInstance) {
+export async function eventServiceRoutes(fastify: FastifyInstance) {
     // get event by id
     // the home page is /home, then on /home/events will go event board
     fastify.get(
