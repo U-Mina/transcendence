@@ -3,7 +3,7 @@
  */
 import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
 import { eventService } from "../services/event.service";
-import { CreateEventDTO, UpdateEventDTO } from "../event.types"
+import type { CreateEventDTO, UpdateEventDTO } from "../event.types"
 
 export async function EventServiceRoutes(fastify: FastifyInstance) {
     // get event by id

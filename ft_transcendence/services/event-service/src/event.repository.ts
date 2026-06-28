@@ -2,7 +2,7 @@
  * for a easier adaption to real data base
  * for CRUD ops
  */
-import { InternalEventEntity, UpdateEventDTO } from "./event.types"
+import type { InternalEventEntity, UpdateEventDTO } from "./event.types"
 
 class EventRepository {
     // mock data, make c++ style, in class private
