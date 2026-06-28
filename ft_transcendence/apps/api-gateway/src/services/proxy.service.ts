@@ -31,6 +31,11 @@ export async function proxyToService(
         }
         // read response body, convert to json
         const result = response.json();
+        // return 
+        return {
+            statusCode: 200,
+            body: result,
+        };
     } catch (error) {
         return {
             statusCode: 501,
@@ -39,12 +44,4 @@ export async function proxyToService(
             }
         };
     }
-
-    // return 
-    return {
-        statusCode: 501,
-        body: {
-            error: "proxy service is currently unavailable."
-        }
-    };
 }
