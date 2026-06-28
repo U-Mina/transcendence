@@ -52,6 +52,9 @@ export interface CreateEventDTO {
     category?: string;
     description?: string;
     location?: string;
+    // minimal ppl to make this event able to happen
+    // NOTE: this should be mandtory
+    minPaticipant?: number;
 }
 
 // on updating, all filed opyional cuz user may only update ONE item
@@ -64,4 +67,5 @@ export interface UpdateEventDTO {
     category?: string;
     description?: string;
     location?: string;
+    minPaticipant?: number;
 }
