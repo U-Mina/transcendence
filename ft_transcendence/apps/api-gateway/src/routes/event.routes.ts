@@ -16,7 +16,26 @@ export async function EventGatewayRoutes(fastify: FastifyInstance) {
             const { eventId } = request.params;
             const result = await proxyToService(
                 "GET",
-                EVENT_SERVICE_URL + "/events" + eventId,
+                `${EVENT_SERVICE_URL}/events/${eventId}`,
+                undefined,
+                {
+                    "x-user": request.headers["x-user"] as string
+                }
+            );
+            return reply.status(result.statusCode).send(result.body);
+        }
+    );
+
+    // get all event
+    fastify.get(
+        "/events",
+        async (
+            request: FastifyRequest,
+            reply: FastifyReply,
+        ) => {
+            const result = await proxyToService(
+                "GET",
+                `${EVENT_SERVICE_URL}/events`,
                 undefined,
                 {
                     "x-user": request.headers["x-user"] as string
