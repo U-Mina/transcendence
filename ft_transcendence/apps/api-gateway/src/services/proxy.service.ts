@@ -21,24 +21,36 @@ export async function proxyToService(
     url: string,
     body?: unknown,
     headers?: Record<string, string>
-): Promise<ProxyResult> {
+): Promise<ProxyResult | undefined> {
     // put in try catch block, maybe remove later(?)
     try {
-        // call internal service with fetch(), by default method is GET
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
+        // this avoid pass body empty case (undefined) to fecth() which will cause ts error
+        const requestInit: RequestInit = {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+                ...headers,
+            }
         }
+        if (body !== undefined) {
+            requestInit.body = JSON.stringify(body);
+        }
+
+        // call internal service with fetch(), by default method is GET
+        const response = await fetch(url, requestInit);
+
         // read response body, convert to json
-        const result = response.json();
-        // return 
-        return {
-            statusCode: 200,
-            body: result,
-        };
+        const result = await response.json();
+
+        if (!response.ok) {
+            return {
+                statusCode: response.status,
+                body: result
+            }
+        }
     } catch (error) {
         return {
-            statusCode: 501,
+            statusCode: 502,
             body: {
                 error: "proxy service is currently unavailable."
             }
