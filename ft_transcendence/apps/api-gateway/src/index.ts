@@ -12,7 +12,6 @@ const fastify = Fastify({
 
 const start = async () => {
     fastify.register(healthCheckRoutes);
-    // may use prefix later
     fastify.register(eventGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(internalServiceStatusCheckRoutes, { prefix: "/api/v1" });
 
