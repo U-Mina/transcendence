@@ -8,14 +8,12 @@ const EVENT_SERVICE_URL = process.env.EVENT_SERVICE_URL ?? "http://localhost:300
 
 export async function eventGatewayRoutes(fastify: FastifyInstance) {
     // get event by id
-    fastify.get(
+    fastify.get<{
+        Params: { eventId: string };
+    }>(
         "/events/:eventId",
-        async (
-            request: FastifyRequest<{
-                Params: { eventId: string }
-            }>,
-            reply: FastifyReply,
-        ) => {
+        { preHandler: authMiddleware },
+        async (request, reply) => {
             const { eventId } = request.params;
             const result = await proxyToService(
                 "GET",
@@ -35,10 +33,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
         {
             preHandler: authMiddleware,
         },
-        async (
-            request: FastifyRequest,
-            reply: FastifyReply,
-        ) => {
+        async (request, reply) => {
             const result = await proxyToService(
                 "GET",
                 `${EVENT_SERVICE_URL}/events`,
@@ -52,14 +47,12 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     );
 
     // to create new event, the body must createEventDTO
-    fastify.post(
+    fastify.post<{
+        Body: unknown;
+    }>(
         "/events",
-        async (
-            request: FastifyRequest<{
-                Body: unknown,
-            }>,
-            reply: FastifyReply,
-        ) => {
+        { preHandler: authMiddleware },
+        async (request, reply) => {
             const result = await proxyToService(
                 "POST",
                 `${EVENT_SERVICE_URL}/events`,
@@ -73,14 +66,12 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     );
 
     // to delete event
-    fastify.delete(
+    fastify.delete<{
+        Params: { eventId: string };
+    }>(
         "/events/:eventId",
-        async (
-            request: FastifyRequest<{
-                Params: { eventId: string },
-            }>,
-            reply: FastifyReply,
-        ) => {
+        { preHandler: authMiddleware },
+        async (request, reply) => {
             const { eventId } = request.params;
             const result = await proxyToService(
                 "DELETE",
@@ -95,17 +86,13 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     );
 
     // updating
-    fastify.put(
+    fastify.put<{
+        Params: { eventId: string };
+        Body: unknown;
+    }>(
         "/events/:eventId",
-        async (
-            request: FastifyRequest<{
-                Params: {
-                    eventId: string,
-                },
-                Body: unknown,
-            }>,
-            reply: FastifyReply,
-        ) => {
+        { preHandler: authMiddleware },
+        async (request, reply) => {
             const { eventId } = request.params;
             const result = await proxyToService(
                 "PUT",
