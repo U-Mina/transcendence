@@ -1,5 +1,6 @@
 import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
 import { proxyToService } from "../services/proxy.service";
+import { authMiddleware } from "../middleware/auth.middleware";
 
 const EVENT_SERVICE_URL = process.env.EVENT_SERVICE_URL ?? "http://localhost:3002";
 
@@ -29,6 +30,9 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     // get all event
     fastify.get(
         "/events",
+        {
+            preHandler: authMiddleware,
+        },
         async (
             request: FastifyRequest,
             reply: FastifyReply,
