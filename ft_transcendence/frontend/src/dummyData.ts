@@ -18,15 +18,16 @@ export const dummyEvents: EventCard[] =
         startTime: new Date("2026-06-30T07:00:00"),
         endTime: new Date("2026-06-30T09:00:00"),
         category: "Sports",
-        description: "Looking for a gym buddy to join me on leg day - all levels welcome",
+        description: "Looking for a gym buddy to join me on leg day",
         location: "McFit",
     },
     {
         eventId: "2",
-        eventName: "Gym Chest Day",
+        eventName: "Volleyball at Buga Beach",
         startTime: new Date("2026-08-30T10:00:00"),
         endTime: new Date("2026-08-30T12:00:00"),
         category: "Sports",
-        location: "42 HN",
+        location: "Im Zukunftspark 22, 74076 Heilbronn",
     },
 ];
+

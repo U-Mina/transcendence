@@ -7,7 +7,7 @@
 */
 
 // get blueprint rules
-import type { EventCard } from "../types/event.ts"
+import type { EventCard } from "../../types/event.ts"
 
 // define what component below receives as input (the props)
 interface DisplayEventCardProps
@@ -22,8 +22,8 @@ export function DisplayEventCard({ event }:DisplayEventCardProps)
     return (
         <div>
             <h2>{event.eventName} </h2>
-            <p>{event.startTime} </p>
-            <p>{event.endTime} </p>
+            <p>{event.startTime.toLocaleString()} </p>
+            <p>{event.endTime.toLocaleString()} </p>
             <p>{event.category} </p>
             <p>{event.description} </p>
             <p>{event.location} </p>
