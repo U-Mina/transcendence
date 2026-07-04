@@ -12,7 +12,7 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
     // get all users is now implemented, but it SHOULD go 'advanced user management' module
     fastify.get(
         "/users",
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const result = await proxyToService(
                 "GET",
@@ -31,7 +31,7 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
         Params: { userId: string };
     }>(
         '/users/:userId',
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const { userId } = request.params;
             const result = await proxyToService(

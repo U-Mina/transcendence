@@ -12,7 +12,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
         Params: { eventId: string };
     }>(
         "/events/:eventId",
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const { eventId } = request.params;
             const result = await proxyToService(
@@ -30,7 +30,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     // get all event
     fastify.get(
         "/events",
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const result = await proxyToService(
                 "GET",
