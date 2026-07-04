@@ -30,3 +30,5 @@ installation, and/or execution.
 A **Resources** section listing classic references related to the topic (documen-
 tation, articles, tutorials, etc.), as well as a description of how AI was used —
 specifying for which tasks and which parts of the project.
+
+
