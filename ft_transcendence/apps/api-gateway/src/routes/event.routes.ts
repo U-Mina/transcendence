@@ -49,7 +49,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
         Body: unknown;
     }>(
         "/events",
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const result = await proxyToService(
                 "POST",
@@ -68,7 +68,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
         Params: { eventId: string };
     }>(
         "/events/:eventId",
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const { eventId } = request.params;
             const result = await proxyToService(
@@ -89,7 +89,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
         Body: unknown;
     }>(
         "/events/:eventId",
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const { eventId } = request.params;
             const result = await proxyToService(

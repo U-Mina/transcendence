@@ -51,7 +51,7 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
         Body: unknown;
     }>(
         "/users",
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const result = await proxyToService(
                 "POST",
@@ -71,7 +71,7 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
         Body: unknown;
     }>(
         "/users/:userId",
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const { userId } = request.params;
             const result = await proxyToService(
@@ -91,7 +91,7 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
         Params: { userId: string };
     }>(
         "/users/:userId",
-        { preHandler: authMiddleware },
+        // { preHandler: authMiddleware },
         async (request, reply) => {
             const { userId } = request.params;
             const result = await proxyToService(
