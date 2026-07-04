@@ -28,11 +28,15 @@ export async function proxyToService(
         const requestInit: RequestInit = {
             method: method,
             headers: {
-                "content-type": "application/json",
                 ...headers,
             }
         }
+        // ONLY when body is NOT empty, we define header
         if (body !== undefined) {
+            requestInit.headers = {
+                "content-type": "application/json",
+                ...headers,
+            };
             requestInit.body = JSON.stringify(body);
         }
 
