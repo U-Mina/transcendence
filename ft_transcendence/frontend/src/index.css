@@ -1,0 +1,89 @@
+:root {
+    --text: #5c6578;
+    --text-h: #0f172a;
+    --text-muted: #64748b;
+    --bg: #f4f7fb;
+    --surface: #ffffff;
+    --border: #dbe3ef;
+    --accent: #4f46e5;
+    --accent-bg: rgba(79, 70, 229, 0.08);
+    --accent-border: rgba(79, 70, 229, 0.25);
+    --danger: #dc2626;
+    --success: #059669;
+    --shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    font-family: Inter, system-ui, sans-serif;
+    line-height: 1.5;
+    color: var(--text);
+    background: radial-gradient(circle at top, #eef2ff, var(--bg) 45%);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+}
+
+#root {
+    min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+    margin: 0;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    border: 1px solid var(--accent-border);
+    background: var(--accent);
+    color: white;
+    border-radius: 10px;
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+}
+
+button.secondary {
+    background: var(--surface);
+    color: var(--text-h);
+}
+
+button.ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border-color: var(--border);
+}
+
+button.danger {
+    background: #fef2f2;
+    color: var(--danger);
+    border-color: #fecaca;
+}
+
+input,
+textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.55rem 0.75rem;
+    background: var(--surface);
+    color: var(--text-h);
+}
+
+code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85em;
+    background: #eef2ff;
+    padding: 0.1rem 0.35rem;
+    border-radius: 6px;
+}
