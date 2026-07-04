@@ -1,4 +1,4 @@
-import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
+import { type FastifyInstance } from "fastify";
 import { proxyToService } from "../services/proxy.service";
 import { authMiddleware } from "../middleware/auth.middleware";
 // NOTE: if import the data-type, it is against microservice
@@ -30,9 +30,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     // get all event
     fastify.get(
         "/events",
-        {
-            preHandler: authMiddleware,
-        },
+        { preHandler: authMiddleware },
         async (request, reply) => {
             const result = await proxyToService(
                 "GET",
