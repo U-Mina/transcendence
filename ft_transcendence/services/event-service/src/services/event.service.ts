@@ -49,7 +49,7 @@ class EventService {
     }
 
     // POST to create new event
-    //IMPORTANT!! this HAS TO BE CHANGE AFTER JWT implement
+    // IMPORTANT!! this HAS TO BE CHANGE AFTER JWT implement
     // async createEvent(creatorId, eventInput): Promise<EventDTO | undefine> {}
     async createEvent(creatorId: string, eventInput: CreateEventDTO): Promise<EventManageView | undefined> {
         const curTime = Date.now();

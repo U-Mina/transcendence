@@ -10,7 +10,7 @@ export async function authMiddleware(
     request: FastifyRequest,
     reply: FastifyReply,
 ) {
-    const expectedApiKey = process.env.DEV_API_KEP ?? "dev-secret";
+    const expectedApiKey = process.env.DEV_API_KEY ?? "dev-secret";
     const apiKey = request.headers["x-api-key"];
 
     if (expectedApiKey !== apiKey) {
