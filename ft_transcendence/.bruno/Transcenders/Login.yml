@@ -1,0 +1,24 @@
+info:
+  name: Login
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{http_protocol}}://{{http_url}}:{{http_portal}}/login/"
+  auth: inherit
+
+runtime:
+  variables:
+    - name: http_protocol
+      value: http
+    - name: http_url
+      value: localhost
+    - name: http_portal
+      value: "8080"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
