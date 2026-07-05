@@ -21,7 +21,7 @@ const start = async () => {
     // register swagger generator
     fastify.register(swagger, {
         openapi: {
-            openapi: "3.0.0.0",
+            openapi: "3.0.0",
             info: {
                 title: "Transcendence API",
                 description: "API documentation for the Transcendence social-media web application",
