@@ -44,7 +44,7 @@ export function DisplayEventCard({ event }: DisplayEventCardProps) { // ...
 
                 <p className="event-card__time">{eventDate} • {eventTime}</p>
 
-                <p className="event-card__meta">{event.location ?? "Location: TBD"}</p>
+                <p className="event-card__location">{event.location ?? "Location: TBD"}</p>
 
                 {event.description && (
                     <p className="event-card__description">{event.description}</p>
