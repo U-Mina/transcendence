@@ -28,7 +28,17 @@ const start = async () => {
                 version: "1.0.0"
             },
             servers: [{ url: "http://localhost:3000" }],
-            tags: [ {name: "auth"}, {name: "system"}, {name: "events"}, {name: "users"} ]
+            tags: [ {name: "auth"}, {name: "system"}, {name: "events"}, {name: "users"} ],
+            components: {
+                securitySchemes: {
+                    // TODO: this will be real auth later
+                    apiKey: {
+                        type: "apiKey",
+                        in: "header",
+                        name: "x-api-key"
+                    }
+                }
+            }            
         }
     });
     
