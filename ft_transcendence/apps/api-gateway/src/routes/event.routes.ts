@@ -79,12 +79,12 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
                 body: {
                     type: "object",
                     required: ["eventName", "startTime", "endTime"],
-                    propertise: {
+                    properties: {
                         eventName: { type: "string", minLength: 1 },
                         startTime: { type: "string", format: "date-time" },
                         endTime: { type: "string", format: "date-time" },
                         category: { type: "string" },
-                        descrption: { type: "string" },
+                        description: { type: "string" },
                         location: { type: "string" },
                     },
                 },
@@ -158,7 +158,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
                 },
                 body: {
                     type: "object",
-                    propertise: {
+                    properties: {
                         eventName: { type: "string", minLength: 1 },
                         startTime: { type: "string", format: "date-time" },
                         endTime: { type: "string", format: "date-time" },
