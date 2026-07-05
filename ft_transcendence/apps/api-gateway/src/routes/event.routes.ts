@@ -108,7 +108,21 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
         Params: { eventId: string };
     }>(
         "/events/:eventId",
-        // { preHandler: authMiddleware },
+        {
+            // { preHandler: authMiddleware },
+            schema: {
+                summary: "Delete event.",
+                description: "User can delete the event she/he created.",
+                tags: ["events"],
+                params: {
+                    type: "object",
+                    required: ["eventId"],
+                    properties: {
+                        eventId: { type: "string" },
+                    },
+                },
+            },
+        },
         async (request, reply) => {
             const { eventId } = request.params;
             const result = await proxyToService(
@@ -129,7 +143,32 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
         Body: unknown;
     }>(
         "/events/:eventId",
-        // { preHandler: authMiddleware },
+        {
+            // { preHandler: authMiddleware },
+            schema: {
+                summary: "Update existing event.",
+                description: "User of event updates their event card.",
+                tags: ["events"],
+                params: {
+                    type: "object",
+                    required: ["eventId"],
+                    properties: {
+                        eventId: { type: "string" },
+                    },
+                },
+                body: {
+                    type: "object",
+                    propertise: {
+                        eventName: { type: "string", minLength: 1 },
+                        startTime: { type: "string", format: "date-time" },
+                        endTime: { type: "string", format: "date-time" },
+                        category: { type: "string" },
+                        descrption: { type: "string" },
+                        location: { type: "string" },
+                    },
+                },
+            }
+        },
         async (request, reply) => {
             const { eventId } = request.params;
             const result = await proxyToService(
