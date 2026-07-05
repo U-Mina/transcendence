@@ -1,4 +1,3 @@
-
 // define shape of an event (same as backend)
 export interface EventCard {
     // event id, unique identifier
@@ -10,4 +9,6 @@ export interface EventCard {
     category?: string;
     description?: string;
     location?: string;
+    // comments / questins session
+    comment?: string;
 }
