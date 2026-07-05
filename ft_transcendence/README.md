@@ -8,9 +8,12 @@ Everything comes to `/main` need to be fully tested, ready for eval already
 all feature branches should branch off from `dev` merge back to `dev` with pull request use `feat/xxx` as branch name
 
 ## `backend` - ewu' branch
-- `/services`
-- `/api-gateway`
-- `docker yml/yaml`
+- `/backend-migration`
+    - `feat/internal-service-connection`
+    - `/api-gateway`
+- `feat/internal-service-connection`
+    - `/event-services`
+    - `/user-services`
 
 ## `frontend`
 
@@ -19,7 +22,7 @@ all feature branches should branch off from `dev` merge back to `dev` with pull 
 ## Structure of README - TODO
 
 The very first line must be italicized and read:
-*This project has been created as part of the 42 curriculum by <login1>[, <login2>[, <login3>[...]]].*
+*This project has been created as part of the 42 curriculum by xxx, xxx, xxx ....
 
 A **Description** section that clearly presents the project, including its goal and a brief overview.
 
