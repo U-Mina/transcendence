@@ -1,0 +1,5 @@
+# Keep database source files (Dockerfile, init SQL, docs) visible in repo.
+# Ignore only local editor/temporary artifacts.
+*.tmp
+*.bak
+.DS_Store
