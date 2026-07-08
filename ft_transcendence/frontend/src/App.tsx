@@ -8,14 +8,16 @@ when swapping dummy data w real backend fetch, only App.tsx changes (blueprint &
 
 import "./App.css";
 // import { dummyEvents } from "./dummyData" // comment in if wanting to display dummy data
-import { EventsPage } from "./pages/EventsPage";
+// import { EventsPage } from "./pages/EventsPage";
 import { Layout } from "./components/Wrapper/Layout";
+import { SingleEventDetailsPage } from "./pages/SingleEventDetailsPage";
 
 function App() 
 {
     return (
         <Layout>
-            <EventsPage />
+            {/* <EventsPage /> */}
+            <SingleEventDetailsPage />
         </Layout>
     );
 }
