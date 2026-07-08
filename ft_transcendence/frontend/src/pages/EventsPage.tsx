@@ -2,7 +2,7 @@
 // mostly refactored from App.tsx (commented out)
 
 import { useEffect, useState } from "react";
-import { fetchEvents } from "../services/events/events";
+import { getListOfEvents } from "../services/events";
 import { DisplayEventCard } from "../components/EventCard/EventCard";
 import type { EventCard } from "../types/event";
 
@@ -13,9 +13,9 @@ export function EventsPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const getEvents = async () => {
+        const fetchEvents = async () => {
             try {
-                const data = await fetchEvents();
+                const data = await getListOfEvents();
                 setEvents(data);
             }
             catch (error) {
@@ -23,7 +23,7 @@ export function EventsPage() {
                 setError(error instanceof Error ? error.message : "Something went wrong");
             }
         };
-        getEvents();
+        fetchEvents();
     }, []);
 
     if (error) {
@@ -38,3 +38,13 @@ export function EventsPage() {
         </div>
     );
 }
+
+/*
+React Router
+- client-side navigation
+- no full page refresh, react swaps the component
+- connects event list thru a click w event id in url then single event page
+- install react router dom
+- https://reactrouter.com/start/modes
+- TODO: decide if framework mode or normal react router (depending on complexity of site)
+ */
