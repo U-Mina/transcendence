@@ -4,18 +4,16 @@ add a shared page wrapper here for the website
 - basically the same "frame" around each page (Event Page, Profile Page, Home Page)
 */
 
-import type { ReactNode } from "react";
 import "./Layout.css";
-
-interface LayoutProps {
-	children: ReactNode;
-}
+// import type { ReactNode } from "react";
+import { Outlet } from "react-router-dom"; // outlet is a placeholder where react router renders matching child page
 
 // TODO: when increasing/decreasing chrome site, the events don't move or barely do (after adding layout) -> if 3, the the third one should be on right, not middle
 // TODO: when making website fullscreen, the layout should also adjust by going to the most far left/right side (not in middle still looking like a small website)
 // TODO: move create button up a bit
 // TODO: make one event from one side to the other side (instead of two events next to each other)
-export function Layout({ children }: LayoutProps) {
+// TODO: research <NavLink> and implement for the sidebar buttons (instead of <button>)
+export function Layout() {
 	return (
 		<div className="layout">
 			<aside className="layout__sidebar">
@@ -54,7 +52,7 @@ export function Layout({ children }: LayoutProps) {
 				</header>
 
 				<main className="layout__content">
-					{children}
+					<Outlet /> 
 				</main>
 			</div>
 		</div>

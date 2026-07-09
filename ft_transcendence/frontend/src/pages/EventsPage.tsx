@@ -11,6 +11,7 @@ import type { EventCard } from "../types/event";
 export function EventsPage() {
     const [events, setEvents] = useState<EventCard[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -22,12 +23,23 @@ export function EventsPage() {
                 console.error("Error:", error);
                 setError(error instanceof Error ? error.message : "Something went wrong");
             }
+            finally {
+                setIsLoading(false);
+            }
         };
         fetchEvents();
     }, []);
 
     if (error) {
         return <p>{error}</p>;
+    }
+
+    if (isLoading) {
+        return <p>Loading events...</p>;
+    }
+
+    if (events.length === 0) {
+        return <p>No events yet.</p>;
     }
 
     return (

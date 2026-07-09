@@ -5,9 +5,10 @@
 - no changing later
 */
 
-import type { EventCard } from "../../types/event.ts"
 import "./EventCard.css";
+import type { EventCard } from "../../types/event.ts"
 import eventImage from "../../assets/vite.svg";
+import { Link } from "react-router-dom";
 
 // define what component below receives as input (the props)
 interface DisplayEventCardProps
@@ -34,7 +35,9 @@ export function DisplayEventCard({ event }: DisplayEventCardProps) { // ...
 
             <div className="event-card__content">
                 <div className="event-card__title-row">
-                    <h3 className="event-card__title">{event.eventName}</h3>
+                    <h3 className="event-card__title">
+                        <Link to={`/events/${event.eventId}`}>{event.eventName}</Link>
+                    </h3>
                     <button className="event-card__save" type="button" aria-label="Save event">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M20.8 4.6c-1.5-1.5-4-1.5-5.5 0L12 7.9 8.7 4.6c-1.5-1.5-4-1.5-5.5 0s-1.5 4 0 5.5L12 19l8.8-8.9c1.5-1.5 1.5-4 0-5.5z" />

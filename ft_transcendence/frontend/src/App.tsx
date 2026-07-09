@@ -7,18 +7,30 @@ when swapping dummy data w real backend fetch, only App.tsx changes (blueprint &
 */
 
 import "./App.css";
-// import { dummyEvents } from "./dummyData" // comment in if wanting to display dummy data
-// import { EventsPage } from "./pages/EventsPage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { EventsPage } from "./pages/EventsPage";
 import { Layout } from "./components/Wrapper/Layout";
 import { SingleEventDetailsPage } from "./pages/SingleEventDetailsPage";
 
+
+/*
+React Router: wraps the app in a browser router & defines its routes
+- Layout Wrapper will be the parent route,
+     so that every child is rendered inside its Outlet
+     -> so layout automatically appears for all those pages
+*/
 function App() 
 {
     return (
-        <Layout>
-            {/* <EventsPage /> */}
-            <SingleEventDetailsPage />
-        </Layout>
+        <BrowserRouter>
+            <Routes>    
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<EventsPage />} />
+                    <Route path="events" element={<EventsPage />} />
+                    <Route path="events/:eventId" element={<SingleEventDetailsPage />} />
+                </Route>
+            </Routes>
+        </BrowserRouter>
     );
 }
 
