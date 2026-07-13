@@ -1,4 +1,4 @@
-FROM mysql:latest
+FROM mysql:8.4
 
 # Install essential debugging tools (vim for editing, net-tools for network diagnostics)
 RUN microdnf install -y vim net-tools \
