@@ -24,13 +24,13 @@ export function Layout() {
 						Home
 					</button>
 					<button className="layout__nav-item" type="button">
-						Create
-					</button>
-					<button className="layout__nav-item" type="button">
 						Saved
 					</button>
 					<button className="layout__nav-item" type="button">
 						Profile
+					</button>
+					<button className="layout__nav-item" type="button">
+						Settings
 					</button>
 				</nav>
 
