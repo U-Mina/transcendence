@@ -1,7 +1,6 @@
 /**
  * The main entry point of the event service server
  */
-
 import "dotenv/config";
 import Fastify from "fastify";
 
