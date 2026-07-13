@@ -1,6 +1,7 @@
 /**
  * the main entry of event service server
  */
+import "dotenv/config";
 import Fastify from "fastify";
 import { healthCheckRoutes } from "./routes/health.routes";
 import { eventServiceRoutes } from "./routes/event.routes";
