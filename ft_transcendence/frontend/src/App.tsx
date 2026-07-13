@@ -11,7 +11,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { EventsPage } from "./pages/EventsPage";
 import { Layout } from "./components/Wrapper/Layout";
 import { SingleEventDetailsPage } from "./pages/SingleEventDetailsPage";
-
+import { CreateEventPage } from "./pages/CreateEventPage";
 
 /*
 React Router: wraps the app in a browser router & defines its routes
@@ -28,6 +28,7 @@ function App()
                     <Route index element={<EventsPage />} />
                     <Route path="events" element={<EventsPage />} />
                     <Route path="events/:eventId" element={<SingleEventDetailsPage />} />
+                    <Route path="events/create" element={<CreateEventPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
