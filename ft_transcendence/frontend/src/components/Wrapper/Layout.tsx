@@ -7,6 +7,7 @@ add a shared page wrapper here for the website
 import "./Layout.css";
 // import type { ReactNode } from "react";
 import { Outlet } from "react-router-dom"; // outlet is a placeholder where react router renders matching child page
+import { Link } from "react-router-dom";
 
 // TODO: when increasing/decreasing chrome site, the events don't move or barely do (after adding layout) -> if 3, the the third one should be on right, not middle
 // TODO: when making website fullscreen, the layout should also adjust by going to the most far left/right side (not in middle still looking like a small website)
@@ -24,6 +25,9 @@ export function Layout() {
 						Home
 					</button>
 					<button className="layout__nav-item" type="button">
+						Joined
+					</button>
+					<button className="layout__nav-item" type="button">
 						Saved
 					</button>
 					<button className="layout__nav-item" type="button">
@@ -34,9 +38,9 @@ export function Layout() {
 					</button>
 				</nav>
 
-				<button className="layout__create-button" type="button">
+				<Link className="layout__create-button" to="/create">
 					+ Create Event
-				</button>
+				</Link>
 			</aside>
 
 			<div className="layout__main">

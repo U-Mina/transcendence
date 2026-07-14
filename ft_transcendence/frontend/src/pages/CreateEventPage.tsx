@@ -79,3 +79,5 @@ export function CreateEventPage() {
         <CreateEventForm handleCreateEvent={handleCreateEvent} error={error}/>
     );
 }
+
+// TODO: file upload for a pic needs to be added in all those (coming from backend first)
