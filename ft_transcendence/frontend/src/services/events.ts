@@ -3,6 +3,7 @@
 // RETRIEVE AND PREPARE DATA
 
 import type { EventCard } from "../types/event";
+import type { CreateEventDTO, EventManageView } from "../types/event";
 // import type { EventManageView } from "../types/event";
 // import type { EventCard } from "../services/event-service/src/event.types";
 

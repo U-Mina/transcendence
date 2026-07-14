@@ -42,6 +42,7 @@ export function EventsPage() {
         return <p>No events yet.</p>;
     }
 
+    // returns a description of what the page should look like (only responsible for what the user sees)
     return (
         <div>
             {events.map((event) => (

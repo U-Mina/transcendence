@@ -28,7 +28,7 @@ function App()
                     <Route index element={<EventsPage />} />
                     <Route path="events" element={<EventsPage />} />
                     <Route path="events/:eventId" element={<SingleEventDetailsPage />} />
-                    <Route path="events/create" element={<CreateEventPage />} />
+                    <Route path="create" element={<CreateEventPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
