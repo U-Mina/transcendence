@@ -1,0 +1,81 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createEvent } from "../services/events";
+import type { CreateEventDTO } from "../types/event";
+import { CreateEventForm } from "../components/CreateEvent/CreateEvent";
+
+function parseCreateEventForm(formData: FormData) {
+    // get the value of each form field by reading from formData
+    const creatorId = String(formData.get("creatorId") ?? "").trim(); // falls back on empty string for now if nothing entered, but? TODO: add stricter parsing below, ex. if only one letter entered
+    const eventName = String(formData.get("eventName") ?? "").trim();
+    const startTimeValue = String(formData.get("startTime") ?? "");
+    const endTimeValue = String(formData.get("endTime") ?? "");
+    const category = String(formData.get("category") ?? "").trim();
+    const description = String(formData.get("description") ?? "").trim();
+    const location = String(formData.get("location") ?? "").trim();
+    const minParticipantValue = String(formData.get("minPaticipant") ?? "").trim();
+
+    // parsing
+    if (!creatorId || !eventName || !startTimeValue || !endTimeValue) {
+        throw new Error("Creator ID, event name, start time, and end time are required.");
+    }
+
+    const startTime = new Date(startTimeValue); // TODO: again, write conversion ft helper
+    const endTime = new Date(endTimeValue);
+
+    // parsing
+    if (Number.isNaN(startTime.getTime()) || Number.isNaN(endTime.getTime())) {
+        throw new Error("Please enter valid start and end times.");
+    }
+
+    // parsing
+    if (endTime <= startTime) {
+        throw new Error("End time must be after start time.");
+    }
+
+    // undefined since field can be left empty by user
+    const eventInput: CreateEventDTO = {
+        eventName,
+        startTime,
+        endTime,
+        category: category || undefined,
+        description: description || undefined,
+        location: location || undefined,
+        minPaticipant: minParticipantValue ? Number(minParticipantValue) : undefined,
+    };
+
+    // parsing
+    if (minParticipantValue && Number.isNaN(eventInput.minPaticipant ?? Number.NaN)) {
+        throw new Error("Minimum participants must be a number.");
+    }
+
+    return {
+        creatorId,
+        eventInput,
+    }
+}
+
+
+// MAIN 
+// https://react.dev/reference/react-dom/components/form
+export function CreateEventPage() {
+    const navigate = useNavigate(); // lets page move to another route after success (form filled out) -> /events (EventsPage)
+    const [error, setError] = useState<string | null>(null); // for parsing when entering information in form
+
+    async function handleCreateEvent(formData: FormData) { // w formData React gives me the form data directly
+        setError(null);
+
+        try {
+            const { creatorId, eventInput } = parseCreateEventForm(formData);
+            await createEvent(eventInput, creatorId); // send event to backend w fetch ft createEvent
+            navigate("/events");
+        } catch (submitError) {
+            setError(submitError instanceof Error ? submitError.message : "Something went wrong");
+        }
+    }
+
+    // returns a description of what the page should look like (only responsible for what the user sees)
+    return (
+        <CreateEventForm handleCreateEvent={handleCreateEvent} error={error}/>
+    );
+}
