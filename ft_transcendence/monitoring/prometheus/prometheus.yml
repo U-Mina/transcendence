@@ -1,8 +1,13 @@
 global:
   scrape_interval: 15s
+  evaluation_internal: 15s
   
+  external_labels:
+    project: transcendence
+    environment: development
+
 scrape_configs:
   - job_name: prometheus
-    static configs:
+    static_configs:
       - targets:
-        - prometheus: 9090
+        - prometheus:9090
