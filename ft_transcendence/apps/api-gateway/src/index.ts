@@ -7,6 +7,7 @@ import { healthCheckRoutes } from "./routes/health.routes";
 import { eventGatewayRoutes } from "./routes/event.routes";
 import { UserGatewayRoutes } from "./routes/user.routes";
 import { internalServiceStatusCheckRoutes } from "./routes/status.routes";
+import { metricsRoutes } from "./routes/metrics.routes";
 import Fastify from "fastify";
 
 const fastify = Fastify({
@@ -51,6 +52,7 @@ const start = async () => {
     fastify.register(eventGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(UserGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(internalServiceStatusCheckRoutes, { prefix: "/api/v1" });
+    fastify.register(metricsRoutes);
 
     try {
         fastify.listen({
