@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 // TODO: move create button up a bit
 // TODO: make one event from one side to the other side (instead of two events next to each other)
 // TODO: research <NavLink> and implement for the sidebar buttons (instead of <button>)
+// TODO: change placeholder links for most of nav bar to their actual sites when they are created
 export function Layout() {
 	return (
 		<div className="layout">
@@ -21,21 +22,21 @@ export function Layout() {
 				<div className="layout__brand">OurSiteName</div>
 
 				<nav className="layout__nav" aria-label="Primary">
-					<button className="layout__nav-item layout__nav-item--active" type="button">
+					<Link className="layout__nav-item" to="/events">
 						Home
-					</button>
-					<button className="layout__nav-item" type="button">
+					</Link>
+					<Link className="layout__nav-item" to="/events">
 						Joined
-					</button>
-					<button className="layout__nav-item" type="button">
+					</Link>
+					<Link className="layout__nav-item" to="/events">
 						Saved
-					</button>
-					<button className="layout__nav-item" type="button">
+					</Link>
+					<Link className="layout__nav-item" to="/events">
 						Profile
-					</button>
-					<button className="layout__nav-item" type="button">
+					</Link>
+					<Link className="layout__nav-item" to="/events">
 						Settings
-					</button>
+					</Link>
 				</nav>
 
 				<Link className="layout__create-button" to="/create">

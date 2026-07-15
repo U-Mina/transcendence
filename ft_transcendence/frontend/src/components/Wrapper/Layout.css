@@ -35,6 +35,7 @@
 	font-size: 14px;
 	color: #4b5563;
 	cursor: pointer;
+	text-decoration: none;
 }
 
 .layout__nav-item--active {

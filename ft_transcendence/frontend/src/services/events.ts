@@ -43,7 +43,7 @@ export async function getSingleEvent(eventId: string): Promise<EventCard> {
 
 
 
-// TODO: edit event (get endpoints from swagger UI)
+// TODO: edit/update event (get endpoints from swagger UI)
 
 
 
