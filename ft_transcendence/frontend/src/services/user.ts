@@ -1,8 +1,10 @@
 import type { CreateUserDTO } from "../types/user";
 
+const API_BASE = "/api/v1";
+
 // TODO: missing userContact as input (see types/user.ts)
 export async function createUser({ userName, userEmail }: CreateUserDTO): Promise<void> {
-	const response = await fetch("/users", {
+	const response = await fetch(`${API_BASE}/users`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

@@ -7,10 +7,11 @@ import type { CreateEventDTO, EventManageView } from "../types/event";
 // import type { EventManageView } from "../types/event";
 // import type { EventCard } from "../services/event-service/src/event.types";
 
+const API_BASE = "/api/v1";
+
 // get list of events
 export async function getListOfEvents(): Promise<EventCard[]> { // ...
-    const response = await fetch("/events"); // ...
-
+    const response = await fetch(`${API_BASE}/events`);
     if (!response.ok)
         throw new Error("Error: Failed to display events");
 
@@ -26,7 +27,7 @@ export async function getListOfEvents(): Promise<EventCard[]> { // ...
 
 // get one event in its entirety by ID
 export async function getSingleEvent(eventId: string): Promise<EventCard> {
-    const response = await fetch(`/events/${eventId}`);
+    const response = await fetch(`${API_BASE}/events/${eventId}`);
 
     if (!response.ok)
         throw new Error("Error: Failed to display the event's details");
@@ -57,7 +58,7 @@ export async function createEvent(
     eventInput: CreateEventDTO,
     userId: string, // TODO: no userid yet
 ): Promise<EventManageView> { // 
-    const response = await fetch("/events", {
+    const response = await fetch(`${API_BASE}/events`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
