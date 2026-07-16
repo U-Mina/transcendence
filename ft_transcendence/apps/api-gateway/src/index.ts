@@ -52,12 +52,6 @@ const start = async () => {
         routePrefix: '/docs',
     });
 
-    fastify.register(healthCheckRoutes);
-    fastify.register(metricsRoutes);
-    fastify.register(eventGatewayRoutes, { prefix: "/api/v1" });
-    fastify.register(UserGatewayRoutes, { prefix: "/api/v1" });
-    fastify.register(internalServiceStatusCheckRoutes, { prefix: "/api/v1" });
-
     fastify.addHook("onRequest", async (request) => {
         request.metricsStartTime = process.hrtime.bigint();
     });
@@ -65,7 +59,7 @@ const start = async () => {
     fastify.addHook("onResponse", async (request, reply) => {
         const startTime = request.metricsStartTime;
 
-        if (!startTime) {
+        if (startTime === undefined) {
             return;
         }
         
@@ -90,6 +84,12 @@ const start = async () => {
             durationSeconds,
         );
     });
+
+    fastify.register(healthCheckRoutes);
+    fastify.register(metricsRoutes);
+    fastify.register(eventGatewayRoutes, { prefix: "/api/v1" });
+    fastify.register(UserGatewayRoutes, { prefix: "/api/v1" });
+    fastify.register(internalServiceStatusCheckRoutes, { prefix: "/api/v1" });
 
     try {
         await fastify.listen({
