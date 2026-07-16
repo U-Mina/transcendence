@@ -3,6 +3,7 @@ import type { CreateUserDTO } from "../types/user";
 const API_BASE = "/api/v1";
 
 // TODO: missing userContact as input (see types/user.ts)
+// ft title -> pulling the two fields from the object to use directly without object.userName
 export async function createUser({ userName, userEmail }: CreateUserDTO): Promise<void> {
 	const response = await fetch(`${API_BASE}/users`, {
 		method: "POST",
@@ -29,4 +30,11 @@ export async function createUser({ userName, userEmail }: CreateUserDTO): Promis
 
 		throw new Error(errorMessage);
 	}
+
+	return {
+		// return user here
+		userName,
+		userEmail,
+	};
 }
+// TODO: return created user (to have id)

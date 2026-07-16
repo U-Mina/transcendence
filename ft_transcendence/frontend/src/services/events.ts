@@ -54,10 +54,8 @@ export async function getSingleEvent(eventId: string): Promise<EventCard> {
 
 
 // create a new event
-export async function createEvent(
-    eventInput: CreateEventDTO,
-    userId: string, // TODO: no userid yet
-): Promise<EventManageView> { // 
+// TODO: no userid yet
+export async function createEvent(eventInput: CreateEventDTO, userId: string,): Promise<EventManageView> { // 
     const response = await fetch(`${API_BASE}/events`, {
         method: "POST",
         headers: {

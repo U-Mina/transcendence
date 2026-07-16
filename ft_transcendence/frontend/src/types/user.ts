@@ -18,3 +18,8 @@ export interface CreateUserDTO {
     userEmail: string;
     userContact?: string; // TODO: what is meant by contact? from backend -> then include in user.ts ft as input
 }
+
+export interface UpdateUserDTO {
+    userName?: string;
+    userContact?: string;
+}

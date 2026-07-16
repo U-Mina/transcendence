@@ -21,7 +21,7 @@ function SubmitButton() {
 
 // the data that CreateEventForm will receive (ft that runs when form submitted & error msg if there) // ...
 type CreateEventFormProps = {
-    handleCreateEvent: (formData: FormData) => void;
+    handleCreateEvent: (formData: FormData) => void; // the input of ft & the output (returns nth)
     error: string | null;
 };
 
@@ -71,7 +71,7 @@ export function CreateEventForm({ handleCreateEvent, error }: CreateEventFormPro
 
                 <label>
                     Minimum participants
-                    <input type="number" name="minParticipant" min="0" />
+                    <input type="number" name="minPaticipant" min="0" />
                 </label>
 
                 <SubmitButton />

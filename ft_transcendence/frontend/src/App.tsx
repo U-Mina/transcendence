@@ -12,6 +12,7 @@ import { EventsPage } from "./pages/EventsPage";
 import { Layout } from "./components/Wrapper/Layout";
 import { SingleEventDetailsPage } from "./pages/SingleEventDetailsPage";
 import { CreateEventPage } from "./pages/CreateEventPage";
+import { SignUpPage } from "./pages/SignUpPage";
 
 /*
 React Router: wraps the app in a browser router & defines its routes
@@ -23,7 +24,8 @@ function App()
 {
     return (
         <BrowserRouter>
-            <Routes>    
+            <Routes>
+                <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/" element={<Layout />}>
                     <Route index element={<EventsPage />} />
                     <Route path="events" element={<EventsPage />} />

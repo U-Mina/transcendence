@@ -58,6 +58,8 @@ function parseCreateEventForm(formData: FormData) {
 
 // MAIN 
 // https://react.dev/reference/react-dom/components/form
+// TODO: when entering sth wrong in the form and pressing publish, entire form is cleared -> shouldnt be!
+//      -> possibly change the form submitting thru a normal handler w a local pending state instead of react form-action 
 export function CreateEventPage() {
     const navigate = useNavigate(); // lets page move to another route after success (form filled out) -> /events (EventsPage)
     const [error, setError] = useState<string | null>(null); // for parsing when entering information in form
@@ -66,7 +68,7 @@ export function CreateEventPage() {
         setError(null);
 
         try {
-            const { creatorId, eventInput } = parseCreateEventForm(formData);
+            const { eventInput, creatorId } = parseCreateEventForm(formData);
             await createEvent(eventInput, creatorId); // send event to backend w fetch ft createEvent
             navigate("/events");
         } catch (submitError) {
@@ -75,6 +77,8 @@ export function CreateEventPage() {
     }
 
     // returns a description of what the page should look like (only responsible for what the user sees)
+    // passing two inputs into component CreateEventForm
+    // means: show createevent form, and let it use this submit ft plus error state
     return (
         <CreateEventForm handleCreateEvent={handleCreateEvent} error={error}/>
     );
