@@ -49,10 +49,10 @@ const start = async () => {
     });
 
     fastify.register(healthCheckRoutes);
+    fastify.register(metricsRoutes);
     fastify.register(eventGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(UserGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(internalServiceStatusCheckRoutes, { prefix: "/api/v1" });
-    fastify.register(metricsRoutes);
 
     try {
         fastify.listen({

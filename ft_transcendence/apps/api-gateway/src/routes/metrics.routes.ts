@@ -10,6 +10,6 @@ client.collectDefaultMetrics({
 export async function metricsRoutes(fastify: FastifyInstance) {
     fastify.get("/metrics", async (_request, reply) => {
         reply.header("Content-Type", register.contentType);
-        return register.metrics();
+        return await register.metrics();
     });
 }
