@@ -12,6 +12,13 @@ export interface PublicUserProfile {
     intraUrl?: string;
 }
 
+// internal user interface with all necessary data, this will be the payload
+export interface InternalUserEntity extends PublicUserProfile {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
 // create user
 export interface CreateUserDTO {
     userName: string;
