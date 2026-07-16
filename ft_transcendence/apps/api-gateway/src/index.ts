@@ -8,6 +8,10 @@ import { eventGatewayRoutes } from "./routes/event.routes";
 import { UserGatewayRoutes } from "./routes/user.routes";
 import { internalServiceStatusCheckRoutes } from "./routes/status.routes";
 import { metricsRoutes } from "./routes/metrics.routes";
+import { 
+    httpRequestsTotal,
+    httpRequestDurationSeconds,
+} from "./metrics/http.metrics";
 import Fastify from "fastify";
 
 const fastify = Fastify({
@@ -54,8 +58,16 @@ const start = async () => {
     fastify.register(UserGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(internalServiceStatusCheckRoutes, { prefix: "/api/v1" });
 
+    fastify.addHook("onRequest", async (request) => {
+        request.metricsStartTime = process.hrtime.bigint();
+    });
+
+    fastify.addHook("onResponse", async (request, reply) => {
+        // metric update code
+    });
+
     try {
-        fastify.listen({
+        await fastify.listen({
             port: 3000,
             host: "0.0.0.0",
         });
