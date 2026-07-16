@@ -12,4 +12,4 @@ export async function metricsRoutes(fastify: FastifyInstance) {
         reply.header("Content-Type", register.contentType);
         return await register.metrics();
     });
-}
+}   
