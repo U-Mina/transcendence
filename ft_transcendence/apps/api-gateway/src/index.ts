@@ -63,7 +63,32 @@ const start = async () => {
     });
 
     fastify.addHook("onResponse", async (request, reply) => {
-        // metric update code
+        const startTime = request.metricsStartTime;
+
+        if (!startTime) {
+            return;
+        }
+        
+        const durationSeconds =
+            Number(process.hrtime.bigint() - startTime) / 1_000_000_000;
+
+        const route = request.routeOptions.url ?? request.url;
+        const statusCode = reply.statusCode.toString();
+
+        httpRequestsTotal.inc({
+            method: request.method,
+            route,
+            status_code: statusCode,
+        });
+
+        httpRequestDurationSeconds.observe(
+            {
+                method: request.method,
+                route,
+                status_code: statusCode,
+            },
+            durationSeconds,
+        );
     });
 
     try {
