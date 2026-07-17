@@ -1,5 +1,3 @@
-// TODO: first draft just for testing -> improve this later (add all the functionalities when seeing only one event)
-
 import "./EventDetails.css";
 import type { EventCard } from "../../types/event.ts"
 import eventImage from "../../assets/vite.svg";
@@ -10,9 +8,9 @@ interface DisplayEventCardProps
     event: EventCard;
 }
 
-// TODO: this is just a copy from EventCard.tsx for router testing going from EventPage to SingleEventDetailsPage and therefore needs to be changed below for a diff layout
+// TODO: add edit & delete button (w api in Page.tsx) BUT only if the user is the creator of the event
 // the actual component (function): render one event card
-export function DisplayEventDetails({ event }: DisplayEventCardProps) { // ...
+export function DisplayEventDetails({ event }: DisplayEventCardProps) {
     const eventDate = event.startTime.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",

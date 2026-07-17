@@ -32,6 +32,9 @@ export function Layout() {
 						Saved
 					</Link>
 					<Link className="layout__nav-item" to="/events">
+						Created
+					</Link>
+					<Link className="layout__nav-item" to="/events">
 						Profile
 					</Link>
 					<Link className="layout__nav-item" to="/events">

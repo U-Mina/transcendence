@@ -1,12 +1,10 @@
 // supposed to own list state, load data, handle loading and error states, and render all events
-// mostly refactored from App.tsx (commented out)
 
 import { useEffect, useState } from "react";
 import { getListOfEvents } from "../services/events";
 import { DisplayEventCard } from "../components/EventCard/EventCard";
 import type { EventCard } from "../types/event";
 
-// ...
 // https://reactnative.dev/docs/network
 export function EventsPage() {
     const [events, setEvents] = useState<EventCard[]>([]);
@@ -59,5 +57,4 @@ React Router
 - connects event list thru a click w event id in url then single event page
 - install react router dom
 - https://reactrouter.com/start/modes
-- TODO: decide if framework mode or normal react router (depending on complexity of site)
  */

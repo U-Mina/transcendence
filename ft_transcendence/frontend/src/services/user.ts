@@ -2,7 +2,8 @@ import type { CreateUserDTO, InternalUserEntity, UpdateUserDTO } from "../types/
 
 const API_BASE = "/api/v1";
 
-// TODO: missing userContact as input (see types/user.ts)
+// TODO: missing userContact as input (see types/user.ts) -> add, its the phone number
+// the rest of the profile (intraname, url etc. will the user have to decide whether or not when "editing" his profile later)
 // ft title -> pulling the two fields from the object to use directly without object.userName
 export async function createUser({ userName, userEmail }: CreateUserDTO): Promise<CreateUserDTO> {
 	const response = await fetch(`${API_BASE}/users`, {
@@ -31,18 +32,17 @@ export async function createUser({ userName, userEmail }: CreateUserDTO): Promis
 		throw new Error(errorMessage);
 	}
 
-	// TODO: return created user (to have id)
 	return {
 		userName,
 		userEmail,
 	};
 }
 
-// GET: retrieve a user's information (this will go on own profile page)
+// GET: retrieve a user's information (this will go on own profile page) & (and also be used for other user profile page) & (added to eventCard as creator of event)
 // userId tells getUser which user to fetch from /users/:userId
 export async function getUser(userId: string): Promise<InternalUserEntity> {
 	const response = await fetch(`${API_BASE}/users/${userId}`);
-
+	
 	if (!response.ok) {
 		throw new Error("Error: Failed to get user information");
 	}
@@ -96,3 +96,6 @@ export async function deleteUser(userId: string): Promise<{message: string}> {
 
     return await response.json(); // if backend returns a message lke "successfully deleted user"
 }
+
+
+// TODO: in all these add an extra error return check if backend has special message
