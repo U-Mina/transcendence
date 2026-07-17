@@ -5,9 +5,11 @@ import type { PublicUserProfile } from "../../types/user.ts";
 interface DisplayProfileProps
 {
     user: PublicUserProfile;
+    isFollowing?: boolean; // for button
+    onFollowToggle: () => void;
 }
 
-export function DisplayProfile({ user }: DisplayProfileProps) {
+export function DisplayProfile({ user, isFollowing = false, onFollowToggle }: DisplayProfileProps) {
     return (
         <section className="profile-page" aria-label="User profile">
             <header className="profile-page__hero">
@@ -19,6 +21,13 @@ export function DisplayProfile({ user }: DisplayProfileProps) {
                     <p className="profile-page__eyebrow">Profile</p>
                     <h1 className="profile-page__name">{user.userName}</h1>
                     <p className="profile-page__email">{user.userEmail}</p>
+                    <button
+                        type="button"
+                        className="profile-page__follow-button"
+                        onClick={onFollowToggle}
+                    >
+                        {isFollowing ? "Unfollow" : "Follow"}
+                    </button>
                 </div>
             </header>
 
