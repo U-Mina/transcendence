@@ -1,95 +1,54 @@
 services:
-  database:
+  backend:
     build:
-      context: ./database
+      context: ./backend
       dockerfile: Dockerfile
-    container_name: transcendence-database
+    container_name: backend
     restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${PORT}:${PORT}"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      - NODE_ENV=${NODE_ENV}
+      - PORT=${PORT}
+      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+    depends_on:
+      - db
+    
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    environment:
+      - REACT_APP_ENV=${NODE_ENV}
+      - PORT=${FRONTEND_PORT}
+    
+  db:
+    image: mysql:latest
+    container_name: db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     ports:
       - "${MYSQL_PORT}:3306"
-    volumes:
-      - ./database/data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
 
-  user-service:
-    image: node:20-alpine
-    container_name: transcendence-user-service
-    restart: unless-stopped
-    working_dir: /app
-    command: sh -c "npm ci && npm run dev"
-    volumes:
-      - ./services/user-service:/app
-      - user_service_node_modules:/app/node_modules
-    environment:
-      PORT: 3001
-      DATABASE_HOST: database
-      DATABASE_PORT: 3306
-      DATABASE_NAME: ${MYSQL_DATABASE}
-      DATABASE_USER: ${MYSQL_USER}
-      DATABASE_PASSWORD: ${MYSQL_PASSWORD}
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-    ports:
-      - "${USER_SERVICE_PORT}:3001"
-    depends_on:
-      database:
-        condition: service_healthy
-
-  event-service:
-    image: node:20-alpine
-    container_name: transcendence-event-service
-    restart: unless-stopped
-    working_dir: /app
-    command: sh -c "npm ci && npm run dev"
-    volumes:
-      - ./services/event-service:/app
-      - event_service_node_modules:/app/node_modules
-    environment:
-      PORT: 3002
-      DATABASE_HOST: database
-      DATABASE_PORT: 3306
-      DATABASE_NAME: ${MYSQL_DATABASE}
-      DATABASE_USER: ${MYSQL_USER}
-      DATABASE_PASSWORD: ${MYSQL_PASSWORD}
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-      USER_SERVICE_URL: http://user-service:3001
-    ports:
-      - "${EVENT_SERVICE_PORT}:3002"
-    depends_on:
-      database:
-        condition: service_healthy
-
-  api-gateway:
-    image: node:20-alpine
-    container_name: transcendence-api-gateway
-    restart: unless-stopped
-    working_dir: /app
-    command: sh -c "npm ci && npm run dev"
-    volumes:
-      - ./apps/api-gateway:/app
-      - api_gateway_node_modules:/app/node_modules
-    environment:
-      USER_SERVICE_URL: ${USER_SERVICE_URL}
-      EVENT_SERVICE_URL: ${EVENT_SERVICE_URL}
-      DEV_API_KEY: ${DEV_API_KEY}
-    ports:
-      - "${API_GATEWAY_PORT}:3000"
-    depends_on:
-      user-service:
-        condition: service_started
-      event-service:
-        condition: service_started
-
-volumes:
-  user_service_node_modules:
-  event_service_node_modules:
-  api_gateway_node_modules:
+networks:
+  default:
+    driver: bridge
