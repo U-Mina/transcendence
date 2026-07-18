@@ -7,12 +7,14 @@ add a shared page wrapper here for the website
 import "./Layout.css";
 // import type { ReactNode } from "react";
 import { Outlet } from "react-router-dom"; // outlet is a placeholder where react router renders matching child page
+import { Link } from "react-router-dom";
 
 // TODO: when increasing/decreasing chrome site, the events don't move or barely do (after adding layout) -> if 3, the the third one should be on right, not middle
 // TODO: when making website fullscreen, the layout should also adjust by going to the most far left/right side (not in middle still looking like a small website)
 // TODO: move create button up a bit
 // TODO: make one event from one side to the other side (instead of two events next to each other)
 // TODO: research <NavLink> and implement for the sidebar buttons (instead of <button>)
+// TODO: change placeholder links for most of nav bar to their actual sites when they are created
 export function Layout() {
 	return (
 		<div className="layout">
@@ -20,23 +22,29 @@ export function Layout() {
 				<div className="layout__brand">OurSiteName</div>
 
 				<nav className="layout__nav" aria-label="Primary">
-					<button className="layout__nav-item layout__nav-item--active" type="button">
+					<Link className="layout__nav-item" to="/events">
 						Home
-					</button>
-					<button className="layout__nav-item" type="button">
+					</Link>
+					<Link className="layout__nav-item" to="/events">
+						Joined
+					</Link>
+					<Link className="layout__nav-item" to="/events">
 						Saved
-					</button>
-					<button className="layout__nav-item" type="button">
+					</Link>
+					<Link className="layout__nav-item" to="/events">
+						Created
+					</Link>
+					<Link className="layout__nav-item" to="/events">
 						Profile
-					</button>
-					<button className="layout__nav-item" type="button">
+					</Link>
+					<Link className="layout__nav-item" to="/events">
 						Settings
-					</button>
+					</Link>
 				</nav>
 
-				<button className="layout__create-button" type="button">
+				<Link className="layout__create-button" to="/create">
 					+ Create Event
-				</button>
+				</Link>
 			</aside>
 
 			<div className="layout__main">

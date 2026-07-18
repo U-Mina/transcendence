@@ -7,13 +7,10 @@ Everything comes to `/main` need to be fully tested, ready for eval already
 ## `dev`
 all feature branches should branch off from `dev` merge back to `dev` with pull request use `feat/xxx` as branch name
 
-## `backend` - ewu' branch
-- `/backend-migration`
-    - `feat/internal-service-connection`
-    - `/api-gateway`
-- `feat/internal-service-connection`
-    - `/event-services`
-    - `/user-services`
+### `backend`
+- `/services`
+- `/api-gateway`
+- `docker yml/yaml`
 
 ### `frontend`
 `resource` - user journey: https://miro.com/welcomeonboard/REhQTURqVEI0Tm1oQ2lNTzNOeTNlOHI0czkvVTFFZ3luc2dqNXUrcURWdGFITHcrSE1RR2creHNLd2lDaHRwS1IwMUtSandUSXRYbU5jakRZbUl4TFhPWHRyWXlMcWZYMlZ1djl1S2VGVEtjc2E2bC9pZlRvaytnUWRPWjVZWndhWWluRVAxeXRuUUgwWDl3Mk1qRGVRPT0hdjE=?share_link_id=955325343219
@@ -23,7 +20,7 @@ all feature branches should branch off from `dev` merge back to `dev` with pull 
 ### Structure of README - TODO
 
 The very first line must be italicized and read:
-*This project has been created as part of the 42 curriculum by xxx, xxx, xxx ....
+*This project has been created as part of the 42 curriculum by xxx, xxx, xxx*
 
 A **Description** section that clearly presents the project, including its goal and a brief overview.
 

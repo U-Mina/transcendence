@@ -34,3 +34,18 @@ export interface EventDetailView extends EventCard {
 }
 
 // TODO: isnt this sth i should just put the path (services/event-service/src/event.types.ts) from backend into my event.ts
+
+
+
+// the data structure for creating new event
+export interface CreateEventDTO {
+    eventName: string;
+    startTime: Date;
+    endTime: Date;
+    category?: string;
+    description?: string;
+    location?: string;
+    // minimal ppl to make this event able to happen
+    // NOTE: this should be mandtory
+    minPaticipant?: number;
+}
