@@ -1,3 +1,4 @@
+import "dotenv/config";
 import Fastify from "fastify";
 import { healthCheckRoutes } from "./routes/health.routes";
 import { userServiceRoutes } from "./routes/user.routes";
