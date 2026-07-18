@@ -4,7 +4,6 @@ import Fastify from "fastify";
 import { healthCheckRoutes } from "./routes/health.routes";
 import { userServiceRoutes } from "./routes/user.routes";
 import { metricsRoutes } from "./routes/metrics.routes";
-
 import {
     httpRequestsTotal,
     httpRequestDurationSeconds,
