@@ -8,11 +8,6 @@ import Fastify from "fastify";
 import { healthCheckRoutes } from "./routes/health.routes";
 import { eventServiceRoutes } from "./routes/event.routes";
 import { metricsRoutes } from "./routes/metrics.routes";
-import { 
-    httpRequestsTotal,
-    httpRequestDurationSeconds,
-} from "./metrics/http.metrics";
-
 import {
     httpRequestsTotal,
     httpRequestDurationSeconds,
@@ -56,9 +51,9 @@ const start = async () => {
         );
     });
 
-    fastify.register(healthCheckRoutes);
-    fastify.register(eventServiceRoutes);
-    fastify.register(metricsRoutes);
+    await fastify.register(healthCheckRoutes);
+    await fastify.register(eventServiceRoutes);
+    await fastify.register(metricsRoutes);
 
     try {
         await fastify.listen({
