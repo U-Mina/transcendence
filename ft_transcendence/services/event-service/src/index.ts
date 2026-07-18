@@ -8,6 +8,10 @@ import Fastify from "fastify";
 import { healthCheckRoutes } from "./routes/health.routes";
 import { eventServiceRoutes } from "./routes/event.routes";
 import { metricsRoutes } from "./routes/metrics.routes";
+import { 
+    httpRequestsTotal,
+    httpRequestDurationSeconds,
+} from "./metrics/http.metrics";
 
 import {
     httpRequestsTotal,
