@@ -4,8 +4,8 @@ FROM mysql:latest
 RUN microdnf install -y vim net-tools \
     && microdnf clean all
 
-# Copy the initialization scripts to the Docker entrypoint directory
-COPY init/ /docker-entrypoint-initdb.d/
+# init klasöründeki tüm .sql dosyalarını Docker entrypoint dizinine kopyala
+COPY init/*.sql /docker-entrypoint-initdb.d/
 
 # Expose standard MySQL port
 EXPOSE 3306
