@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// Event-service owns only the `events` table.
+// NOTE: no relation to User is declared here on purpose — user-service
+// owns the `users` table in its own Prisma schema. Cross-service joins
+// are done over HTTP (see event.service.ts -> getEventCreatorSummary),
+// keeping each service's migration history self-contained.
+model Event {
+  eventId        String   @id @map("event_id") @db.VarChar(36)
+  eventName      String   @map("event_name") @db.VarChar(255)
+  creatorId      String   @map("creator_id") @db.VarChar(36)
+  startTime      DateTime @map("start_time")
+  endTime        DateTime @map("end_time")
+  category       String?  @db.VarChar(100)
+  description    String?  @db.Text
+  location       String?  @db.VarChar(255)
+  comment        String?  @db.Text
+  minParticipant Int?     @map("min_participant")
+  safetyCheck    Boolean  @default(false) @map("safety_check")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([creatorId])
+  @@map("events")
+}

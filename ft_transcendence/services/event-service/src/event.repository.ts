@@ -1,203 +1,164 @@
 /**
  * for a easier adaption to real data base
- * for CRUD ops
+ * for CRUD ops — Prisma-backed implementation
  */
-import type { RowDataPacket } from "mysql2";
-import type { InternalEventEntity, UpdateEventDTO } from "./event.types"
-import { pool } from "./database";
+import { Prisma, type Event as EventRow } from "@prisma/client";
+import { prisma } from "./libs/prisma";
+import type { InternalEventEntity, UpdateEventDTO } from "./event.types";
+
+// Local dev fallback: used whenever the caller didn't resolve a real
+// user id from the `x-user` header (e.g. calling the API directly in dev).
+const DEFAULT_USER_ID = process.env.DEFAULT_USER_ID ?? "dev-user-0001";
+
+function mapEventRow(row: EventRow): InternalEventEntity {
+    const mapped: InternalEventEntity = {
+        eventId: row.eventId,
+        eventName: row.eventName,
+        creatorId: row.creatorId,
+        startTime: row.startTime,
+        endTime: row.endTime,
+        safetyCheck: row.safetyCheck,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+    };
+
+    if (row.category !== null) {
+        mapped.category = row.category;
+    }
+    if (row.description !== null) {
+        mapped.description = row.description;
+    }
+    if (row.location !== null) {
+        mapped.location = row.location;
+    }
+    if (row.comment !== null) {
+        mapped.comment = row.comment;
+    }
+    return mapped;
+}
 
 class EventRepository {
-    private mapEventRow(row: EventRow): InternalEventEntity {
-        const mapped: InternalEventEntity = {
-            eventId: row.event_id,
-            eventName: row.event_name,
-            creatorId: row.creator_id,
-            startTime: new Date(row.start_time),
-            endTime: new Date(row.end_time),
-            safetyCheck: Boolean(row.safety_check),
-            createdAt: new Date(row.created_at),
-            updatedAt: new Date(row.updated_at),
-        };
-
-        if (row.category !== null) {
-            mapped.category = row.category;
-        }
-        if (row.description !== null) {
-            mapped.description = row.description;
-        }
-        if (row.location !== null) {
-            mapped.location = row.location;
-        }
-        if (row.comment !== null) {
-            mapped.comment = row.comment;
-        }
-        return mapped;
-    }
-    
     // get all
-   async getAll(): Promise<InternalEventEntity[]> {
-    const [rows] = await pool.query<EventRow[]>(
-        `SELECT
-            event_id,
-            event_name,
-            creator_id,
-            start_time,
-            end_time,
-            category,
-            description,
-            location,
-            comment,
-            min_participant,
-            safety_check,
-            created_at,
-            updated_at
-        FROM events`,
-    );
-    return rows.map((row) => this.mapEventRow(row));
-   } 
+    async getAll(): Promise<InternalEventEntity[]> {
+        const rows = await prisma.event.findMany({ orderBy: { createdAt: "desc" } });
+        return rows.map(mapEventRow);
+    }
 
     // get by id
     async getEventById(eventId: string): Promise<InternalEventEntity | undefined> {
-        const [rows] = await pool.query<EventRow[]>(
-            `SELECT
-                event_id,
-                event_name,
-                creator_id,
-                start_time,
-                end_time,
-                category,
-                description,
-                location,
-                comment,
-                min_participant,
-                safety_check,
-                created_at,
-                updated_at
-            FROM events
-            WHERE event_id = ?
-            LIMIT 1`,
-            [eventId],
-        );
-        const row = rows[0];
-        if (!row) {
-            return undefined;
-        }
-        return this.mapEventRow(row);
+        const row = await prisma.event.findUnique({ where: { eventId } });
+        return row ? mapEventRow(row) : undefined;
     }
 
     // create event (push new to repo.ts)
-    // NOTE: using return type here bc it easier to replace with explict cintract
+    // NOTE: falls back to DEFAULT_USER_ID if creatorId was not resolved from the x-user header
     async createEvent(event: InternalEventEntity): Promise<InternalEventEntity | undefined> {
-        await pool.execute(
-            `INSERT INTO events (
-                event_id,
-                event_name,
-                creator_id,
-                start_time,
-                end_time,
-                category,
-                description,
-                location,
-                comment,
-                min_participant,
-                safety_check,
-                created_at,
-                updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-                event.eventId,
-                event.eventName,
-                event.creatorId,
-                event.startTime,
-                event.endTime,
-                event.category ?? null,
-                event.description ?? null,
-                event.location ?? null,
-                event.comment ?? null,
-                null,
-                event.safetyCheck,
-                event.createdAt,
-                event.updatedAt,
-            ],
-        );
-        return event;
+        const creatorId = event.creatorId || DEFAULT_USER_ID;
+
+        const created = await prisma.event.create({
+            data: {
+                eventId: event.eventId,
+                eventName: event.eventName,
+                creatorId,
+                startTime: event.startTime,
+                endTime: event.endTime,
+                category: event.category ?? null,
+                description: event.description ?? null,
+                location: event.location ?? null,
+                comment: event.comment ?? null,
+                safetyCheck: event.safetyCheck,
+            },
+        });
+        return mapEventRow(created);
+    }
+
+    // idempotent create-or-replace, replaces the old manual "INSERT ... ON DUPLICATE KEY UPDATE"
+    async upsertEvent(event: InternalEventEntity): Promise<InternalEventEntity> {
+        const creatorId = event.creatorId || DEFAULT_USER_ID;
+
+        const upserted = await prisma.event.upsert({
+            where: { eventId: event.eventId },
+            create: {
+                eventId: event.eventId,
+                eventName: event.eventName,
+                creatorId,
+                startTime: event.startTime,
+                endTime: event.endTime,
+                category: event.category ?? null,
+                description: event.description ?? null,
+                location: event.location ?? null,
+                comment: event.comment ?? null,
+                safetyCheck: event.safetyCheck,
+            },
+            update: {
+                eventName: event.eventName,
+                startTime: event.startTime,
+                endTime: event.endTime,
+                category: event.category ?? null,
+                description: event.description ?? null,
+                location: event.location ?? null,
+                comment: event.comment ?? null,
+                safetyCheck: event.safetyCheck,
+            },
+        });
+        return mapEventRow(upserted);
     }
 
     // update event
     async updateEvent(eventId: string, eventInput: UpdateEventDTO): Promise<InternalEventEntity | undefined> {
-        const fields: string[] = [];
-        const values: Array<string | number | Date | null> = [];
+        const data: Prisma.EventUpdateInput = {};
 
         if (eventInput.eventName !== undefined) {
-            fields.push("event_name = ?");
-            values.push(eventInput.eventName);
+            data.eventName = eventInput.eventName;
         }
         if (eventInput.startTime !== undefined) {
-            fields.push("start_time = ?");
-            values.push(eventInput.startTime);
+            data.startTime = eventInput.startTime;
         }
         if (eventInput.endTime !== undefined) {
-            fields.push("end_time = ?");
-            values.push(eventInput.endTime);
+            data.endTime = eventInput.endTime;
         }
         if (eventInput.category !== undefined) {
-            fields.push("category = ?");
-            values.push(eventInput.category ?? null);
+            data.category = eventInput.category ?? null;
         }
         if (eventInput.description !== undefined) {
-            fields.push("description = ?");
-            values.push(eventInput.description ?? null);
+            data.description = eventInput.description ?? null;
         }
         if (eventInput.location !== undefined) {
-            fields.push("location = ?");
-            values.push(eventInput.location ?? null);
+            data.location = eventInput.location ?? null;
         }
         if (eventInput.minPaticipant !== undefined) {
-            fields.push("min_participant = ?");
-            values.push(eventInput.minPaticipant ?? null);
+            data.minParticipant = eventInput.minPaticipant ?? null;
         }
 
-        if (fields.length === 0) {
+        if (Object.keys(data).length === 0) {
             return this.getEventById(eventId);
         }
 
-        fields.push("updated_at = CURRENT_TIMESTAMP");
-
-        await pool.execute(
-            `UPDATE events
-             SET ${fields.join(", ")}
-             WHERE event_id = ?`,
-            [...values, eventId],
-        );
-
-        return this.getEventById(eventId);
+        try {
+            const updated = await prisma.event.update({ where: { eventId }, data });
+            return mapEventRow(updated);
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+                // record to update not found
+                return undefined;
+            }
+            throw error;
+        }
     }
 
     // delete (popout from repo.ts), here can return full event-data, but this will be too waste of mem
     async deleteEvent(eventId: string): Promise<boolean> {
-        const [result] = await pool.execute(
-            "DELETE FROM events WHERE event_id = ?",
-            [eventId],
-        );
-        const affectedRows = (result as { affectedRows?: number }).affectedRows ?? 0;
-        return affectedRows > 0;
+        try {
+            await prisma.event.delete({ where: { eventId } });
+            return true;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+                // record to delete not found
+                return false;
+            }
+            throw error;
+        }
     }
 }
-
-type EventRow = RowDataPacket & {
-    event_id: string;
-    event_name: string;
-    creator_id: string;
-    start_time: Date;
-    end_time: Date;
-    category: string | null;
-    description: string | null;
-    location: string | null;
-    comment: string | null;
-    min_participant: number | null;
-    safety_check: number;
-    created_at: Date;
-    updated_at: Date;
-};
 
 export const eventRepository = new EventRepository();
