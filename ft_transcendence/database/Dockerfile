@@ -6,10 +6,7 @@ ENV MYSQL_USER=database_user
 ENV MYSQL_PASSWORD=database_password
 ENV MYSQL_PORT=3306
 
-RUN apt-get update && apt-get install -y \
-    vim \
-    net-tools \
-    && rm -rf /var/lib/apt/lists/*
+COPY init/*.sql /docker-entrypoint-initdb.d/
 
 EXPOSE 3306
 
