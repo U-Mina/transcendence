@@ -3,76 +3,137 @@
  * - get: take /:id as parameter, search through and return user object (undefined if not found)
  * - formatter: take UserDTO and return UserProfile obj
  */
+import bcrypt from "bcryptjs";
 import { userRepository } from "../user.repository";
-import type { InternalUserEntity, CreateUserDTO, UpdateUserDTO, PublicUserProfile} from "../users.types";
+import type { InternalUserEntity, CreateUserDTO, UpdateUserDTO, PublicUserProfile, LoginUserDTO, RegisterUserDTO } from "../users.types";
+import { toUnicode } from "node:punycode";
 // the current id will extract from JWT later, now statically pass
+
+/**
+ * use custom error class for user service errors
+ */
+export class UserServiceError extends Error {
+    constructor(message: string, readonly statusCode: number) {
+        super(message);
+    }
+}
+
+/**
+ * SafeUser is a type that removes the password hash from the user entity
+ * this is used to return a user profile to the client without the password hash
+ */
+export type SafeUser = Omit<InternalUserEntity, "passwordHash">;
+
+/**
+ * withoutPassword is a helper function to remove the password hash from the user entity
+ */
+function withoutPassword(user: InternalUserEntity): SafeUser {
+    const { passwordHash: _passwordHash, ...safeUser } = user;
+    return safeUser;
+}
+
+/**
+ * normalizeEmail is a helper function to normalize the email address
+ */
+function normalizeEmail(email: string): string {
+    return email.trim().toLowerCase();
+}
 
 class UserService {
 
-    async getUserById(targetId: string, currentUserId: string): Promise<InternalUserEntity | PublicUserProfile | undefined> {
+    async getUserById(targetId: string, currentUserId: string): Promise<SafeUser | PublicUserProfile> {
         const user = await userRepository.getUserById(targetId);
         if (!user) {
-            throw new Error("User not found.");
+            throw new UserServiceError("User not found.", 404);
         }
     
-        // looking at own profile, return full data
+        // looking at own profile, return full data, remove pw-hash
         if (currentUserId === user.id) {
-            return user;
+            return withoutPassword(user);
         }
     
         const {
             createdAt,
             updatedAt,
             id,
+            passwordHash,
             ...publicProfile
         } = user;
         return publicProfile;
     }
     
-    // this should ONLY (if any) be used by ADMIN role!!
-    async getAllUser(): Promise<InternalUserEntity[] | undefined> {
-        return await userRepository.getAllUser();
+    async getAllUser(): Promise<SafeUser[]> {
+        // remove password hash from every object
+        return (await userRepository.getAllUser()).map(withoutPassword);
     }
     
-    // create new user
-    async createNewUser(userProfile: CreateUserDTO): Promise<InternalUserEntity | undefined> {
+    // register of new user
+    async registerUser(userInput: RegisterUserDTO): Promise<SafeUser> {
+        // extract info
+        const userName = userInput.userName.trim();
+        const userEmail = normalizeEmail(userInput.email);
+        // validation check
+        if (!userName || !userEmail || userInput.password.length < 8 || userInput.password.length > 72) {
+            throw new UserServiceError("Invalid registration data.", 400);
+        }
+        if (await userRepository.getUserByEmail(userEmail)) {
+            throw new UserServiceError("An account already exists for this email.", 409);
+        }
         const newUser: InternalUserEntity = {
             id: crypto.randomUUID(),
+            userName,
+            userEmail,
+            passwordHash: await bcrypt.hash(userInput.password, 12),
             createdAt: new Date(),
             updatedAt: new Date(),
-            ...userProfile
         };
-        // push to db
-        await userRepository.createNewUser(newUser);
-        return newUser;
+        try {
+            await userRepository.createNewUser(newUser);
+        } catch (error) {
+            if ((error as { code?: string }).code === "ER_DUP_ENTRY") {
+                throw new UserServiceError("An account already exists for this email.", 409);
+            }
+            throw error;
+        }
+        return withoutPassword(newUser);
     }
     
-    // update user
+    // user login
+    async loginUser(loginInput: LoginUserDTO): Promise<SafeUser> {
+        const user = await userRepository.getUserByEmail(normalizeEmail(loginInput.email));
+        if (!user?.passwordHash) {
+            throw new UserServiceError("Invalid email or password.", 401);
+        }
+        const validation = await bcrypt.compare(loginInput.password, user.passwordHash);
+        if (!validation) {
+            throw new UserServiceError("Invalid email or password.", 401);
+        }
+        return withoutPassword(user);
+    }
+
     // temp pass userId for authR check
-    async updateUser(userId: string, targetProfileId: string, updatedInfo: UpdateUserDTO): Promise<InternalUserEntity | undefined> {
-        const findUser = await userRepository.getUserById(targetProfileId);
-        if (!findUser) {
-            throw new Error("User not found.");
-        }
-        // one MUST ONLY edit their won profile
+    async updateUser(userId: string, targetProfileId: string, updatedInfo: UpdateUserDTO): Promise<SafeUser> {
         if (userId !== targetProfileId) {
-            throw new Error("Forbidden operation.");
+            throw new UserServiceError("Forbidden operation.", 403);
         }
-        return await userRepository.updateUser(targetProfileId, updatedInfo);
+        const updated =  await userRepository.updateUser(targetProfileId, updatedInfo);
+        if (!updated) {
+            throw new UserServiceError("User not found.", 404);
+        }
+        return withoutPassword(updated);
     }
     
     // delete user profile, ONLY Admin or user-self can do this
-    // manual pass cur-Id for now
-    async deleteUser(currentId: string, targetId: string) {
+    async deleteUser(currentId: string, targetId: string): Promise<boolean> {
+        if (currentId !== targetId) {
+            throw new UserServiceError("Forbidden operation.", 403);
+        }
         const matchedUser = await userRepository.getUserById(targetId);
         if (!matchedUser) {
-            throw new Error("User not found.");
-        }
-        if (matchedUser.id !== currentId) {
-            throw new Error("Forbidden operation.");
+            throw new UserServiceError("User not found.", 404);
         }
         // true == delete, fals == fail
-        return await userRepository.deleteUser(targetId);
+        return userRepository.deleteUser(targetId);
     }
 }
 
