@@ -43,7 +43,7 @@ function mapUserRow(row: UserRow): InternalUserEntity {
     return mapped;
 }
 
-class UserRepository {
+class UserRepository{
     // get all user, this should not expose to normal users
     async getAllUser(): Promise<InternalUserEntity[]> {
         const [rows] = await pool.query<UserRow[]>(
