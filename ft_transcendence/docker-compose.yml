@@ -119,7 +119,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: DockerFile
+      dockerfile: Dockerfile
     container_name: frontend
     restart: unless-stopped
     command: sh -c "npm ci && npm run dev -- --host 0.0.0.0 --port ${FRONTEND_PORT}"
