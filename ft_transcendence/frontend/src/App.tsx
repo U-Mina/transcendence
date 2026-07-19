@@ -11,7 +11,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { EventsPage } from "./pages/EventsPage";
 import { Layout } from "./components/Wrapper/Layout";
 import { SingleEventDetailsPage } from "./pages/SingleEventDetailsPage";
-
+import { CreateEventPage } from "./pages/CreateEventPage";
+import { SignUpPage } from "./pages/SignUpPage";
+import { OtherProfilePage } from "./pages/OtherProfilePage";
 
 /*
 React Router: wraps the app in a browser router & defines its routes
@@ -19,15 +21,20 @@ React Router: wraps the app in a browser router & defines its routes
      so that every child is rendered inside its Outlet
      -> so layout automatically appears for all those pages
 */
+// https://reactnative.dev/docs/network
 function App() 
 {
     return (
         <BrowserRouter>
-            <Routes>    
+            <Routes>
+                <Route path="/signup" element={<SignUpPage />} />
                 <Route path="/" element={<Layout />}>
                     <Route index element={<EventsPage />} />
                     <Route path="events" element={<EventsPage />} />
                     <Route path="events/:eventId" element={<SingleEventDetailsPage />} />
+                    <Route path="create" element={<CreateEventPage />} />
+                    {/* <Route path="profile" element={<OwnProfilePage />} /> */}
+                    <Route path="profile/:userId" element={<OtherProfilePage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
@@ -35,57 +42,6 @@ function App()
 }
 
 export default App
-
-
-// // https://reactnative.dev/docs/network
-// function App() {
-//   // this is a fetch call for event data from backend
-//   const [events, setEvents] = useState<any[]>([]); // creates empty array and function that updates the array
-
-//   useEffect(() => { // useEffect bc need to run fetch request only once (no repeated requests on every re-render)
-//     const fetchEvents = async () => { // async runs function in background (no blocking rest) bc may need time to fetch data from server
-//       try {
-//         // TODO: check w backend if this URL is correct
-//         const response = await fetch("http://localhost:3000/api/v1/events"); // request data from server
-
-//         if (!response.ok)
-//           throw new Error("Failed to fetch events");
-     
-//         const data = await response.json(); // get response w new data from backend & convert to json
-//         // TODO: transform data ?
-        
-//         setEvents(data); // update w now new data/list of events (react function)
-//       }
-//       catch (error) {
-//         console.error("Error:", error);
-//       }
-//     }
-//     fetchEvents();
-//   }, []);
-
-
-
-//     return (
-//     // takes each event in the events array
-//     <div>
-//       {events.map(event => (
-//         <DisplayEventCard key={event.eventId} event={event} />
-//       ))}
-//     </div>
-//   )
-
-//   // DISPLAY DUMMY DATA (TODO: delete later)
-//   // return (
-//   //   // takes each event in the dummyEvents array
-//   //   <div>
-//   //     {dummyEvents.map(event => (
-//   //       <DisplayEventCard key={event.eventId} event={event} />
-//   //     ))}
-//   //   </div>
-//   // )
-// }
-
-// export default App
 
 
 
