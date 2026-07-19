@@ -7,6 +7,11 @@ import { healthCheckRoutes } from "./routes/health.routes";
 import { eventGatewayRoutes } from "./routes/event.routes";
 import { UserGatewayRoutes } from "./routes/user.routes";
 import { internalServiceStatusCheckRoutes } from "./routes/status.routes";
+import { metricsRoutes } from "./routes/metrics.routes";
+import { 
+    httpRequestsTotal,
+    httpRequestDurationSeconds,
+} from "./metrics/http.metrics";
 import Fastify from "fastify";
 
 const fastify = Fastify({
@@ -47,13 +52,47 @@ const start = async () => {
         routePrefix: '/docs',
     });
 
+    fastify.addHook("onRequest", async (request) => {
+        request.metricsStartTime = process.hrtime.bigint();
+    });
+
+    fastify.addHook("onResponse", async (request, reply) => {
+        const startTime = request.metricsStartTime;
+
+        if (startTime === undefined) {
+            return;
+        }
+        
+        const durationSeconds =
+            Number(process.hrtime.bigint() - startTime) / 1_000_000_000;
+
+        const route = request.routeOptions.url ?? request.url;
+        const statusCode = reply.statusCode.toString();
+
+        httpRequestsTotal.inc({
+            method: request.method,
+            route,
+            status_code: statusCode,
+        });
+
+        httpRequestDurationSeconds.observe(
+            {
+                method: request.method,
+                route,
+                status_code: statusCode,
+            },
+            durationSeconds,
+        );
+    });
+
     fastify.register(healthCheckRoutes);
+    fastify.register(metricsRoutes);
     fastify.register(eventGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(UserGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(internalServiceStatusCheckRoutes, { prefix: "/api/v1" });
 
     try {
-        fastify.listen({
+        await fastify.listen({
             port: 3000,
             host: "0.0.0.0",
         });
