@@ -35,7 +35,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
         "/auth/register",
         async (request, reply) => {
             try {
-                const newUser = await userService.register(request.body);
+                const newUser = await userService.registerUser(request.body);
                 return reply.status(201).send(newUser)
             } catch (error) {
                 return sendUserError(reply, error);
@@ -50,7 +50,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
         "/auth/login",
         async (request, reply) => {
             try {
-                const realUser = await userService.login(request.body);
+                const realUser = await userService.loginUser(request.body);
                 return reply.status(200).send(realUser);
             } catch (error) {
                 return sendUserError(reply, error);
