@@ -116,9 +116,25 @@ services:
 
     depends_on:
       - prometheus
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: DockerFile
+    container_name: frontend
+    restart: unless-stopped
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0 --port ${FRONTEND_PORT}"
+    env_file:
+      - .env
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    environment:
+      - REACT_APP_ENV=${NODE_ENV} 
+      - PORT=${FRONTEND_PORT}
+      - VITE_PROXY_TARGET=http://api-gateway:3000
 
 volumes:
   user_service_node_modules:
   event_service_node_modules:
   api_gateway_node_modules:
   grafana_data:
+  frontend_node_modules:
