@@ -38,8 +38,8 @@ services:
       DATABASE_USER: ${MYSQL_USER}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-    ports:
-      - "${USER_SERVICE_PORT}:3001"
+    expose:
+      - "3001"
     depends_on:
       database:
         condition: service_healthy
@@ -62,8 +62,8 @@ services:
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
       USER_SERVICE_URL: http://user-service:3001
-    ports:
-      - "${EVENT_SERVICE_PORT}:3002"
+    expose:
+      - "3002"
     depends_on:
       database:
         condition: service_healthy
@@ -77,10 +77,15 @@ services:
     volumes:
       - ./apps/api-gateway:/app
       - api_gateway_node_modules:/app/node_modules
+      - media_uploads:/app/uploads
     environment:
       USER_SERVICE_URL: ${USER_SERVICE_URL}
       EVENT_SERVICE_URL: ${EVENT_SERVICE_URL}
-      DEV_API_KEY: ${DEV_API_KEY}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_AUDIENCE: ${JWT_AUDIENCE}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      UPLOAD_DIR: /app/uploads
     ports:
       - "${API_GATEWAY_PORT}:3000"
     depends_on:
@@ -138,3 +143,4 @@ volumes:
   api_gateway_node_modules:
   grafana_data:
   frontend_node_modules:
+  media_uploads:
