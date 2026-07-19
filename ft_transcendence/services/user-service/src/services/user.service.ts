@@ -135,6 +135,22 @@ class UserService {
         // true == delete, fals == fail
         return userRepository.deleteUser(targetId);
     }
+
+    async replaceAvatar(userId: string, avatarUrl: string): Promise<{ avatarUrl: string; previousAvatarUrl?: string }> {
+        if (!avatarUrl.startsWith("/uploads/")) {
+            throw new UserServiceError("Invalid avatar URL.", 400);
+        }
+        const user = await userRepository.getUserById(userId);
+        if (!user) {
+            throw new UserServiceError("User not found.", 404);
+        }
+        const updated = await userRepository.updateAvatar(userId, avatarUrl);
+        if (!updated) {
+            throw new UserServiceError("User not found.", 404);
+        }
+        // fallback if updated of pic fail
+        return user.avatarUrl ? { avatarUrl, previousAvatarUrl: user.avatarUrl } : { avatarUrl };
+    }
 }
 
 export const userService = new UserService();
