@@ -4,6 +4,7 @@ __DS_Store
 
 # --- Dependencies (Never commit these) ---
 node_modules/
+uploads/
 .node_modules/
 built/*
 tests/cases/rwc/*
