@@ -61,7 +61,7 @@ class EventService {
 
     // usr GET joined event list
     // map to public card view (no sensitive info)
-    async getJoinedEvent(userId: string): Promise<EventCard[]> {
+    async getJoinedEvents(userId: string): Promise<EventCard[]> {
         return (await eventRepository.getJoinedEvents(userId)).map(publicCard);
     }
 
