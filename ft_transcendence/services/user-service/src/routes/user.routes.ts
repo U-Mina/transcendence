@@ -117,7 +117,12 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
                 if (!userId || userId !== request.params.userId) {
                     return reply.status(401).send({ error: "Unauthenticated user." });
                 }
-                const updatedUser = await userService.updateUser(userId, request.params.userId, request.body);
+                const updatedUser = await userService.updateUser(
+                    userId,
+                    request.params.userId,
+                    request.body
+                );
+
                 if (!updatedUser) {
                     return reply.status(500).send({ error: "Fail to update profile." });
                 }
@@ -136,17 +141,29 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
                 Params: {
                     userId: string,
                 },
-                Body: UpdateUserDTO,
+                Body: {
+                    avatarUrl: string,
+                },
             }>,
             reply: FastifyReply,
         ) => {
             try {
                 // this is REAL / auth userid, so it will have a match compare later
                 const userId = currentUserId(request);
-                if (!userId || userId !== request.params.userId) {
-                    return reply.status(403).send({ error: "Forbidden operation." });
+                if (!userId) {
+                    return reply.status(401).send({
+                        error: "Unauthenticated user.",
+                    });
                 }
-                const updatedUser = await userService.updateUser(userId, request.params.userId, request.body);
+                if (userId !== request.params.userId) {
+                    return reply.status(403).send({
+                        error: "Forbidden operation.",
+                    });
+                }
+                const updatedUser = await userService.replaceAvatar(
+                    userId,
+                    request.body.avatarUrl,
+                );
                 if (!updatedUser) {
                     return reply.status(500).send({ error: "Fail to update profile." });
                 }
