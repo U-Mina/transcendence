@@ -38,25 +38,6 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
         }
     );
 
-    // // create user
-    // fastify.post<{
-    //     Body: unknown;
-    // }>(
-    //     "/users",
-    //     // { preHandler: authMiddleware },
-    //     async (request, reply) => {
-    //         const result = await proxyToService(
-    //             "POST",
-    //             `${USER_SERVICE_URL}/users`,
-    //             request.body,
-    //             {
-    //                 "x-user": request.headers["x-user"] as string
-    //             }
-    //         );
-    //         return reply.status(result.statusCode).send(result.body);
-    //     }
-    // );
-
     // update user
     fastify.put<{
         Params: { userId: string };
