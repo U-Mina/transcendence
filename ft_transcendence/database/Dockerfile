@@ -1,12 +1,11 @@
 # Use the official stable MySQL 8.0 image
 FROM mysql:8.0
 
-# ENV MYSQL_ROOT_PASSWORD=password
-# ENV MYSQL_DATABASE=transcendence
-# ENV MYSQL_USER=database_user
-# ENV MYSQL_PASSWORD=database_password
-# ENV MYSQL_PORT=3306
+# Install essential debugging tools (vim for editing, net-tools for network diagnostics)
+RUN microdnf install -y vim net-tools \
+    && microdnf clean all
 
-# COPY init/*.sql /docker-entrypoint-initdb.d/
+# Copy the initialization scripts to the Docker entrypoint directory
+COPY init/ /docker-entrypoint-initdb.d/
 
 EXPOSE 3306
