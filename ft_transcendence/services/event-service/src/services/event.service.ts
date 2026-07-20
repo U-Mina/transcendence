@@ -4,6 +4,25 @@
 import type { EventCard, EventManageView, UserSummary, EventDetailView, InternalEventEntity, CreateEventDTO, UpdateEventDTO } from "../event.types";
 import { eventRepository } from "../event.repository";
 
+// centralize error handler, using super()
+export class EventServiceError extends Error {
+    constructor(message: string, readonly statusCode: number) {
+        super(message);
+    }
+}
+
+// public view of card, centrailized here
+function publicCard(event: InternalEventEntity): EventCard {
+    const {
+        creatorId,
+        safetyCheck,
+        createdAt,
+        updatedAt,
+        ...card
+    } = event;
+    return card;
+}
+
 /**
  * using an export class to avoid huge import of evenry function
 */
@@ -19,16 +38,8 @@ class EventService {
         
         // find the creator of even, to provide creator-info
         const eveCreatorSum = await this.getEventCreatorSummary(eve.creatorId);
-        const {
-            creatorId,
-            safetyCheck,
-            createdAt,
-            updatedAt,
-            ...publicEventInfo
-        } = eve;
-
         const detailCard: EventDetailView = {
-            ...publicEventInfo,
+            ...publicCard(eve),
             creator: eveCreatorSum
         };
         return detailCard;
@@ -48,8 +59,13 @@ class EventService {
         }));
     }
 
+    // usr GET joined event list
+    // map to public card view (no sensitive info)
+    async getJoinedEvents(userId: string): Promise<EventCard[]> {
+        return (await eventRepository.getJoinedEvents(userId)).map(publicCard);
+    }
+
     // POST to create new event
-    // IMPORTANT!! this HAS TO BE CHANGE AFTER JWT implement
     // async createEvent(creatorId, eventInput): Promise<EventDTO | undefine> {}
     async createEvent(creatorId: string, eventInput: CreateEventDTO): Promise<EventManageView | undefined> {
         const curTime = Date.now();
@@ -58,10 +74,10 @@ class EventService {
 
         // event time logic check
         if (curTime > new Date(startTime).getTime()) {
-            throw new Error("Invalid start time of event.");
+            throw new EventServiceError("Invalid time of event.", 400);
         }
         if (new Date(startTime).getTime() > new Date(endTime).getTime()) {
-            throw new Error("Invalid event time span.");
+            throw new EventServiceError("Invalid event time span.", 400);
         }
 
         // create internal event entity and push to db
@@ -85,32 +101,24 @@ class EventService {
     }
 
     // PUT, update alredy exiting event
-    // for now, we still need to pass userId manually for identity check, after JWT no
     async updateEvent(
         eventId: string,
         userId: string,
         eventInput: UpdateEventDTO
     ): Promise<EventManageView | undefined> {
-        // check does this event exist or not
-        const event = await eventRepository.getEventById(eventId);
-        if (event === undefined) {
-            throw new Error("Event not found.");
-        }
-        // check identity of the 'update-tor', is she/he elighble to update this event
-        if (event.creatorId !== userId) {
-            throw new Error("Forbidden operation.");
-        }
+        const event = await this.requireOwner(eventId, userId);
         // normal event time check
         const startTime = eventInput.startTime ?? event.startTime;
         const endTime = eventInput.endTime ?? event.endTime;
         if ((new Date(endTime).getTime() < new Date(startTime).getTime()) || new Date(startTime).getTime() < Date.now()) {
-            throw new Error ("Invalid event time.");
+            throw new EventServiceError("Invalid event time.", 400);
         }
 
         const updatedEvent = await eventRepository.updateEvent(eventId, eventInput);
-        if (updatedEvent === undefined) {
-            throw new Error ("Fail to update event.");
+        if (!updatedEvent) {
+            throw new EventServiceError("Event not found.", 404);
         }
+
         const {
             safetyCheck,
             ...creatorView
@@ -120,16 +128,69 @@ class EventService {
     }
 
     // detele an event, now still pass userId manualy
-    async deleteEvent(userId: string, eventId: string) {
+    async deleteEvent(userId: string, eventId: string): Promise<boolean> {
         // check the deletor === creator
-        const matchedEvent = await eventRepository.getEventById(eventId);
-        if (!matchedEvent) {
-            throw new Error("Event not found.");
+        await this.requireOwner(eventId, userId);
+        return eventRepository.deleteEvent(eventId);  
+    }
+
+    // user join event they interested
+    async joinEvent(eventId: string, userId:string): Promise<void> {
+        const event = await eventRepository.getEventById(eventId);
+        if (!event) {
+            throw new EventServiceError("Event not found.", 404);
         }
-        if (matchedEvent.creatorId !== userId) {
-            throw new Error("Forbidden operation.");
+        if (event.creatorId === userId) {
+            throw new EventServiceError("You are event owner.", 409);
         }
-        return await eventRepository.deleteEvent(eventId);  
+        try {
+            await eventRepository.joinEvent(eventId, userId);
+        } catch (error) {
+            if ((error as {
+                code?: string
+            }).code === "ER_DUP_ENTRY") {
+                // no dup
+                throw new EventServiceError("User has already joined this event.", 409);
+            }
+            throw error;
+        }
+    }
+
+    async cancelJoin(eventId: string, userId: string): Promise<void> {
+        const event = await eventRepository.getEventById(eventId);
+        if (!event) {
+            throw new EventServiceError("Event not found.", 404);
+        }
+        const cancelled = await eventRepository.cancelJoin(eventId, userId);
+        if (!cancelled) {
+            throw new EventServiceError("User has not joined this event.", 404);
+        }
+    }
+
+    // creator know m=how many people joined
+    async getJoinedCount(eventId: string, userId: string): Promise<number> {
+        await this.requireOwner(eventId, userId);
+        return eventRepository.getJoinedCount(eventId);
+    }
+
+    // event img update/change
+    async replaceImage(eventId: string, userId: string, imageUrl: string): Promise<{
+        imageUrl: string;
+        previousImageUrl?: string
+    }> {
+        if (!imageUrl.startsWith("/uploads/")) {
+            throw new EventServiceError("Invalid image URL.", 400);
+        }
+        const event = await this.requireOwner(eventId, userId);
+        const updated = await eventRepository.updateImage(eventId, imageUrl);
+        if (!updated) {
+            throw new EventServiceError("Event not found.", 404);
+        }
+        return event.imageUrl ? {
+            imageUrl, previousImageUrl: event.imageUrl
+        } : {
+            imageUrl
+        };
     }
 
     // helper to connect with user-service, display user-info of the CREATOR of event card
@@ -162,6 +223,18 @@ class EventService {
                 userName: "User service is currently unavailable."
             }
         }
+    }
+
+    // private function inside class for validation
+    private async requireOwner(eventId: string, userId: string): Promise<InternalEventEntity> {
+        const event = await eventRepository.getEventById(eventId);
+        if (!event) {
+            throw new EventServiceError("Event not found.", 404);
+        }
+        if (event.creatorId !== userId) {
+            throw new EventServiceError("Forbidden operation.", 403);
+        }
+        return event;
     }
 }
 

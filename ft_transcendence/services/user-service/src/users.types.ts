@@ -1,34 +1,58 @@
 /**
- * the interface of users data type
- * now for mocking usage
+ * PublicUserProfile is the public profile of a user
  */
-
-// frontend visible user's data
 export interface PublicUserProfile {
     userName: string;
     userEmail: string;
-    // TODO: better data type maybe??
     friendList?: string;
-    // opional phone number
     userContact?: string;
     intraName?: string;
     intraUrl?: string;
+    avatarUrl?: string;
 }
 
-// internal user interface with all necessary data, this will be the payload
+/**
+ * InternalUserEntity is the internal user entity
+ * passwordHash is the hash of the user's password
+ */
 export interface InternalUserEntity extends PublicUserProfile {
     id: string;
+    passwordHash?: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
-// create user
+/**
+ * CreateUserDTO is the data transfer object for creating a user
+ */
 export interface CreateUserDTO {
     userName: string;
     userEmail: string;
     userContact?: string;
 }
 
+/**
+ * basic user information for registration
+ * a user name is required for display
+ * email and password are required for authentication
+ */
+export interface RegisterUserDTO {
+    userName: string;
+    email: string;
+    password: string;
+}
+
+/**
+ * LoginUserDTO is the data transfer object for logging in a user
+ */
+export interface LoginUserDTO {
+    email: string;
+    password: string;
+}
+
+/**
+ * UpdateUserDTO is the data transfer object for updating a user
+ */
 export interface UpdateUserDTO {
     userName?: string;
     userContact?: string;

@@ -44,7 +44,11 @@ class EventRepository {
         return rows.map(mapEventRow);
     }
 
-    // get by id
+    async getAll(): Promise<InternalEventEntity[]> {
+        const [rows] = await pool.query<EventRow[]>(`SELECT ${eventColumns} FROM events`);
+        return rows.map((row) => this.mapEventRow(row));
+    }
+
     async getEventById(eventId: string): Promise<InternalEventEntity | undefined> {
         const row = await prisma.event.findUnique({ where: { eventId } });
         return row ? mapEventRow(row) : undefined;
@@ -104,7 +108,6 @@ class EventRepository {
         return mapEventRow(upserted);
     }
 
-    // update event
     async updateEvent(eventId: string, eventInput: UpdateEventDTO): Promise<InternalEventEntity | undefined> {
         const data: Prisma.EventUpdateInput = {};
 
@@ -146,7 +149,6 @@ class EventRepository {
         }
     }
 
-    // delete (popout from repo.ts), here can return full event-data, but this will be too waste of mem
     async deleteEvent(eventId: string): Promise<boolean> {
         try {
             await prisma.event.delete({ where: { eventId } });

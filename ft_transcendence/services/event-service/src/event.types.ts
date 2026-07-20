@@ -14,6 +14,7 @@ export interface EventCard {
     location?: string;
     // comments / questins session
     comment?: string;
+    imageUrl?: string;
 }
 
 // the event view for creator of the card ONLY

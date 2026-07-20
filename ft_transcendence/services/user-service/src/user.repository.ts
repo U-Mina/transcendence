@@ -6,6 +6,10 @@ import { Prisma, type User as UserRow } from "@prisma/client";
 import type { InternalUserEntity, UpdateUserDTO } from "./users.types";
 import { prisma } from "./libs/prisma";
 
+const userColumns = `
+    id, user_name, user_email, password_hash, friend_list, user_contact,
+    intra_name, intra_url, avatar_url, created_at, updated_at`;
+
 function mapUserRow(row: UserRow): InternalUserEntity {
     const mapped: InternalUserEntity = {
         id: row.id,
@@ -32,19 +36,16 @@ function mapUserRow(row: UserRow): InternalUserEntity {
 }
 
 class UserRepository {
-    // get all user, this should not expose to normal users
     async getAllUser(): Promise<InternalUserEntity[]> {
         const rows = await prisma.user.findMany();
         return rows.map(mapUserRow);
     }
 
-    // get one user, this is for viewing others profile or their own profile, service will do the differenciation
     async getUserById(userId: string): Promise<InternalUserEntity | undefined> {
         const row = await prisma.user.findUnique({ where: { id: userId } });
         return row ? mapUserRow(row) : undefined;
     }
 
-    // create new user
     async createNewUser(newProfile: InternalUserEntity): Promise<void> {
         await prisma.user.create({
             data: {
@@ -84,7 +85,6 @@ class UserRepository {
         return mapUserRow(upserted);
     }
 
-    // update users info
     async updateUser(targetProfileId: string, updatedInfo: UpdateUserDTO): Promise<InternalUserEntity | undefined> {
         const data: Prisma.UserUpdateInput = {};
 
@@ -111,7 +111,6 @@ class UserRepository {
         }
     }
 
-    // delete user
     async deleteUser(targetId: string): Promise<boolean> {
         try {
             await prisma.user.delete({ where: { id: targetId } });
