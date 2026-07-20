@@ -87,6 +87,7 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
             const result = await proxyToService(
                 "DELETE",
                 `${USER_SERVICE_URL}/users/${userId}`,
+                undefined,
                 identityHeaders(request)
             );
             return reply.status(result.statusCode).send(result.body);
