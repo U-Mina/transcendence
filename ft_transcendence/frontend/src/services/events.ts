@@ -9,11 +9,21 @@ import type { CreateEventDTO, EventManageView } from "../types/event";
 
 const API_BASE = "/api/v1";
 
+async function parseErrorMessage(response: Response, fallbackMessage: string): Promise<string> {
+    try {
+        const errorBody = await response.json() as { error?: string };
+        return errorBody.error ?? fallbackMessage;
+    } catch {
+        return fallbackMessage;
+    }
+}
+
 // get list of events
 export async function getListOfEvents(): Promise<EventCard[]> { // ...
     const response = await fetch(`${API_BASE}/events`);
-    if (!response.ok)
-        throw new Error("Error: Failed to display events");
+    if (!response.ok) {
+        throw new Error(await parseErrorMessage(response, "Error: Failed to display events"));
+    }
 
     const data = await response.json();
 
@@ -29,8 +39,9 @@ export async function getListOfEvents(): Promise<EventCard[]> { // ...
 export async function getSingleEvent(eventId: string): Promise<EventCard> {
     const response = await fetch(`${API_BASE}/events/${eventId}`);
 
-    if (!response.ok)
-        throw new Error("Error: Failed to display the event's details");
+    if (!response.ok) {
+        throw new Error(await parseErrorMessage(response, "Error: Failed to display the event's details"));
+    }
 
     const data = await response.json();
 
@@ -71,8 +82,9 @@ export async function createEvent(eventInput: CreateEventDTO, userId: string,): 
         }),
     });
 
-    if (!response.ok)
-        throw new Error("Error: Failed to create event");
+    if (!response.ok) {
+        throw new Error(await parseErrorMessage(response, "Error: Failed to create event"));
+    }
 
     const data = await response.json();
 
