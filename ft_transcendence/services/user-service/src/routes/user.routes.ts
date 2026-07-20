@@ -101,7 +101,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
 
     // update existing
     fastify.put(
-        "/user/:userId",
+        "/users/:userId",
         async (
             request: FastifyRequest<{
                 Params: {
@@ -130,7 +130,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
 
     // update user avatar picture
     fastify.put(
-        "/user/:userId/avatar",
+        "/users/:userId/avatar",
         async (
             request: FastifyRequest<{
                 Params: {
