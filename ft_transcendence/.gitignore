@@ -223,6 +223,7 @@ __marimo__/
 
 # json gitignore
 node_modules/
+uploads/
 .node_modules/
 built/*
 tests/cases/rwc/*
