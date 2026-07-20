@@ -22,7 +22,7 @@ export async function proxyToService(
     body?: unknown,
     headers?: Record<string, string>
 ): Promise<ProxyResult> {
-    // put in try catch block, maybe remove later(?)
+    // put in try catch block
     try {
         // this avoid pass body empty case (undefined) to fecth() which will cause ts error
         const requestInit: RequestInit = {
@@ -42,15 +42,24 @@ export async function proxyToService(
 
         // call internal service with fetch(), by default method is GET
         const response = await fetch(url, requestInit);
-        // read response body, convert to json
-        const result = await response.json();
+        // robust parse for result body
+        const text = await response.text();
+        let responseBody: unknown = {};
+        if (text.length > 0) {
+            try {
+                responseBody = JSON.parse(text);
+
+            } catch {
+                responseBody = { message: text };
+            }
+        }
 
         // even any error occurs, such as !response.ok, simply return '!ok status'
         return {
             statusCode: response.status,
-            body: result
+            body: responseBody
         }
-    } catch (error) {
+    } catch {
         return {
             statusCode: 502,
             body: {
