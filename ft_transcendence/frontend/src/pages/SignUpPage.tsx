@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { createUser } from "../services/user";
+import { registerUser } from "../services/auth";
 import { useState } from "react";
-import type { CreateUserDTO } from "../types/user";
+import type { RegisterUserDTO } from "../types/user";
 import { SignUpForm } from "../components/SignUp/SignUp";
 
 /*
-- use POST /users endpoint (to create a user from userName, userEmail, userContact?) (from services/user.ts)
+- use POST /users endpoint (to create a user from userName, email, userContact?) (from services/user.ts)
 - after signup, backend returns the created user
 - redirect to LoginPage after (if success signup)
 */
@@ -17,9 +17,10 @@ import { SignUpForm } from "../components/SignUp/SignUp";
 */
 function parseSignUpForm(formData: FormData) {
     const userName = String(formData.get("userName") ?? "").trim();
-    const userEmail = String(formData.get("userEmail") ?? "").trim();
-    // TODO: add userContact and/or password from object ??
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
 
+    // parsing username
     if (!userName) {
         throw new Error("Username is required.");
     }
@@ -28,20 +29,35 @@ function parseSignUpForm(formData: FormData) {
         throw new Error("Username can only contain letters and numbers.");
     }
 
-    if (!userEmail) {
+    // parsing email
+    if (!email) {
         throw new Error("Email is required.");
     }
 
     // to require sth btw @ and .com (using a regular expression)
     const emailPattern = /^[^@\s]+@[^@\s]+\.com$/;
-    if (!emailPattern.test(userEmail)) {
+    if (!emailPattern.test(email)) {
         throw new Error("Please enter a valid email address.");
     }
 
-    // store in object CreateUserDTO
-    const signUpInput: CreateUserDTO = {
+    // parsing password (according to backend)
+    if (!password) {
+        throw new Error("Password is required.");
+    }
+
+    if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters long.");
+    }
+
+    if (password.length > 72) {
+        throw new Error("Password must be 72 characters or fewer.");
+    }
+
+    // store in object RegisterUserDTO
+    const signUpInput: RegisterUserDTO = {
         userName,
-        userEmail,
+        email,
+        password,
     }
 
     // return object
@@ -54,6 +70,7 @@ function parseSignUpForm(formData: FormData) {
 export function SignUpPage() {
     const navigate = useNavigate(); // to move to login page later, if signup was success
     const [error, setError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     // create a form (name and email) TODO: password missing?
     async function handleSignUp(formData: FormData) {
@@ -61,15 +78,20 @@ export function SignUpPage() {
     
         try {
             const { signUpInput } = parseSignUpForm(formData);
-            await createUser(signUpInput);
+            const result = await registerUser(signUpInput);
+            setSuccessMessage(result.message); // shows msg like when acc created successfully (from backend)
             navigate("/events"); // TODO: change to /login when that page exists
-        } catch (submitError) { // catching all errors here from createUser ft (fetch, backend) & parsing
+        } catch (submitError) { // catching all errors here from registerUser ft (fetch, backend) & parsing
             setError(submitError instanceof Error ? submitError.message : "Something went wrong");
         }
     }
 
     // means: show signup form, and let it use this submit ft plus error state
+    // and show success for acc creation message from backend coming from fetch call
     return (
-        <SignUpForm handleSignUp={handleSignUp} error={error}/>
-    )
+        <>
+            <SignUpForm handleSignUp={handleSignUp} error={error} />
+            {successMessage ? <p>{successMessage}</p> : null}
+        </>
+    );
 }

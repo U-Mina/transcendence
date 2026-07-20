@@ -25,6 +25,7 @@ type SignUpFormProps = {
     error: string | null;
 }
 
+// type tells browser what kind of box it is (ex. for email, password, etc.)
 export function SignUpForm({ handleSignUp, error }: SignUpFormProps) {
     return (
         <section>
@@ -38,7 +39,12 @@ export function SignUpForm({ handleSignUp, error }: SignUpFormProps) {
 
                 <label>
                     Email
-                    <input type="email" name="userEmail" required />
+                    <input type="email" name="email" required />
+                </label>
+                
+                <label>
+                    Password
+                    <input type="password" name="password" required />
                 </label>
 
                 <SubmitButton />
