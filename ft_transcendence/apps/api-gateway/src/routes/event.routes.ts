@@ -13,7 +13,6 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     }>(
         "/events/:eventId",
         {
-            // { preHandler: authMiddleware },
             schema: {
                 summary: "Get event by id",
                 description: "Return detailed event card by event id",
@@ -40,7 +39,6 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     fastify.get(
         "/events",
         {
-            // { preHandler: authMiddleware },
             // schema is for api spec, describe what frontend receives from api-gateway
             schema: {
                 summary: "List all events",
@@ -62,7 +60,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     }>(
         "/events",
         {
-            // { preHandler: authMiddleware },
+            preHandler: authMiddleware,
             schema: {
                 summary: "Create new event.",
                 description: "Create a new event for current user",
@@ -185,6 +183,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
         return reply.status(result.statusCode).send(result.body);
     });
 
+    // cancel join of events
     fastify.delete<{
         Params: {
             eventId: string
