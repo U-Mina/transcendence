@@ -4,19 +4,18 @@ set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "$0)" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-CERT_DIR="$(cd "$PROJECT_ROOT/.certificates)
-CA_DIR="$CERT_ROOT/ca"
+CERT_DIR="$PROJECT_ROOT/.certificates"
+CA_DIR="$CERT_DIR/ca"
 CA_KEY="$CA_DIR/ca.key"
 CA_CERT="$CA_DIR/ca.crt"
 
 mkdir -p "$CA_DIR"
 
-if [ ! -f "CA_KEY] || [ ! -f "CA_CART" ]; then
+if [ ! -f "$CA_KEY" ] || [ ! -f "$CA_CERT" ]; then
     openssl req \
         -x509 \
-        -new \
         -newkey rsa:4096 \
-        -nodes \
+        -noenc \
         -sha256 \
         -days 3650 \
         -keyout "$CA_KEY" \
