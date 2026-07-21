@@ -71,9 +71,33 @@ EOF
         -days 365 \
         -sha256 \
         -extfile "$SERVICE_EXT"
-        
+
     rm -f "$SERVICE_CSR" "$SERVICE_EXT"
 
     chmod 600 "$SERVICE_KEY"
     chmod 644 "$SERVICE_CERT"
 }
+
+generate_service_certificate \
+    "api-gateway" \
+    "DNS:api-gateway,DNS:localhost,IP:127.0.0.1"
+
+generate_service_certificate \
+    "user-service" \
+    "DNS:user-service,DNS:localhost,IP:127.0.0.1"
+
+generate_service_certificate \
+    "event-service" \
+    "DNS:event-service,DNS:localhost,IP:127.0.0.1"
+
+generate_service_certificate \
+    "database" \
+    "DNS:database,DNS:localhost,IP:127.0.0.1"
+
+generate_service_certificate \
+    "prometheus" \
+    "DNS:prometheus,DNS:localhost,IP:127.0.0.1"
+
+generate_service_certificate \
+    "grafana" \
+    "DNS:grafana,DNS:localhost,IP:127.0.0.1"
