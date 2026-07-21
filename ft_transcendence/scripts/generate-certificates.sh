@@ -2,7 +2,7 @@
 
 set -eu
 
-SCRIPT_DIR="$(cd "$(dirname "$0)" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 CERT_DIR="$PROJECT_ROOT/.certificates"
 CA_DIR="$CERT_DIR/ca"
@@ -27,3 +27,29 @@ if [ ! -f "$CA_KEY" ] || [ ! -f "$CA_CERT" ]; then
     chmod 600 "$CA_KEY"
     chmod 644 "$CA_CERT"
 fi
+
+generate_service_certificate() {
+    SERVICE_NAME="$1"
+    SUBJECT_ALT_NAMES="$2"
+
+    SERVICE_DIR="$CERT_DIR/$SERVICE_NAME"
+    SERVICE_KEY="$SERVICE_DIR/$SERVICE_NAME.key"
+    SERVICE_CSR="$SERVICE_DIR/$SERVICE_NAME.csr"
+    SERVICE_CERT="$SERVICE_DIR/$SERVICE_NAME.crt"
+    SERVICE_EXT="$SERVICE_DIR/$SERVICE_NAME.ext"
+
+    mkdir -p "$SERVICE_DIR"
+
+    if [ -f "$SERVICE_KEY" ] && [ -f "$SERVICE_CERT" ]; then
+        return
+    fi
+
+
+    openssl req \
+        -new \
+        -newkey rsa:4096 \
+        -noenc \
+        -keyout "$SERVICE_KEY" \
+        -out "$SERVICE_CSR" \
+        -subj "/CN=$SERVICE_NAME"
+}
