@@ -52,4 +52,12 @@ generate_service_certificate() {
         -keyout "$SERVICE_KEY" \
         -out "$SERVICE_CSR" \
         -subj "/CN=$SERVICE_NAME"
+
+
+    cat > "$SERVICE_EXT" <<EOF
+basicConstraints=critical,CA:FALSE
+keyUsage=critical,digitalSignature,keyEncipherment
+extendedKeyUsage=serverAuth
+subjectAltName=$SUBJECT_ALT_NAMES
+EOF
 }
