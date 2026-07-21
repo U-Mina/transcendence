@@ -14,6 +14,9 @@ services:
       - "${MYSQL_PORT}:3306"
     volumes:
       - ./database/data:/var/lib/mysql
+      - ./.certificates/database/database.crt:/etc/mysql/certs/database.crt:ro
+      - ./.certificates/database/database.key:/etc/mysql/certs/database.key:ro
+      - ./.certificates/ca/ca.crt:/etc/mysql/certs/ca.crt:ro
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
       interval: 10s
@@ -30,6 +33,9 @@ services:
     volumes:
       - ./services/user-service:/app
       - user_service_node_modules:/app/node_modules
+      - ./.certificates/user-service/user-service.crt:/certs/user-service.crt:ro
+      - ./.certificates/user-service/user-service.key:/certs/user-service.key:ro
+      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
     environment:
       PORT: 3001
       DATABASE_HOST: database
@@ -53,6 +59,9 @@ services:
     volumes:
       - ./services/event-service:/app
       - event_service_node_modules:/app/node_modules
+      - ./.certificates/event-service/event-service.crt:/certs/event-service.crt:ro
+      - ./.certificates/event-service/event-service.key:/certs/event-service.key:ro
+      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
     environment:
       PORT: 3002
       DATABASE_HOST: database
@@ -77,7 +86,15 @@ services:
     volumes:
       - ./apps/api-gateway:/app
       - api_gateway_node_modules:/app/node_modules
+      - ./.certificates/api-gateway/api-gateway.crt:/certs/api-gateway.crt:ro
+      - ./.certificates/api-gateway/api-gateway.key:/certs/api-gateway.key:ro
+      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
     environment:
+      TLS_CERT_PATH: /certs/api-gateway.crt
+      TLS_KEY_PATH: /certs/api-gateway.key
+      TLS_CA_PATH: /certs/ca.crt
+      NODE_EXTRA_CA_CERTS: /certs/ca.crt
+
       USER_SERVICE_URL: ${USER_SERVICE_URL}
       EVENT_SERVICE_URL: ${EVENT_SERVICE_URL}
       DEV_API_KEY: ${DEV_API_KEY}
@@ -96,6 +113,9 @@ services:
       - "9090:9090"
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./.certificates/prometheus/prometheus.crt:/etc/prometheus/certs/prometheus.crt:ro
+      - ./.certificates/prometheus/prometheus.key:/etc/prometheus/certs/prometheus.key:ro
+      - ./.certificates/ca/ca.crt:/etc/prometheus/certs/ca.crt:ro
     
     restart: unless-stopped
 
@@ -112,6 +132,9 @@ services:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./.certificates/grafana/grafana.crt:/etc/grafana/certs/grafana.crt:ro
+      - ./.certificates/grafana/grafana.key:/etc/grafana/certs/grafana.key:ro
+      - ./.certificates/ca/ca.crt:/etc/grafana/certs/ca.crt:ro
 
     restart: unless-stopped
 
