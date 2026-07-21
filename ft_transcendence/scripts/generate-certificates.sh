@@ -74,7 +74,7 @@ EOF
 
     rm -f "$SERVICE_CSR" "$SERVICE_EXT"
 
-    chmod 600 "$SERVICE_KEY"
+    chmod 644 "$SERVICE_KEY"
     chmod 644 "$SERVICE_CERT"
 }
 

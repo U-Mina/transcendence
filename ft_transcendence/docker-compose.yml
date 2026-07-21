@@ -7,9 +7,9 @@ services:
     restart: unless-stopped
 
     command:
-      - "--ssl-ca=/certs/ca.crt"
-      - "--ssl-cert=/certs/database.crt"
-      - "--ssl-key=/certs/database.key"
+      - "--ssl-ca=/certs/ca/ca.crt"
+      - "--ssl-cert=/certs/database/database.crt"
+      - "--ssl-key=/certs/database/database.key"
       - "--require-secure-transport=ON"
 
     environment:
@@ -24,7 +24,7 @@ services:
     volumes:
       - ./database/data:/var/lib/mysql
       - ./.certificates/database:/certs/database:ro
-      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
+      - ./.certificates/ca:/certs/ca:ro
 
     healthcheck:
       test:
@@ -48,15 +48,15 @@ services:
     volumes:
       - ./services/user-service:/app
       - user_service_node_modules:/app/node_modules
-      - ./.certificates/user-service:/certs:ro
-      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
+      - ./.certificates/user-service:/certs/user-service:ro
+      - ./.certificates/ca:/certs/ca:ro
 
     environment:
       PORT: 3001
 
-      TLS_CERT_PATH: /certs/user-service.crt
-      TLS_KEY_PATH: /certs/user-service.key
-      NODE_EXTRA_CA_CERTS: /certs/ca.crt
+      TLS_CERT_PATH: /certs/user-service/user-service.crt
+      TLS_KEY_PATH: /certs/user-service/user-service.key
+      NODE_EXTRA_CA_CERTS: /certs/ca/ca.crt
 
       DATABASE_HOST: database
       DATABASE_PORT: 3306
@@ -64,7 +64,7 @@ services:
       DATABASE_USER: ${MYSQL_USER}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-      DATABASE_CA_PATH: /certs/ca.crt
+      DATABASE_CA_PATH: /certs/ca/ca.crt
 
     ports:
       - "${USER_SERVICE_PORT}:3001"
@@ -84,15 +84,15 @@ services:
     volumes:
       - ./services/event-service:/app
       - event_service_node_modules:/app/node_modules
-      - ./.certificates/event-service:/certs:ro
-      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
+      - ./.certificates/event-service:/certs/event-service:ro
+      - ./.certificates/ca:/certs/ca:ro
 
     environment:
       PORT: 3002
 
-      TLS_CERT_PATH: /certs/event-service.crt
-      TLS_KEY_PATH: /certs/event-service.key
-      NODE_EXTRA_CA_CERTS: /certs/ca.crt
+      TLS_CERT_PATH: /certs/event-service/event-service.crt
+      TLS_KEY_PATH: /certs/event-service/event-service.key
+      NODE_EXTRA_CA_CERTS: /certs/ca/ca.crt
 
       DATABASE_HOST: database
       DATABASE_PORT: 3306
@@ -100,7 +100,7 @@ services:
       DATABASE_USER: ${MYSQL_USER}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
       DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-      DATABASE_CA_PATH: /certs/ca.crt
+      DATABASE_CA_PATH: /certs/ca/ca.crt
 
       USER_SERVICE_URL: https://user-service:3001
 
@@ -124,15 +124,15 @@ services:
     volumes:
       - ./apps/api-gateway:/app
       - api_gateway_node_modules:/app/node_modules
-      - ./.certificates/api-gateway:/certs:ro
-      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
+      - ./.certificates/api-gateway:/certs/api-gateway:ro
+      - ./.certificates/ca:/certs/ca:ro
 
     environment:
       PORT: 3000
 
-      TLS_CERT_PATH: /certs/api-gateway.crt
-      TLS_KEY_PATH: /certs/api-gateway.key
-      NODE_EXTRA_CA_CERTS: /certs/ca.crt
+      TLS_CERT_PATH: /certs/api-gateway/api-gateway.crt
+      TLS_KEY_PATH: /certs/api-gateway/api-gateway.key
+      NODE_EXTRA_CA_CERTS: /certs/ca/ca.crt
 
       USER_SERVICE_URL: https://user-service:3001
       EVENT_SERVICE_URL: https://event-service:3002
@@ -163,8 +163,8 @@ services:
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./monitoring/prometheus/web.yml:/etc/prometheus/web.yml:ro
-      - ./.certificates/prometheus:/certs:ro
-      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
+      - ./.certificates/prometheus:/certs/prometheus:ro
+      - ./.certificates/ca:/certs/ca:ro
 
 
   grafana:
@@ -180,15 +180,15 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: ${GF_PASSWORD}
 
       GF_SERVER_PROTOCOL: https
-      GF_SERVER_CERT_FILE: /certs/grafana.crt
-      GF_SERVER_CERT_KEY: /certs/grafana.key
+      GF_SERVER_CERT_FILE: /certs/grafana/grafana.crt
+      GF_SERVER_CERT_KEY: /certs/grafana/grafana.key
 
     volumes:
       - grafana_data:/var/lib/grafana
       - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
-      - ./.certificates/grafana:/certs:ro
-      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
+      - ./.certificates/grafana:/certs/grafana:ro
+      - ./.certificates/ca:/certs/ca:ro
 
     depends_on:
       - prometheus
@@ -212,11 +212,11 @@ services:
       REACT_APP_ENV: ${NODE_ENV}
       PORT: ${FRONTEND_PORT}
       VITE_PROXY_TARGET: https://api-gateway:3000
-      NODE_EXTRA_CA_CERTS: /certs/ca.crt
+      NODE_EXTRA_CA_CERTS: /certs/ca/ca.crt
 
     volumes:
       - frontend_node_modules:/app/node_modules
-      - ./.certificates/ca/ca.crt:/certs/ca.crt:ro
+      - ./.certificates/ca:/certs/ca:ro
 
     depends_on:
       api-gateway:
