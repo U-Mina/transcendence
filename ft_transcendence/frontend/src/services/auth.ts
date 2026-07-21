@@ -69,5 +69,5 @@ export async function loginUser({ email, password }: LoginUserDTO): Promise<{ ac
 
 
 // TODO: logout
-// TODO: saveAuthSession
+// TODO: saveAuthSession (from loginpage)
 // TODO: getAuthSession
