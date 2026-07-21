@@ -66,6 +66,7 @@ export async function getSingleEvent(eventId: string): Promise<EventCard> {
 
 
 
+
 // create a new event
 // TODO: no userid yet
 export async function createEvent(eventInput: CreateEventDTO, userId: string,): Promise<EventManageView> { // 

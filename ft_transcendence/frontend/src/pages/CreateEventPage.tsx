@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "../services/events";
 import type { CreateEventDTO } from "../types/event";
-import { CreateEventForm } from "../components/CreateEvent/CreateEvent";
+import { CreateEventForm } from "../components/CreateEventForm/CreateEvent";
 
 function parseCreateEventForm(formData: FormData) {
     // get the value of each form field by reading from formData

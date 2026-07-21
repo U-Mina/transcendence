@@ -13,6 +13,7 @@ import { Layout } from "./components/Wrapper/Layout";
 import { SingleEventDetailsPage } from "./pages/SingleEventDetailsPage";
 import { CreateEventPage } from "./pages/CreateEventPage";
 import { SignUpPage } from "./pages/SignUpPage";
+import { LoginPage } from "./pages/LoginPage";
 import { OtherProfilePage } from "./pages/OtherProfilePage";
 
 /*
@@ -28,6 +29,7 @@ function App()
         <BrowserRouter>
             <Routes>
                 <Route path="/signup" element={<SignUpPage />} />
+                <Route path="/signup" element={<LoginPage />} />
                 <Route path="/" element={<Layout />}>
                     <Route index element={<EventsPage />} />
                     <Route path="events" element={<EventsPage />} />

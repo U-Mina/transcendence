@@ -8,10 +8,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/events': {
+      '/api': {
         target: proxyTarget,
         changeOrigin: true,
-        rewrite: (path) => `/api/v1${path}`,
       },
     },
   },

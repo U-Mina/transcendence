@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "../services/auth";
 import { useState } from "react";
 import type { RegisterUserDTO } from "../types/user";
-import { SignUpForm } from "../components/SignUp/SignUp";
+import { SignUpForm } from "../components/SignUpForm/SignUp";
 
 /*
 - use POST /users endpoint (to create a user from userName, email, userContact?) (from services/user.ts)
@@ -10,7 +10,7 @@ import { SignUpForm } from "../components/SignUp/SignUp";
 - redirect to LoginPage after (if success signup)
 */
 /*
-// create a form (name and email) TODO: password missing?
+// create a form (name, email, pw)
 // get the input from the form (name, and email)
 // put name and email into my createUser ft to send the input to backend to save
 // redirect to login page
@@ -53,7 +53,7 @@ function parseSignUpForm(formData: FormData) {
         throw new Error("Password must be 72 characters or fewer.");
     }
 
-    // store in object RegisterUserDTO
+    // store in object signUpInput w shape RegisterUserDTO
     const signUpInput: RegisterUserDTO = {
         userName,
         email,
@@ -72,7 +72,7 @@ export function SignUpPage() {
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-    // create a form (name and email) TODO: password missing?
+    // create a form (name and email)
     async function handleSignUp(formData: FormData) {
         setError(null);
     
