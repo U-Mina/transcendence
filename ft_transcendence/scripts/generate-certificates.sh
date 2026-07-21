@@ -60,4 +60,15 @@ keyUsage=critical,digitalSignature,keyEncipherment
 extendedKeyUsage=serverAuth
 subjectAltName=$SUBJECT_ALT_NAMES
 EOF
+
+    openssl x509 \
+        -req \
+        -in "$SERVICE_CSR" \
+        -CA "$CA_CERT" \
+        -CAkey "$CA_KEY" \
+        -CAcreateserial \
+        -out "$SERVICE_CERT" \
+        -days 365 \
+        -sha256 \
+        -extfile "$SERVICE_EXT"
 }
