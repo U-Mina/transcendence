@@ -59,11 +59,13 @@ export async function getUser(userId: string): Promise<InternalUserEntity> {
 
 // PUT: edit/update a user's information (this will go thru an edit button)
 export async function updateUser(userId: string, updateData: UpdateUserDTO,): Promise<InternalUserEntity> {
+	const accessToken = localStorage.getItem("accessToken");
+
 	const response = await fetch(`${API_BASE}/users/${userId}`, {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
-			"x-user": userId,
+			Authorization: `Bearer ${accessToken}`,
 		},
 		body: JSON.stringify(updateData),
 	});
@@ -83,10 +85,12 @@ export async function updateUser(userId: string, updateData: UpdateUserDTO,): Pr
 
 // DELETE: remove a user (this will go thru a delete button)
 export async function deleteUser(userId: string): Promise<{message: string}> {
+	const accessToken = localStorage.getItem("accessToken");
+
 	const response = await fetch(`${API_BASE}/users/${userId}`, {
 		method: "DELETE",
 		headers: {
-			"x-user": userId,
+			Authorization: `Bearer ${accessToken}`,
 		},
 	});
 

@@ -3,6 +3,7 @@ import { loginUser } from "../services/auth";
 import { useState } from "react";
 import type { LoginUserDTO } from "../types/user";
 import { LoginForm } from "../components/LoginForm/Login";
+import { saveAuthSession } from "../services/auth";
 
 // does the entered email and pw match w an already registered / stored user in the backend/db?
 // if yes, continue. if no, throw error (login failed: email does not exist, entered pw wrong, ...)
@@ -35,21 +36,14 @@ export function LoginPage() {
             const { loginInput } = parseLoginForm(formData);
             // result returns accesstoken, id, useremail in result
             const result = await loginUser(loginInput); 
-            
-            // get accessToken, and user from result (user info needed to build ownprofilepage & knowing which user is currentuser & to show delete/edit buttons)
-            // store token in localStorage (if want user to stay logged in after refresh/reopen until token expires)
-            //  or store token in sessionStorage (if want to disappear when browser closes) (no)
-            // TODO: put the two lines below in a saveAuthSession ft in auth.ts?
-            localStorage.setItem("accessToken", result.accessToken);
-            localStorage.setItem("user", JSON.stringify(result.user));
-
+            // localStorage (browser web storage api) stores token&userinfo in browser for refresh/reopening tab
+            saveAuthSession(result.accessToken, result.user);
             navigate("/events");
         } catch (submitError) { // catching all errors here from loginUser ft (fetch, backend) & parsing
             setError(submitError instanceof Error ? submitError.message : "Something went wrong");
         }
     }
 
-    // TODO: create component LoginForm
     return (
         <>
             <LoginForm handleLogin={handleLogin} error={error} />

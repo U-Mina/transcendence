@@ -68,13 +68,14 @@ export async function getSingleEvent(eventId: string): Promise<EventCard> {
 
 
 // create a new event
-// TODO: no userid yet
-export async function createEvent(eventInput: CreateEventDTO, userId: string,): Promise<EventManageView> { // 
+export async function createEvent(eventInput: CreateEventDTO): Promise<EventManageView> {
+	const accessToken = localStorage.getItem("accessToken");
+
     const response = await fetch(`${API_BASE}/events`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "x-user": userId, // TODO: no userid yet
+            Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
             ...eventInput,

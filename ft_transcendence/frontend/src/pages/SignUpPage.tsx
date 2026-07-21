@@ -80,7 +80,7 @@ export function SignUpPage() {
             const { signUpInput } = parseSignUpForm(formData);
             const result = await registerUser(signUpInput);
             setSuccessMessage(result.message); // shows msg like when acc created successfully (from backend)
-            navigate("/events"); // TODO: change to /login when that page exists
+            navigate("/login");
         } catch (submitError) { // catching all errors here from registerUser ft (fetch, backend) & parsing
             setError(submitError instanceof Error ? submitError.message : "Something went wrong");
         }

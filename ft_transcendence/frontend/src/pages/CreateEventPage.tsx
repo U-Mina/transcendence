@@ -68,8 +68,8 @@ export function CreateEventPage() {
         setError(null);
 
         try {
-            const { eventInput, creatorId } = parseCreateEventForm(formData);
-            await createEvent(eventInput, creatorId); // send event to backend w fetch ft createEvent
+            const { eventInput } = parseCreateEventForm(formData);
+            await createEvent(eventInput); // send event to backend w fetch ft createEvent
             navigate("/events");
         } catch (submitError) {
             setError(submitError instanceof Error ? submitError.message : "Something went wrong");

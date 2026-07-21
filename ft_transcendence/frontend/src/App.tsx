@@ -1,11 +1,3 @@
-/*
-puts everything together (ex. eventcard)
-- gets actual list of events from somewhere (first from dummy data, then fetching from backend)
-- then loop over that list and tell React to draw one eventcard for each event in the list
-
-when swapping dummy data w real backend fetch, only App.tsx changes (blueprint & component stay same)
-*/
-
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { EventsPage } from "./pages/EventsPage";
@@ -23,6 +15,9 @@ React Router: wraps the app in a browser router & defines its routes
      -> so layout automatically appears for all those pages
 */
 // https://reactnative.dev/docs/network
+// TODO: 5 pages are available to anyone. For the other ones, one needs to be logged in -> route accordingly
+//      TODO: therefore, /events is always first page to open & add login and signup button to right corner of layout wrapper
+//              --> clicking on any non-accessible page (ex. on navbar) will route visitor to login page automatically
 function App() 
 {
     return (
@@ -44,38 +39,3 @@ function App()
 }
 
 export default App
-
-
-
-
-
-// PRACTICE STUFF - (TODO: delete later)
-// import { useState } from "react"; // use ft are called hooks -> there is many built-in ones like this by React
-
-// // this is all a placeholder 
-// function MyButton() {
-//   // remember information w a state
-//   const [count, setCount] = useState<number>(0); // count = current state, setCount = ft that updates count
-
-//   // event handler function
-//   function handleClick(): void {
-//     alert("You clicked me!");
-//     setCount(count + 1); // update information here from useState above
-//   }
-
-//   // what happens when the button is clicked
-//   return (
-//     <button onClick={handleClick}>
-//       Click me! {count}
-//     </button>
-//   );
-// }
-
-// export default function MyApp(): JSX.Element {
-//   return (
-//     <div>
-//       <h1>Welcome to my app</h1>
-//       <MyButton />
-//     </div>
-//   );
-// }
