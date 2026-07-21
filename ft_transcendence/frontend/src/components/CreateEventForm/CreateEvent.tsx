@@ -34,10 +34,6 @@ export function CreateEventForm({ handleCreateEvent, error }: CreateEventFormPro
             <h1>Create Event</h1>
 
             <form action={handleCreateEvent}>
-                <label>
-                    Creator ID
-                    <input name="creatorId" required />
-                </label>
 
                 <label>
                     Event name

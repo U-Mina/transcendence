@@ -6,7 +6,6 @@ import { CreateEventForm } from "../components/CreateEventForm/CreateEvent";
 
 function parseCreateEventForm(formData: FormData) {
     // get the value of each form field by reading from formData
-    const creatorId = String(formData.get("creatorId") ?? "").trim(); // falls back on empty string for now if nothing entered, but? TODO: add stricter parsing below, ex. if only one letter entered
     const eventName = String(formData.get("eventName") ?? "").trim();
     const startTimeValue = String(formData.get("startTime") ?? "");
     const endTimeValue = String(formData.get("endTime") ?? "");
@@ -16,7 +15,7 @@ function parseCreateEventForm(formData: FormData) {
     const minParticipantValue = String(formData.get("minPaticipant") ?? "").trim();
 
     // parsing
-    if (!creatorId || !eventName || !startTimeValue || !endTimeValue) {
+    if (!eventName || !startTimeValue || !endTimeValue) {
         throw new Error("Creator ID, event name, start time, and end time are required.");
     }
 
@@ -50,7 +49,6 @@ function parseCreateEventForm(formData: FormData) {
     }
 
     return {
-        creatorId,
         eventInput,
     }
 }

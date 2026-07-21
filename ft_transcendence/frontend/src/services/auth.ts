@@ -3,7 +3,7 @@ import type { RegisterUserDTO,  LoginUserDTO } from "../types/user";
 const API_BASE = "/api/v1";
 
 // registerUser (/auth/register) RegisterUserDTO
-export async function registerUser({ userName, email, password }: RegisterUserDTO): Promise<{ message: string }> {
+export async function registerUser({ userName, email, password }: RegisterUserDTO): Promise<void> {
     const response = await fetch(`${API_BASE}/auth/register`, {
         method: "POST",
         headers: {
@@ -31,7 +31,6 @@ export async function registerUser({ userName, email, password }: RegisterUserDT
         throw new Error(errorMessage);
     }
 
-    return await response.json() as { message: string }; // success message of acc creation from backend
 }
 
 // loginUser (/auth/login) LoginUserDTO
@@ -88,4 +87,3 @@ export function getAuthSession() {
 
 
 // TODO: logout
-

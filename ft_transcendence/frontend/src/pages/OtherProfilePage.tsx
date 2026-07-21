@@ -19,7 +19,7 @@ export function OtherProfilePage() {
 
         const fetchUser = async () => {
             try {
-                const data = await getUser("1"); // TODO: put back userId as input instead of 1 (dummy data from backend) // currently getting userid from url from param
+                const data = await getUser(userId);
                 setUser(data);
             }
             catch (error) {

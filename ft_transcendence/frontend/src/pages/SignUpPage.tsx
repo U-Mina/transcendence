@@ -70,7 +70,6 @@ function parseSignUpForm(formData: FormData) {
 export function SignUpPage() {
     const navigate = useNavigate(); // to move to login page later, if signup was success
     const [error, setError] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     // create a form (name and email)
     async function handleSignUp(formData: FormData) {
@@ -78,8 +77,7 @@ export function SignUpPage() {
     
         try {
             const { signUpInput } = parseSignUpForm(formData);
-            const result = await registerUser(signUpInput);
-            setSuccessMessage(result.message); // shows msg like when acc created successfully (from backend)
+            await registerUser(signUpInput);
             navigate("/login");
         } catch (submitError) { // catching all errors here from registerUser ft (fetch, backend) & parsing
             setError(submitError instanceof Error ? submitError.message : "Something went wrong");
@@ -87,11 +85,8 @@ export function SignUpPage() {
     }
 
     // means: show signup form, and let it use this submit ft plus error state
-    // and show success for acc creation message from backend coming from fetch call
+    // and show any submission error
     return (
-        <>
-            <SignUpForm handleSignUp={handleSignUp} error={error} />
-            {successMessage ? <p>{successMessage}</p> : null}
-        </>
+        <SignUpForm handleSignUp={handleSignUp} error={error} />
     );
 }
