@@ -3,7 +3,7 @@
 // RETRIEVE AND PREPARE DATA
 
 import type { EventCard } from "../types/event";
-import type { CreateEventDTO, EventManageView, UpdateEventDTO } from "../types/event";
+import type { CreateEventDTO, EventDetailView, EventManageView, UpdateEventDTO } from "../types/event";
 // import type { EventManageView } from "../types/event";
 // import type { EventCard } from "../services/event-service/src/event.types";
 
@@ -37,7 +37,7 @@ export async function getListOfEvents(): Promise<EventCard[]> { // ...
 }
 
 // get one event in its entirety by ID
-export async function getSingleEvent(eventId: string): Promise<EventCard> {
+export async function getSingleEvent(eventId: string): Promise<EventDetailView> {
     const response = await fetch(`${API_BASE}/events/${eventId}`);
 
     if (!response.ok) {

@@ -1,16 +1,17 @@
 import "./EventDetails.css";
-import type { EventCard } from "../../types/event.ts"
+import type { EventDetailView } from "../../types/event.ts"
+import type { InternalUserEntity } from "../../types/user.ts";
 import eventImage from "../../assets/vite.svg";
 
 // define what component below receives as input (the props)
-interface DisplayEventCardProps
+interface DisplayEventDetailsProps
 {
-    event: EventCard;
+    event: EventDetailView;
+    users: InternalUserEntity[];
 }
 
-// TODO: add edit & delete button (w api in Page.tsx) BUT only if the user is the creator of the event
-// the actual component (function): render one event card
-export function DisplayEventDetails({ event }: DisplayEventCardProps) {
+// TODO: add edit & delete button BUT only if the user is the creator of the event
+export function DisplayEventDetails({ event, users }: DisplayEventDetailsProps) {
     const eventDate = event.startTime.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
@@ -39,13 +40,20 @@ export function DisplayEventDetails({ event }: DisplayEventCardProps) {
 
                 <p className="event-card__location">{event.location ?? "Location: TBD"}</p>
 
+                <p className="event-card__creator">Created by: {event.creator.userName}</p>
+
                 {event.description && (
                     <p className="event-card__description">{event.description}</p>
                 )}
 
+                <p className="event-card__users">
+                    Users: {users.length ? users.map((user) => user.userName).join(", ") : "None"}
+                </p>
+
                 <div className="event-card__actions">
                     <button className="event-card__join" type="button">Join</button>
                 </div>
+
             </div>
         </article>
     );

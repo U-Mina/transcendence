@@ -6,15 +6,18 @@ api endpoints: get event by id, delete event, edit/update existing event
 
 import { useEffect, useState } from "react";
 import { getSingleEvent } from "../services/events";
-import { DisplayEventCard } from "../components/EventCard/EventCard";
-import type { EventCard } from "../types/event";
+import { DisplayEventDetails } from "../components/EventDetails/EventDetails";
+import { listUsers } from "../services/user";
+import type { EventDetailView } from "../types/event";
+import type { InternalUserEntity } from "../types/user";
 import { useParams } from "react-router-dom";
 
 // TODO: there is a bug when reloading the SingleEventDetailsPage -> shows backenddata without any frontend
 // this page will be opened when an event is being clicked on from EventsPage
 export function SingleEventDetailsPage() {
     const { eventId } = useParams();
-    const [event, setEvent] = useState<EventCard | null>(null);
+    const [event, setEvent] = useState<EventDetailView | null>(null);
+    const [users, setUsers] = useState<InternalUserEntity[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -26,8 +29,9 @@ export function SingleEventDetailsPage() {
 
         const fetchEvent = async () => {
             try {
-                const data = await getSingleEvent(eventId);
+                const [data, userList] = await Promise.all([getSingleEvent(eventId), listUsers()]);
                 setEvent(data);
+                setUsers(userList);
             }
             catch (error) {
                 console.error("Error:", error);
@@ -48,7 +52,7 @@ export function SingleEventDetailsPage() {
 
     return (
         <div>
-            <DisplayEventCard event={event} />
+            <DisplayEventDetails event={event} users={users} />
         </div>
     );
 }

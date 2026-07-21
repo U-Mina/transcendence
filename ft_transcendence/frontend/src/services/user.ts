@@ -1,4 +1,4 @@
-import type { CreateUserDTO, InternalUserEntity, UpdateUserDTO } from "../types/user";
+import type { InternalUserEntity, UpdateUserDTO } from "../types/user";
 
 const API_BASE = "/api/v1";
 
@@ -12,32 +12,7 @@ async function parseErrorMessage(response: Response, fallbackMessage: string): P
 	}
 }
 
-// TODO: delete createUser bc replaced by registerUser ?? not needed anymore
-// TODO: missing userContact as input (see types/user.ts) -> add, its the phone number
-// the rest of the profile (intraname, url etc. will the user have to decide whether or not when "editing" his profile later)
-// ft title -> pulling the two fields from the object to use directly without object.userName
-export async function createUser({ userName, userEmail }: CreateUserDTO): Promise<CreateUserDTO> {
-	const response = await fetch(`${API_BASE}/users`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify({
-			userName,
-			userEmail,
-		}),
-	});
-
-	if (!response.ok) {
-		throw new Error(await parseErrorMessage(response, "Failed to create your account."));
-	}
-
-	return {
-		userName,
-		userEmail,
-	};
-}
-
+// *************************************************************************************
 // GET: retrieve a user's information (this will go on own profile page) & (and also be used for other user profile page) & (added to eventCard as creator of event)
 // userId tells getUser which user to fetch from /users/:userId
 export async function getUser(userId: string): Promise<InternalUserEntity> {
@@ -100,3 +75,28 @@ export async function deleteUser(userId: string): Promise<{message: string}> {
 
     return await response.json(); // if backend returns a message lke "successfully deleted user"
 }
+
+// InternalUserEntity bc we need userId 
+export async function listUsers(): Promise<InternalUserEntity[]> {
+	const accessToken = localStorage.getItem("accessToken");
+
+	const response = await fetch(`${API_BASE}/users`, {
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
+
+	if (!response.ok) {
+		throw new Error(await parseErrorMessage(response, "Error: Failed to list users"));
+	}
+
+	const data = await response.json();
+
+	return data.map((user: InternalUserEntity) => ({
+		...user,
+		createdAt: new Date(user.createdAt),
+		updatedAt: new Date(user.updatedAt),
+	}));
+}
+
+// TODO: refactor all these fts above 
