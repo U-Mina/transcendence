@@ -7,6 +7,7 @@ import { CreateEventPage } from "./pages/CreateEventPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { LoginPage } from "./pages/LoginPage";
 import { OtherProfilePage } from "./pages/OtherProfilePage";
+import { UpdateEventPage } from "./pages/UpdateEventPage";
 
 /*
 React Router: wraps the app in a browser router & defines its routes
@@ -32,6 +33,7 @@ function App()
                     <Route path="create" element={<CreateEventPage />} />
                     {/* <Route path="profile" element={<OwnProfilePage />} /> */}
                     <Route path="profile/:userId" element={<OtherProfilePage />} />
+                    <Route path="events/:eventId/edit" element={<UpdateEventPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

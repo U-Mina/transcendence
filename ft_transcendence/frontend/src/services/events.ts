@@ -3,7 +3,7 @@
 // RETRIEVE AND PREPARE DATA
 
 import type { EventCard } from "../types/event";
-import type { CreateEventDTO, EventManageView } from "../types/event";
+import type { CreateEventDTO, EventManageView, UpdateEventDTO } from "../types/event";
 // import type { EventManageView } from "../types/event";
 // import type { EventCard } from "../services/event-service/src/event.types";
 
@@ -18,6 +18,7 @@ async function parseErrorMessage(response: Response, fallbackMessage: string): P
     }
 }
 
+/********************************************************************************************* */
 // get list of events
 export async function getListOfEvents(): Promise<EventCard[]> { // ...
     const response = await fetch(`${API_BASE}/events`);
@@ -51,21 +52,57 @@ export async function getSingleEvent(eventId: string): Promise<EventCard> {
         startTime: new Date(data.startTime),
         endTime: new Date(data.endTime),
     };
-} // TODO: for creator view: also need other interfaces like EventManageView, UserSummary, EventDetailView... (not in this file)
+}
 
+// get eventId from URL (w useParam) and the updateData from the update form object created
+export async function updateEvent(eventId: string, updateData: UpdateEventDTO): Promise<EventManageView> {
+    const accessToken = localStorage.getItem("accessToken");
 
+    const response = await fetch(`${API_BASE}/events/${eventId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+            ...updateData,
+            ...(updateData.startTime && { startTime: new Date(updateData.startTime).toISOString() }),
+            ...(updateData.endTime && { endTime: new Date(updateData.endTime).toISOString() }),
+        }),
+    });
 
-// TODO: edit/update event (get endpoints from swagger UI)
+    if (!response.ok) {
+        throw new Error(await parseErrorMessage(response, "Error: Failed to update event"));
+    }
 
+    const data = await response.json();
 
+    return {
+        ...data,
+        startTime: new Date(data.startTime),
+        endTime: new Date(data.endTime),
+        createdAt: new Date(data.createdAt),
+        updatedAt: new Date(data.updatedAt),
+    };
+}
 
+// get eventId as input from URL useParam 
+export async function deleteEvent(eventId: string): Promise<{ message: string }> {
+    const accessToken = localStorage.getItem("accessToken");
 
+    const response = await fetch(`${API_BASE}/events/${eventId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
 
-// TODO: delete event
+    if (!response.ok) {
+        throw new Error(await parseErrorMessage(response, "Error: Failed to delete event"));
+    }
 
-
-
-
+    return await response.json();
+}
 
 // create a new event
 export async function createEvent(eventInput: CreateEventDTO): Promise<EventManageView> {

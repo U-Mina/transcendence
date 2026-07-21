@@ -14,7 +14,6 @@ function parseCreateEventForm(formData: FormData) {
     const location = String(formData.get("location") ?? "").trim();
     const minParticipantValue = String(formData.get("minPaticipant") ?? "").trim();
 
-    // parsing
     if (!eventName || !startTimeValue || !endTimeValue) {
         throw new Error("Creator ID, event name, start time, and end time are required.");
     }
@@ -22,12 +21,10 @@ function parseCreateEventForm(formData: FormData) {
     const startTime = new Date(startTimeValue); // TODO: again, write conversion ft helper
     const endTime = new Date(endTimeValue);
 
-    // parsing
     if (Number.isNaN(startTime.getTime()) || Number.isNaN(endTime.getTime())) {
         throw new Error("Please enter valid start and end times.");
     }
 
-    // parsing
     if (endTime <= startTime) {
         throw new Error("End time must be after start time.");
     }
@@ -43,7 +40,6 @@ function parseCreateEventForm(formData: FormData) {
         minPaticipant: minParticipantValue ? Number(minParticipantValue) : undefined,
     };
 
-    // parsing
     if (minParticipantValue && Number.isNaN(eventInput.minPaticipant ?? Number.NaN)) {
         throw new Error("Minimum participants must be a number.");
     }

@@ -49,3 +49,13 @@ export interface CreateEventDTO {
     // NOTE: this should be mandtory
     minPaticipant?: number;
 }
+
+export interface UpdateEventDTO {
+    eventName?: string;
+    startTime?: Date;
+    endTime?: Date;
+    category?: string;
+    description?: string;
+    location?: string;
+    minPaticipant?: number;
+}
