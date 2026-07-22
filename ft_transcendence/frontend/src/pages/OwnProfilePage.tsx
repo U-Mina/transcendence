@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { deleteUser, getUser } from "../services/user";
 import { clearAuthSession, getAuthSession } from "../services/auth";
 import type { InternalUserEntity } from "../types/user";
-import { DisplayProfile } from "../components/OtherProfile/OtherProfile";
+import { DisplayProfile } from "../components/DisplayProfile/DisplayProfile";
 import { useNavigate } from "react-router-dom";
 
 // MAIN

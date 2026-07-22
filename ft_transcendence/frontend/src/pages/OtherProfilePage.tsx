@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUser } from "../services/user";
-import { DisplayProfile } from "../components/OtherProfile/OtherProfile";
+import { DisplayProfile } from "../components/DisplayProfile/DisplayProfile";
 import type { InternalUserEntity } from "../types/user";
 import { useParams } from "react-router-dom";
 
