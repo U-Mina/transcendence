@@ -270,7 +270,10 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
                 await removeStoredUpload(saved.url);
                 return reply.status(result.statusCode).send(result.body);
             }
-            const previousImageUrl = (result.body as { previousImageUrl?: unknown }).previousImageUrl;
+            const previousImageUrl =
+                typeof result.body === "object" && result.body !== null
+                    ? (result.body as { previousImageUrl?: unknown }).previousImageUrl
+                    : undefined;
 
             await removeStoredUpload(previousImageUrl);
             return reply.status(200).send({ imageUrl: saved.url });
@@ -281,7 +284,9 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             if (error instanceof MediaError) {
                 return reply.status(error.statusCode).send({ error: error.message });
             }
-            return reply.status(500).send({ error: "Event image upload failed." });
+            request.log.error({ err: error }, "event image upload failed");
+            const message = error instanceof Error ? error.message : "Event image upload failed.";
+            return reply.status(500).send({ error: message });
         }
     });
 }
