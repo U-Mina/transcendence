@@ -12,9 +12,15 @@ import {
     httpRequestsTotal,
     httpRequestDurationSeconds,
 } from "./metrics/http.metrics";
+import fs from "node:fs";
 
 const fastify = Fastify({
     logger: true,
+
+    https: {
+        key: fs.readFileSync(process.env.TLS_KEY_PATH!),
+        cert: fs.readFileSync(process.env.TLS_CERT_PATH!),
+    },
 });
 
 const start = async () => {
@@ -57,7 +63,7 @@ const start = async () => {
 
     try {
         await fastify.listen({
-            port: 3002,
+            port: Number(process.env.PORT ?? 3002),
             host: "0.0.0.0",
         });
     } catch (error) {

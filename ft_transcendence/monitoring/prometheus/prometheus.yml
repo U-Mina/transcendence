@@ -1,31 +1,43 @@
 global:
   scrape_interval: 15s
   evaluation_interval: 15s
-  
+
   external_labels:
     project: transcendence
     environment: development
 
 scrape_configs:
   - job_name: prometheus
+    scheme: https
+    tls_config:
+      ca_file: /certs/ca.crt
     static_configs:
       - targets:
-        - prometheus:9090
-  
+          - prometheus:9090
+
   - job_name: api-gateway
+    scheme: https
     metrics_path: /metrics
+    tls_config:
+      ca_file: /certs/ca.crt
     static_configs:
       - targets:
-        - api-gateway:3000
+          - api-gateway:3000
 
   - job_name: user-service
+    scheme: https
     metrics_path: /metrics
+    tls_config:
+      ca_file: /certs/ca.crt
     static_configs:
       - targets:
-        - user-service:3001
-  
+          - user-service:3001
+
   - job_name: event-service
+    scheme: https
     metrics_path: /metrics
+    tls_config:
+      ca_file: /certs/ca.crt
     static_configs:
       - targets:
-        - event-service:3002
+          - event-service:3002
