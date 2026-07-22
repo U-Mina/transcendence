@@ -1,0 +1,21 @@
+meta {
+  name: Joiner joins event
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/events/{{eventId}}/join
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{joinerToken}}
+}
+
+tests {
+  test("joiner join returns 201", function () {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

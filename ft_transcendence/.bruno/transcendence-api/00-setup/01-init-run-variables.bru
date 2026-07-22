@@ -1,0 +1,47 @@
+meta {
+  name: Init run variables
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3000/health
+  body: none
+  auth: none
+}
+
+script:pre-request {
+  const ts = Date.now();
+  bru.setEnvVar("ownerUserName", `owner_${ts}`);
+  bru.setEnvVar("ownerEmail", `owner_${ts}@example.com`);
+  bru.setEnvVar("joinerUserName", `joiner_${ts}`);
+  bru.setEnvVar("joinerEmail", `joiner_${ts}@example.com`);
+  bru.setEnvVar("password", "TestPass123!");
+
+  const start = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+  const end = new Date(Date.now() + 26 * 60 * 60 * 1000).toISOString();
+  bru.setEnvVar("startTime", start);
+  bru.setEnvVar("endTime", end);
+
+  bru.setEnvVar("ownerToken", "");
+  bru.setEnvVar("joinerToken", "");
+  bru.setEnvVar("ownerId", "");
+  bru.setEnvVar("joinerId", "");
+  bru.setEnvVar("eventId", "");
+}
+
+tests {
+  test("gateway health is 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("setup vars were written", function () {
+    expect(bru.getEnvVar("ownerEmail")).to.include("@example.com");
+    expect(bru.getEnvVar("startTime")).to.be.a("string");
+  });
+}
+
+docs {
+  Hit gateway `/health` and seed unique owner/joiner emails + future event times into the Local env.
+  Always run this before the rest of the collection.
+}

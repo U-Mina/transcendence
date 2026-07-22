@@ -1,0 +1,25 @@
+meta {
+  name: Delete joiner self
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/users/{{joinerId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{joinerToken}}
+}
+
+tests {
+  test("self delete returns 204", function () {
+    expect(res.getStatus()).to.equal(204);
+  });
+}
+
+docs {
+  Optional cleanup. Skip if you want to keep test users in the DB.
+}
