@@ -69,12 +69,16 @@ class UserService {
     
     // register of new user
     async registerUser(userInput: RegisterUserDTO): Promise<SafeUser> {
-        // extract info
-        const userName = userInput.userName.trim();
-        const userEmail = normalizeEmail(userInput.email);
-        // validation check
-        if (!userName || !userEmail || userInput.password.length < 8 || userInput.password.length > 72) {
+        // extract info (guard missing fields so Bruno/empty env vars return 400, not 500)
+        const userName = typeof userInput.userName === "string" ? userInput.userName.trim() : "";
+        const userEmail = typeof userInput.email === "string" ? normalizeEmail(userInput.email) : "";
+        const password = typeof userInput.password === "string" ? userInput.password : "";
+
+        if (!userName || !userEmail) {
             throw new UserServiceError("Invalid registration data.", 400);
+        }
+        if (password.length < 8 || password.length > 72) {
+            throw new UserServiceError("Password must be between 8 and 72 characters.", 400);
         }
         if (await userRepository.getUserByEmail(userEmail)) {
             throw new UserServiceError("An account already exists for this email.", 409);
@@ -83,14 +87,15 @@ class UserService {
             id: crypto.randomUUID(),
             userName,
             userEmail,
-            passwordHash: await bcrypt.hash(userInput.password, 12),
+            passwordHash: await bcrypt.hash(password, 12),
             createdAt: new Date(),
             updatedAt: new Date(),
         };
         try {
             await userRepository.createNewUser(newUser);
         } catch (error) {
-            if ((error as { code?: string }).code === "ER_DUP_ENTRY") {
+            const code = (error as { code?: string }).code;
+            if (code === "ER_DUP_ENTRY" || code === "P2002") {
                 throw new UserServiceError("An account already exists for this email.", 409);
             }
             throw error;
@@ -100,11 +105,16 @@ class UserService {
     
     // user login
     async loginUser(loginInput: LoginUserDTO): Promise<SafeUser> {
-        const user = await userRepository.getUserByEmail(normalizeEmail(loginInput.email));
+        const email = typeof loginInput.email === "string" ? normalizeEmail(loginInput.email) : "";
+        const password = typeof loginInput.password === "string" ? loginInput.password : "";
+        if (!email || !password) {
+            throw new UserServiceError("Invalid email or password.", 401);
+        }
+        const user = await userRepository.getUserByEmail(email);
         if (!user?.passwordHash) {
             throw new UserServiceError("Invalid email or password.", 401);
         }
-        const validation = await bcrypt.compare(loginInput.password, user.passwordHash);
+        const validation = await bcrypt.compare(password, user.passwordHash);
         if (!validation) {
             throw new UserServiceError("Invalid email or password.", 401);
         }
