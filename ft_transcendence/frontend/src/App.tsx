@@ -7,7 +7,8 @@ import { CreateEventPage } from "./pages/CreateEventPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { LoginPage } from "./pages/LoginPage";
 import { OtherProfilePage } from "./pages/OtherProfilePage";
-import { UpdateEventPage } from "./pages/UpdateEventPage";
+// import { UpdateEventPage } from "./pages/UpdateEventPage";
+import { RequireAuth } from "./components/RequireAuth";
 
 /*
 React Router: wraps the app in a browser router & defines its routes
@@ -16,9 +17,6 @@ React Router: wraps the app in a browser router & defines its routes
      -> so layout automatically appears for all those pages
 */
 // https://reactnative.dev/docs/network
-// TODO: 5 pages are available to anyone. For the other ones, one needs to be logged in -> route accordingly
-//      TODO: therefore, /events is always first page to open & add login and signup button to right corner of layout wrapper
-//              --> clicking on any non-accessible page (ex. on navbar) will route visitor to login page automatically
 function App() 
 {
     return (
@@ -30,10 +28,12 @@ function App()
                     <Route index element={<EventsPage />} />
                     <Route path="events" element={<EventsPage />} />
                     <Route path="events/:eventId" element={<SingleEventDetailsPage />} />
-                    <Route path="create" element={<CreateEventPage />} />
-                    {/* <Route path="profile" element={<OwnProfilePage />} /> */}
                     <Route path="profile/:userId" element={<OtherProfilePage />} />
-                    <Route path="events/:eventId/edit" element={<UpdateEventPage />} />
+                    <Route element={<RequireAuth />}>
+                        <Route path="create" element={<CreateEventPage />} />
+                        {/* <Route path="events/:eventId/edit" element={<UpdateEventPage />} /> */}
+                        {/* <Route path="profile" element={<OwnProfilePage />} /> */}
+                    </Route>
                 </Route>
             </Routes>
         </BrowserRouter>

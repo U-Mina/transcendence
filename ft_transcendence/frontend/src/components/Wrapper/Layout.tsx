@@ -8,6 +8,7 @@ import "./Layout.css";
 // import type { ReactNode } from "react";
 import { Outlet } from "react-router-dom"; // outlet is a placeholder where react router renders matching child page
 import { Link } from "react-router-dom";
+import { getAuthSession } from "../../services/auth";
 
 // TODO: when increasing/decreasing chrome site, the events don't move or barely do (after adding layout) -> if 3, the the third one should be on right, not middle
 // TODO: when making website fullscreen, the layout should also adjust by going to the most far left/right side (not in middle still looking like a small website)
@@ -16,6 +17,9 @@ import { Link } from "react-router-dom";
 // TODO: research <NavLink> and implement for the sidebar buttons (instead of <button>)
 // TODO: change placeholder links for most of nav bar to their actual sites when they are created
 export function Layout() {
+	const authSession = getAuthSession();
+	const user = authSession?.user;
+
 	return (
 		<div className="layout">
 			<aside className="layout__sidebar">
@@ -37,9 +41,6 @@ export function Layout() {
 					<Link className="layout__nav-item" to="/events">
 						Profile
 					</Link>
-					<Link className="layout__nav-item" to="/events">
-						Settings
-					</Link>
 				</nav>
 
 				<Link className="layout__create-button" to="/create">
@@ -48,15 +49,19 @@ export function Layout() {
 			</aside>
 
 			<div className="layout__main">
-				<header className="layout__topbar">
-					<div className="layout__search-wrap">
-						<input
-							className="layout__search"
-							type="search"
-							placeholder="Search events..."
-							aria-label="Search events"
+				<header className="layout__topbar" style={{ display: "flex", justifyContent: "flex-end" }}>
+					{user ? (
+						<Link
+							to={`/profile/${user.id}`}
+							aria-label="View your profile"
+							style={{ display: "block", width: "40px", height: "40px", borderRadius: "50%", background: "#4f46e5" }}
 						/>
-					</div>
+					) : (
+						<div style={{ display: "flex", gap: "10px" }}>
+							<Link to="/signup">Sign Up</Link>
+							<Link to="/login">Log In</Link>
+						</div>
+					)}
 				</header>
 
 				<main className="layout__content">
