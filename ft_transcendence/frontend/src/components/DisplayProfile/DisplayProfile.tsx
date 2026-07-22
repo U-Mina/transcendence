@@ -1,4 +1,4 @@
-import "./OtherProfile.css";
+import "./DisplayProfile.css";
 import type { PublicUserProfile } from "../../types/user.ts";
 
 // define what component below receives as input (the props)

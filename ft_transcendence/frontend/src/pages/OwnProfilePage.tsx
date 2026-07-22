@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 
 // MAIN
 // same as OtherProfilePage basically but with an edit button and delete acc function & button
-// TODO: create EditProfilePage w Form
 export function OwnProfilePage() {
     const [error, setError] = useState<string | null>(null);
     const [user, setUser] = useState<InternalUserEntity | null>(null);
@@ -21,7 +20,7 @@ export function OwnProfilePage() {
     // get all account information of logged-in user
     useEffect(() => {
         if (!userId) {
-            setError("Error: need to be logged in");
+            setError("Error: Please log in to view your profile.");
             return;
         }
 

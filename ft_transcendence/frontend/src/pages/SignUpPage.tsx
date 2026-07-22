@@ -20,7 +20,7 @@ function parseSignUpForm(formData: FormData) {
     const email = String(formData.get("email") ?? "").trim();
     const password = String(formData.get("password") ?? "");
 
-    // parsing username
+    // parsing username // TODO: add a check for backend to make sure username doesnt exist yet
     if (!userName) {
         throw new Error("Username is required.");
     }
