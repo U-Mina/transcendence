@@ -95,7 +95,11 @@ export function getAuthSession() {
     } catch {
         return null;
     }
-
 }
 
-// TODO: logout
+// logs out user by removing their saved login information from browser
+export function clearAuthSession() {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+}
+

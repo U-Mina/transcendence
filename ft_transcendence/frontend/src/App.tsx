@@ -7,6 +7,8 @@ import { CreateEventPage } from "./pages/CreateEventPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { LoginPage } from "./pages/LoginPage";
 import { OtherProfilePage } from "./pages/OtherProfilePage";
+import { OwnProfilePage } from "./pages/OwnProfilePage";
+// import { EditProfilePage } from "./pages/EditProfilePage";
 // import { UpdateEventPage } from "./pages/UpdateEventPage";
 import { RequireAuth } from "./components/RequireAuth";
 
@@ -31,8 +33,9 @@ function App()
                     <Route path="profile/:userId" element={<OtherProfilePage />} />
                     <Route element={<RequireAuth />}>
                         <Route path="create" element={<CreateEventPage />} />
+                        <Route path="profile" element={<OwnProfilePage />} />
+                        {/* <Route path="profile/edit" element={<EditProfilePage />} /> */}
                         {/* <Route path="events/:eventId/edit" element={<UpdateEventPage />} /> */}
-                        {/* <Route path="profile" element={<OwnProfilePage />} /> */}
                     </Route>
                 </Route>
             </Routes>

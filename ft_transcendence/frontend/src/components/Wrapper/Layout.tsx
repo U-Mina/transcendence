@@ -38,7 +38,7 @@ export function Layout() {
 					<Link className="layout__nav-item" to="/events">
 						Created
 					</Link>
-					<Link className="layout__nav-item" to="/events">
+					<Link className="layout__nav-item" to="/profile">
 						Profile
 					</Link>
 				</nav>
@@ -52,7 +52,7 @@ export function Layout() {
 				<header className="layout__topbar" style={{ display: "flex", justifyContent: "flex-end" }}>
 					{user ? (
 						<Link
-							to={`/profile/${user.id}`}
+							to="/profile"
 							aria-label="View your profile"
 							style={{ display: "block", width: "40px", height: "40px", borderRadius: "50%", background: "#4f46e5" }}
 						/>
