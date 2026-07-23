@@ -5,8 +5,8 @@
 import { proxyToService } from "../services/proxy.service";
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 
-const USER_SERVICE_URL = process.env.USER_SERVICE_URL ?? "http://localhost:3001";
-const EVENT_SERVICE_URL = process.env.EVENT_SERVICE_URL ?? "http://localhost:3002";
+const USER_SERVICE_URL = process.env.USER_SERVICE_URL ?? "https://localhost:3001";
+const EVENT_SERVICE_URL = process.env.EVENT_SERVICE_URL ?? "https://localhost:3002";
 
 export async function internalServiceStatusCheckRoutes(fastify: FastifyInstance) {
     fastify.get(

@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { proxyToService } from "../services/proxy.service";
 
-const USER_SERVICE_URL = process.env.USER_SERVICE_URL ?? "http://localhost:3001";
+const USER_SERVICE_URL = process.env.USER_SERVICE_URL ?? "https://localhost:3001";
 
 export async function authGatewayRoutes(fastify: FastifyInstance) {
     fastify.post<{ Body: unknown }>(
