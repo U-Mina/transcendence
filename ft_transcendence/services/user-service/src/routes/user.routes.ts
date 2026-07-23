@@ -6,7 +6,7 @@
  */
 import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
 import { userService, UserServiceError } from "../services/user.service";
-import type { CreateUserDTO, UpdateUserDTO, RegisterUserDTO, LoginUserDTO } from "../users.types";
+import type { UpdateUserDTO, RegisterUserDTO, LoginUserDTO } from "../users.types";
 
 // NOTE: dashboard is /home
 
@@ -114,8 +114,11 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
             try {
                 // this is REAL / auth userid, so it will have a match compare
                 const userId = currentUserId(request);
-                if (!userId || userId !== request.params.userId) {
+                if (!userId) {
                     return reply.status(401).send({ error: "Unauthenticated user." });
+                }
+                if (userId !== request.params.userId) {
+                    return reply.status(403).send({ error: "Forbidden operation." });
                 }
                 const updatedUser = await userService.updateUser(
                     userId,
@@ -187,8 +190,11 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
         ) => {
             try {
                 const userId = currentUserId(request);
-                if (!userId || userId !== request.params.userId) {
+                if (!userId) {
                     return reply.status(401).send({ error: "Unauthenticated user." });
+                }
+                if (userId !== request.params.userId) {
+                    return reply.status(403).send({ error: "Forbidden operation." });
                 }
                 await userService.deleteUser(userId, request.params.userId);                
                 return reply.status(204).send({ message: "Successfully deleted user." });
