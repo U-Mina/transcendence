@@ -190,6 +190,26 @@ export async function getJoinedCount(eventId: string): Promise<number> {
     return await response.json();
 }
 
-// TODO: upload/replace event image, multipart field name: file, jwt yes, POST /events/:eventId/image
+// upload an image when creating an event
+// multipart field name: file --> img must be sent in FormData (browser object for sending form fields, files, in http request) under key "file"
+// returns the uploaded image's public url for frontend to update/add image right away without fetching entire event again
+// TODO: add this to the create event form
+export async function uploadEventImage(eventId: string, file: File): Promise<{ imageUrl: string }> {
+    const accessToken = localStorage.getItem("accessToken");
+    const formData = new FormData();
+    formData.append("file", file);
 
+    const response = await fetch(`${API_BASE}/events/${eventId}/image`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+    });
 
+    if (!response.ok) {
+        throw new Error(await parseErrorMessage(response, "Error: Failed to upload event image"));
+    }
+
+    return await response.json();
+}

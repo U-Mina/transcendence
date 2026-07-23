@@ -1,4 +1,5 @@
 import type { InternalUserEntity, UpdateUserDTO } from "../types/user";
+import type { EventCard } from "../types/event";
 
 const API_BASE = "/api/v1";
 
@@ -99,10 +100,48 @@ export async function listUsers(): Promise<InternalUserEntity[]> {
 	}));
 }
 
-// TODO: refactor all these fts above 
+// show all events that the logged-in user has joined
+export async function listJoinedEvents(): Promise<EventCard[]> {
+	const accessToken = localStorage.getItem("accessToken");
 
+	const response = await fetch(`${API_BASE}/users/me/events`, {
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
 
-// TODO: upload/replace own avatar, multipart field name: file, jwt yes, POST /users/me/avatar
+	if (!response.ok) {
+		throw new Error(await parseErrorMessage(response, "Error: Failed to list joined events"));
+	}
 
+	const data = await response.json();
 
-// TODO: list events joined by current user, jwt yes, GET /users/me/events
+	return data.map((event: EventCard & { startTime: string; endTime: string }) => ({
+		...event,
+		startTime: new Date(event.startTime),
+		endTime: new Date(event.endTime),
+	}));
+}
+
+// upload a profile picture (same concept as image upload for events)
+export async function uploadAvatar(file: File): Promise<{ avatarUrl: string }> {
+	const accessToken = localStorage.getItem("accessToken");
+	const formData = new FormData();
+	formData.append("file", file);
+
+	const response = await fetch(`${API_BASE}/users/me/avatar`, {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+		},
+		body: formData,
+	});
+
+	if (!response.ok) {
+		throw new Error(await parseErrorMessage(response, "Error: Failed to upload avatar"));
+	}
+
+	return await response.json();
+}
+
+// TODO: refactor all these fts above (also in events.ts) w one util ft
