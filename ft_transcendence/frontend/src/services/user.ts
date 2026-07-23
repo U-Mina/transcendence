@@ -100,3 +100,9 @@ export async function listUsers(): Promise<InternalUserEntity[]> {
 }
 
 // TODO: refactor all these fts above 
+
+
+// TODO: upload/replace own avatar, multipart field name: file, jwt yes, POST /users/me/avatar
+
+
+// TODO: list events joined by current user, jwt yes, GET /users/me/events

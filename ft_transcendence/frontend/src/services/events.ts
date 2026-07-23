@@ -55,6 +55,7 @@ export async function getSingleEvent(eventId: string): Promise<EventDetailView> 
 }
 
 // get eventId from URL (w useParam) and the updateData from the update form object created
+// owner only
 export async function updateEvent(eventId: string, updateData: UpdateEventDTO): Promise<EventManageView> {
     const accessToken = localStorage.getItem("accessToken");
 
@@ -87,6 +88,7 @@ export async function updateEvent(eventId: string, updateData: UpdateEventDTO): 
 }
 
 // get eventId as input from URL useParam 
+// owner only
 export async function deleteEvent(eventId: string): Promise<{ message: string }> {
     const accessToken = localStorage.getItem("accessToken");
 
@@ -136,3 +138,58 @@ export async function createEvent(eventInput: CreateEventDTO): Promise<EventMana
         updatedAt: new Date(data.updatedAt),
     };
 }
+
+// join an event
+// no need to return success message (button text will change)
+export async function joinEvent(eventId: string): Promise<void> {
+    const accessToken = localStorage.getItem("accessToken");
+
+    const response = await fetch(`${API_BASE}/events/${eventId}/join`, {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(await parseErrorMessage(response, "Error: Failed to join event"));
+    }
+}
+
+// un-join an event (cancel)
+// no need to return success message (button text will change)
+export async function cancelEventJoin(eventId: string): Promise<void> {
+    const accessToken = localStorage.getItem("accessToken");
+
+    const response = await fetch(`${API_BASE}/events/${eventId}/join`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(await parseErrorMessage(response, "Error: Failed to cancel event join"));
+    }
+}
+
+// get the current # of how many users have joined the event so far
+export async function getJoinedCount(eventId: string): Promise<number> {
+    const accessToken = localStorage.getItem("accessToken");
+
+    const response = await fetch(`${API_BASE}/events/${eventId}/joined-count`, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error(await parseErrorMessage(response, "Error: Failed to get joined-user count"));
+    }
+
+    return await response.json();
+}
+
+// TODO: upload/replace event image, multipart field name: file, jwt yes, POST /events/:eventId/image
+
+
