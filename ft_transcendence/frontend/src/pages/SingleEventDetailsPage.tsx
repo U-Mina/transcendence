@@ -7,17 +7,16 @@ api endpoints: get event by id, delete event, edit/update existing event
 import { useEffect, useState } from "react";
 import { getSingleEvent } from "../services/events";
 import { DisplayEventDetails } from "../components/EventDetails/EventDetails";
-import { listUsers } from "../services/user";
 import type { EventDetailView } from "../types/event";
-import type { InternalUserEntity } from "../types/user";
 import { useParams } from "react-router-dom";
 
 // TODO: there is a bug when reloading the SingleEventDetailsPage -> shows backenddata without any frontend
+// TODO: add join button here and cancel join button depending on button state
+// TODO: add a joined-count 4/10 
 // this page will be opened when an event is being clicked on from EventsPage
 export function SingleEventDetailsPage() {
     const { eventId } = useParams();
     const [event, setEvent] = useState<EventDetailView | null>(null);
-    const [users, setUsers] = useState<InternalUserEntity[]>([]);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -29,9 +28,8 @@ export function SingleEventDetailsPage() {
 
         const fetchEvent = async () => {
             try {
-                const [data, userList] = await Promise.all([getSingleEvent(eventId), listUsers()]);
+                const data = await getSingleEvent(eventId);
                 setEvent(data);
-                setUsers(userList);
             }
             catch (error) {
                 console.error("Error:", error);
@@ -52,7 +50,7 @@ export function SingleEventDetailsPage() {
 
     return (
         <div>
-            <DisplayEventDetails event={event} users={users} />
+            <DisplayEventDetails event={event} />
         </div>
     );
 }

@@ -1,17 +1,15 @@
 import "./EventDetails.css";
 import type { EventDetailView } from "../../types/event.ts"
-import type { InternalUserEntity } from "../../types/user.ts";
 import eventImage from "../../assets/vite.svg";
 
 // define what component below receives as input (the props)
 interface DisplayEventDetailsProps
 {
     event: EventDetailView;
-    users: InternalUserEntity[];
 }
 
 // TODO: add edit & delete button BUT only if the user is the creator of the event
-export function DisplayEventDetails({ event, users }: DisplayEventDetailsProps) {
+export function DisplayEventDetails({ event }: DisplayEventDetailsProps) {
     const eventDate = event.startTime.toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
@@ -45,10 +43,6 @@ export function DisplayEventDetails({ event, users }: DisplayEventDetailsProps) 
                 {event.description && (
                     <p className="event-card__description">{event.description}</p>
                 )}
-
-                <p className="event-card__users">
-                    Users: {users.length ? users.map((user) => user.userName).join(", ") : "None"}
-                </p>
 
                 <div className="event-card__actions">
                     <button className="event-card__join" type="button">Join</button>
