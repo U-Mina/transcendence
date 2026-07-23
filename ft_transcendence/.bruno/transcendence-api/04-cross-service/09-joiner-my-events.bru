@@ -1,0 +1,32 @@
+meta {
+  name: Joiner lists my events
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/users/me/events
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{joinerToken}}
+}
+
+tests {
+  test("my events returns 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("includes the joined event", function () {
+    const events = res.getBody();
+    expect(events).to.be.an("array");
+    const ids = events.map((e) => e.eventId);
+    expect(ids).to.include(bru.getEnvVar("eventId"));
+  });
+}
+
+docs {
+  JWT user id from login is used to query joins in event-service.
+}

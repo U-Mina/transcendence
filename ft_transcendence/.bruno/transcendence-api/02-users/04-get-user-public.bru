@@ -1,0 +1,21 @@
+meta {
+  name: Get public user profile
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/users/{{ownerId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("public profile returns 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("profile has userName", function () {
+    expect(res.getBody()).to.have.property("userName");
+  });
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Owner cannot join own event
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/events/{{eventId}}/join
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ownerToken}}
+}
+
+tests {
+  test("owner join returns 409", function () {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

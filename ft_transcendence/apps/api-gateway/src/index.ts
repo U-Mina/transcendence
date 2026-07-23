@@ -3,9 +3,14 @@
  */
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
+import jwt from "@fastify/jwt";
+import multipart from "@fastify/multipart";
+import fastifyStatic from "@fastify/static";
 import { healthCheckRoutes } from "./routes/health.routes";
 import { eventGatewayRoutes } from "./routes/event.routes";
 import { UserGatewayRoutes } from "./routes/user.routes";
+import { authGatewayRoutes } from "./routes/auth.routes";
+import { ensureUploadDirectory, uploadDirectory } from "./services/media.service";
 import { internalServiceStatusCheckRoutes } from "./routes/status.routes";
 import { metricsRoutes } from "./routes/metrics.routes";
 import { 
@@ -29,6 +34,25 @@ const fastify = Fastify({
 */
 
 const start = async () => {
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+        throw new Error("JWT_SECRET must be configured for the API gateway.");
+    }
+    await ensureUploadDirectory();
+    await fastify.register(jwt, {
+        secret: jwtSecret,
+        sign: {
+            iss: process.env.JWT_ISSUER || "transcendence-api-gateway",
+            aud: process.env.JWT_AUDIENCE || "transcendence-frontend",
+            expiresIn: process.env.JWT_EXPIRES_IN || "1h",
+        },
+        verify: {
+            allowedIss: process.env.JWT_ISSUER || "transcendence-api-gateway",
+            allowedAud: process.env.JWT_AUDIENCE || "transcendence-frontend",
+        },
+    });
+    await fastify.register(multipart, { limits: { files: 1, fileSize: 5 * 1024 * 1024 } });
+    await fastify.register(fastifyStatic, { root: uploadDirectory, prefix: "/uploads/" });
     // register swagger generator
     fastify.register(swagger, {
         openapi: {
@@ -42,11 +66,10 @@ const start = async () => {
             tags: [ {name: "auth"}, {name: "system"}, {name: "events"}, {name: "users"} ],
             components: {
                 securitySchemes: {
-                    // TODO: this will be real auth later
-                    apiKey: {
-                        type: "apiKey",
-                        in: "header",
-                        name: "x-api-key"
+                    bearerAuth: {
+                        type: "http",
+                        scheme: "bearer",
+                        bearerFormat: "JWT"
                     }
                 }
             }            
@@ -93,6 +116,7 @@ const start = async () => {
 
     fastify.register(healthCheckRoutes);
     fastify.register(metricsRoutes);
+    fastify.register(authGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(eventGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(UserGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(internalServiceStatusCheckRoutes, { prefix: "/api/v1" });

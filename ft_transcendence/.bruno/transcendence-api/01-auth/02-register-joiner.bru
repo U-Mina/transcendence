@@ -1,0 +1,40 @@
+meta {
+  name: Register joiner
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "userName": "{{joinerUserName}}",
+    "email": "{{joinerEmail}}",
+    "password": "{{password}}"
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.id) {
+    bru.setEnvVar("joinerId", body.id);
+  }
+}
+
+tests {
+  test("register joiner returns 201", function () {
+    expect(res.getStatus()).to.equal(201);
+  });
+
+  test("joiner id saved", function () {
+    expect(bru.getEnvVar("joinerId")).to.be.a("string").and.not.empty;
+  });
+}

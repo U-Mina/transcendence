@@ -1,0 +1,34 @@
+meta {
+  name: Register duplicate email
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "userName": "someone_else",
+    "email": "{{ownerEmail}}",
+    "password": "{{password}}"
+  }
+}
+
+tests {
+  test("duplicate email returns 409", function () {
+    expect(res.getStatus()).to.equal(409);
+  });
+
+  test("error message mentions existing account", function () {
+    const body = res.getBody();
+    expect(body.error).to.be.a("string");
+  });
+}

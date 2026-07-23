@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// User-service owns the `users` table.
+model User {
+  id           String   @id @db.VarChar(36)
+  userName     String   @map("user_name") @db.VarChar(100)
+  userEmail    String   @unique @map("user_email") @db.VarChar(255)
+  passwordHash String?  @map("password_hash") @db.VarChar(255)
+  friendList   String?  @map("friend_list") @db.Text
+  userContact  String?  @map("user_contact") @db.VarChar(50)
+  intraName    String?  @map("intra_name") @db.VarChar(100)
+  intraUrl     String?  @map("intra_url") @db.VarChar(255)
+  avatarUrl    String?  @map("avatar_url") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}

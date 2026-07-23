@@ -1,0 +1,21 @@
+meta {
+  name: Cancel join when not joined
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{baseUrl}}/events/{{eventId}}/join
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{joinerToken}}
+}
+
+tests {
+  test("cancel when not joined returns 404", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

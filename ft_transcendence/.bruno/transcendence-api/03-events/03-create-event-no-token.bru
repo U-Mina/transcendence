@@ -1,0 +1,29 @@
+meta {
+  name: Create event without token
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/events
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "eventName": "Should Fail No Auth",
+    "startTime": "{{startTime}}",
+    "endTime": "{{endTime}}"
+  }
+}
+
+tests {
+  test("no token returns 401", function () {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

@@ -1,157 +1,155 @@
 /**
  * add middle layer to handle the database operations
- * easier to switch to real db
+ * Prisma-backed implementation
  */
-import type { RowDataPacket } from "mysql2";
+import { Prisma, type User as UserRow } from "@prisma/client";
 import type { InternalUserEntity, UpdateUserDTO } from "./users.types";
-import { pool } from "./database";
-
-type UserRow = RowDataPacket & {
-    id: string;
-    user_name: string;
-    user_email: string;
-    friend_list: string | null;
-    user_contact: string | null;
-    intra_name: string | null;
-    intra_url: string | null;
-    created_at: Date;
-    updated_at: Date;
-};
+import { prisma } from "./libs/prisma";
 
 function mapUserRow(row: UserRow): InternalUserEntity {
     const mapped: InternalUserEntity = {
         id: row.id,
-        userName: row.user_name,
-        userEmail: row.user_email,
-        createdAt: new Date(row.created_at),
-        updatedAt: new Date(row.updated_at),
+        userName: row.userName,
+        userEmail: row.userEmail,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
     };
 
-    if (row.friend_list !== null) {
-        mapped.friendList = row.friend_list;
+    if (row.passwordHash !== null) {
+        mapped.passwordHash = row.passwordHash;
     }
-    if (row.user_contact !== null) {
-        mapped.userContact = row.user_contact;
+    if (row.friendList !== null) {
+        mapped.friendList = row.friendList;
     }
-    if (row.intra_name !== null) {
-        mapped.intraName = row.intra_name;
+    if (row.userContact !== null) {
+        mapped.userContact = row.userContact;
     }
-    if (row.intra_url !== null) {
-        mapped.intraUrl = row.intra_url;
+    if (row.intraName !== null) {
+        mapped.intraName = row.intraName;
+    }
+    if (row.intraUrl !== null) {
+        mapped.intraUrl = row.intraUrl;
+    }
+    if (row.avatarUrl !== null) {
+        mapped.avatarUrl = row.avatarUrl;
     }
 
     return mapped;
 }
 
 class UserRepository {
-    // get all user, this should not expose to normal users
     async getAllUser(): Promise<InternalUserEntity[]> {
-        const [rows] = await pool.query<UserRow[]>(
-            `SELECT
-                id,
-                user_name,
-                user_email,
-                friend_list,
-                user_contact,
-                intra_name,
-                intra_url,
-                created_at,
-                updated_at
-            FROM users`,
-        );
+        const rows = await prisma.user.findMany();
         return rows.map(mapUserRow);
     }
 
-    // get one user, this is for viewing others profile or their own profile, service will do the differenciation
     async getUserById(userId: string): Promise<InternalUserEntity | undefined> {
-        const [rows] = await pool.query<UserRow[]>(
-            `SELECT
-                id,
-                user_name,
-                user_email,
-                friend_list,
-                user_contact,
-                intra_name,
-                intra_url,
-                created_at,
-                updated_at
-            FROM users
-            WHERE id = ?
-            LIMIT 1`,
-            [userId],
-        );
-        const row = rows[0];
-        if (!row) {
-            return undefined;
-        }
-        return mapUserRow(row);
+        const row = await prisma.user.findUnique({ where: { id: userId } });
+        return row ? mapUserRow(row) : undefined;
     }
 
-    // create new user
+    async getUserByEmail(userEmail: string): Promise<InternalUserEntity | undefined> {
+        const row = await prisma.user.findUnique({ where: { userEmail } });
+        return row ? mapUserRow(row) : undefined;
+    }
+
     async createNewUser(newProfile: InternalUserEntity): Promise<void> {
-        await pool.execute(
-            `INSERT INTO users (
-                id,
-                user_name,
-                user_email,
-                friend_list,
-                user_contact,
-                intra_name,
-                intra_url,
-                created_at,
-                updated_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-                newProfile.id,
-                newProfile.userName,
-                newProfile.userEmail,
-                newProfile.friendList ?? null,
-                newProfile.userContact ?? null,
-                newProfile.intraName ?? null,
-                newProfile.intraUrl ?? null,
-                newProfile.createdAt,
-                newProfile.updatedAt,
-            ],
-        );
+        await prisma.user.create({
+            data: {
+                id: newProfile.id,
+                userName: newProfile.userName,
+                userEmail: newProfile.userEmail,
+                passwordHash: newProfile.passwordHash ?? null,
+                friendList: newProfile.friendList ?? null,
+                userContact: newProfile.userContact ?? null,
+                intraName: newProfile.intraName ?? null,
+                intraUrl: newProfile.intraUrl ?? null,
+                avatarUrl: newProfile.avatarUrl ?? null,
+            },
+        });
     }
 
-    // update users info
+    // idempotent create-or-replace, replaces the old manual "INSERT ... ON DUPLICATE KEY UPDATE"
+    async upsertUser(profile: InternalUserEntity): Promise<InternalUserEntity> {
+        const upserted = await prisma.user.upsert({
+            where: { id: profile.id },
+            create: {
+                id: profile.id,
+                userName: profile.userName,
+                userEmail: profile.userEmail,
+                passwordHash: profile.passwordHash ?? null,
+                friendList: profile.friendList ?? null,
+                userContact: profile.userContact ?? null,
+                intraName: profile.intraName ?? null,
+                intraUrl: profile.intraUrl ?? null,
+                avatarUrl: profile.avatarUrl ?? null,
+            },
+            update: {
+                userName: profile.userName,
+                userEmail: profile.userEmail,
+                passwordHash: profile.passwordHash ?? null,
+                friendList: profile.friendList ?? null,
+                userContact: profile.userContact ?? null,
+                intraName: profile.intraName ?? null,
+                intraUrl: profile.intraUrl ?? null,
+                avatarUrl: profile.avatarUrl ?? null,
+            },
+        });
+        return mapUserRow(upserted);
+    }
+
     async updateUser(targetProfileId: string, updatedInfo: UpdateUserDTO): Promise<InternalUserEntity | undefined> {
-        const fields: string[] = [];
-        const values: Array<string | null> = [];
+        const data: Prisma.UserUpdateInput = {};
 
         if (updatedInfo.userName !== undefined) {
-            fields.push("user_name = ?");
-            values.push(updatedInfo.userName);
+            data.userName = updatedInfo.userName;
         }
         if (updatedInfo.userContact !== undefined) {
-            fields.push("user_contact = ?");
-            values.push(updatedInfo.userContact ?? null);
+            data.userContact = updatedInfo.userContact ?? null;
         }
 
-        if (fields.length === 0) {
+        if (Object.keys(data).length === 0) {
             return this.getUserById(targetProfileId);
         }
 
-        fields.push("updated_at = CURRENT_TIMESTAMP");
-        await pool.execute(
-            `UPDATE users
-             SET ${fields.join(", ")}
-             WHERE id = ?`,
-            [...values, targetProfileId],
-        );
-
-        return this.getUserById(targetProfileId);
+        try {
+            const updated = await prisma.user.update({ where: { id: targetProfileId }, data });
+            return mapUserRow(updated);
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+                // record to update not found
+                return undefined;
+            }
+            throw error;
+        }
     }
 
-    // delete user
+    async updateAvatar(userId: string, avatarUrl: string): Promise<InternalUserEntity | undefined> {
+        try {
+            const updated = await prisma.user.update({
+                where: { id: userId },
+                data: { avatarUrl },
+            });
+            return mapUserRow(updated);
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+                return undefined;
+            }
+            throw error;
+        }
+    }
+
     async deleteUser(targetId: string): Promise<boolean> {
-        const [result] = await pool.execute(
-            "DELETE FROM users WHERE id = ?",
-            [targetId],
-        );
-        const affectedRows = (result as { affectedRows?: number }).affectedRows ?? 0;
-        return affectedRows > 0;
+        try {
+            await prisma.user.delete({ where: { id: targetId } });
+            return true;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+                // record to delete not found
+                return false;
+            }
+            throw error;
+        }
     }
 }
 

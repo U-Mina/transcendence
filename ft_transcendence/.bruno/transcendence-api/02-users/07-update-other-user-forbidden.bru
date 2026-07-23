@@ -1,0 +1,31 @@
+meta {
+  name: Update other user profile forbidden
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/users/{{joinerId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ownerToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "userName": "hacker_rename"
+  }
+}
+
+tests {
+  test("updating someone else returns 403", function () {
+    expect(res.getStatus()).to.equal(403);
+  });
+}

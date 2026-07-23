@@ -1,0 +1,21 @@
+meta {
+  name: List users with invalid token
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{invalidToken}}
+}
+
+tests {
+  test("invalid token returns 401", function () {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

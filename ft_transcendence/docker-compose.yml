@@ -22,10 +22,7 @@ services:
       - "${MYSQL_PORT}:3306"
 
     volumes:
-      - ./database/data:/var/lib/mysql
-      - ./.certificates/database:/certs/database:ro
-      - ./.certificates/ca:/certs/ca:ro
-
+      - mysql_data:/var/lib/mysql
     healthcheck:
       test:
         [
@@ -43,8 +40,7 @@ services:
     container_name: transcendence-user-service
     restart: unless-stopped
     working_dir: /app
-    command: sh -c "npm ci && npm run dev"
-
+    command: sh -c "npm install && npx prisma migrate deploy && npm run dev"
     volumes:
       - ./services/user-service:/app
       - user_service_node_modules:/app/node_modules
@@ -63,9 +59,8 @@ services:
       DATABASE_NAME: ${MYSQL_DATABASE}
       DATABASE_USER: ${MYSQL_USER}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-      DATABASE_CA_PATH: /certs/ca/ca.crt
-
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/user_service
+      SHADOW_DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/user_service_shadow
     ports:
       - "${USER_SERVICE_PORT}:3001"
 
@@ -79,8 +74,7 @@ services:
     container_name: transcendence-event-service
     restart: unless-stopped
     working_dir: /app
-    command: sh -c "npm ci && npm run dev"
-
+    command: sh -c "npm install && npx prisma migrate deploy && npm run dev"
     volumes:
       - ./services/event-service:/app
       - event_service_node_modules:/app/node_modules
@@ -99,11 +93,9 @@ services:
       DATABASE_NAME: ${MYSQL_DATABASE}
       DATABASE_USER: ${MYSQL_USER}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-      DATABASE_CA_PATH: /certs/ca/ca.crt
-
-      USER_SERVICE_URL: https://user-service:3001
-
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/event_service
+      SHADOW_DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/event_service_shadow
+      USER_SERVICE_URL: http://user-service:3001
     ports:
       - "${EVENT_SERVICE_PORT}:3002"
 
@@ -224,6 +216,7 @@ services:
 
 
 volumes:
+  mysql_data:
   user_service_node_modules:
   event_service_node_modules:
   api_gateway_node_modules:

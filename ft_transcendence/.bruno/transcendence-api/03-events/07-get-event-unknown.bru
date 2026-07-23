@@ -1,0 +1,17 @@
+meta {
+  name: Get unknown event
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/events/00000000-0000-0000-0000-000000000000
+  body: none
+  auth: none
+}
+
+tests {
+  test("unknown event returns 404", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+}
