@@ -38,6 +38,9 @@ const start = async () => {
     if (!jwtSecret) {
         throw new Error("JWT_SECRET must be configured for the API gateway.");
     }
+    if (!process.env.INTERNAL_SERVICE_TOKEN) {
+        throw new Error("INTERNAL_SERVICE_TOKEN must be configured for the API gateway.");
+    }
     await ensureUploadDirectory();
     await fastify.register(jwt, {
         secret: jwtSecret,

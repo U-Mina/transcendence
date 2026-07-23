@@ -11,6 +11,14 @@ type ProxyResult = {
     body: unknown,
 }
 
+function internalServiceHeaders(headers?: Record<string, string>): Record<string, string> {
+    const token = process.env.INTERNAL_SERVICE_TOKEN;
+    return {
+        ...headers,
+        ...(token ? { "x-internal-token": token } : {}),
+    };
+}
+
 /** headers: {
  * "content-type": "application/json",
  * "x-user": request.header["x-user"]
@@ -24,18 +32,19 @@ export async function proxyToService(
 ): Promise<ProxyResult> {
     // put in try catch block
     try {
+        const forwardedHeaders = internalServiceHeaders(headers);
         // this avoid pass body empty case (undefined) to fecth() which will cause ts error
         const requestInit: RequestInit = {
             method: method,
             headers: {
-                ...headers,
+                ...forwardedHeaders,
             }
         }
         // ONLY when body is NOT empty, we define header
         if (body !== undefined) {
             requestInit.headers = {
                 "content-type": "application/json",
-                ...headers,
+                ...forwardedHeaders,
             };
             requestInit.body = JSON.stringify(body);
         }
