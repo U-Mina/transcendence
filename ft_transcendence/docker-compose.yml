@@ -165,6 +165,7 @@ services:
       - ./monitoring/prometheus/web.yml:/etc/prometheus/web.yml:ro
       - ./.certificates/prometheus:/certs/prometheus:ro
       - ./.certificates/ca:/certs/ca:ro
+      - ./monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
 
 
   grafana:
