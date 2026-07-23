@@ -6,3 +6,6 @@ groups:
         for: 1m
         labels:
           severity: critical
+        annotations:
+          summary: "Service {{ $labels.instance }} is down"
+          description: "Prometheus could not scrape {{ $labels.instance }} for more than one minute."
