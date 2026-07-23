@@ -197,11 +197,16 @@ class EventService {
     // only be called inside current class
     // architecture note: even if the user-service (get-user-info) failed, event-service still works
     private async getEventCreatorSummary(creatorId: string): Promise<UserSummary> {
-        const userServiceUrl = process.env.USER_SERVICE_URL ?? "http://localhost:3001";
+        const userServiceUrl = process.env.USER_SERVICE_URL ?? "https://localhost:3001";
+        const internalToken = process.env.INTERNAL_SERVICE_TOKEN;
 
         try {
             // this is the 'GET' request (check in user-routes), which returns user-profile
-            const response = await fetch(`${userServiceUrl}/users/${creatorId}`);
+            const response = await fetch(`${userServiceUrl}/users/${creatorId}`, {
+                headers: internalToken
+                    ? { "x-internal-token": internalToken }
+                    : undefined,
+            });
             if (!response.ok) {
                 throw new Error(`Fail to get user service. Response status: ${response.status}`);
             }

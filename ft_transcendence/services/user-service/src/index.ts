@@ -4,6 +4,7 @@ import Fastify from "fastify";
 import { healthCheckRoutes } from "./routes/health.routes";
 import { userServiceRoutes } from "./routes/user.routes";
 import { metricsRoutes } from "./routes/metrics.routes";
+import { requireInternalServiceToken } from "./middleware/internal-auth.middleware";
 import {
     httpRequestsTotal,
     httpRequestDurationSeconds,
@@ -23,6 +24,12 @@ const fastify = Fastify({
 // Start the server
 const start = async () => {
     try {
+        if (!process.env.INTERNAL_SERVICE_TOKEN) {
+            throw new Error("INTERNAL_SERVICE_TOKEN must be configured for user-service.");
+        }
+
+        fastify.addHook("onRequest", requireInternalServiceToken);
+
         fastify.addHook("onRequest", async (request) => {
             request.metricsStartTime = process.hrtime.bigint();
         });

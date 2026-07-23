@@ -93,9 +93,6 @@ build/
 .DS_Store
 
 # --- Prisma (Keep migration files, ignore auto-generated client) ---
-# Migration files must be committed, but the generated client should not
+# Migration files must be committed so `prisma migrate deploy` works on clean clones
 node_modules/@prisma/client/
-
-services/user-service/prisma/migrations/*
-services/event-service/prisma/migrations/*
 

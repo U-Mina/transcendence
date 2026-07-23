@@ -4,7 +4,7 @@ import { authMiddleware, identityHeaders } from "../middleware/auth.middleware";
 import { MediaError, removeStoredUpload, saveImage } from "../services/media.service";
 // NOTE: if import the data-type, it is against microservice
 
-const EVENT_SERVICE_URL = process.env.EVENT_SERVICE_URL ?? "http://localhost:3002";
+const EVENT_SERVICE_URL = process.env.EVENT_SERVICE_URL ?? "https://localhost:3002";
 
 export async function eventGatewayRoutes(fastify: FastifyInstance) {
     // get event by id
