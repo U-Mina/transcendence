@@ -1,3 +1,15 @@
+export const EVENT_TAGS = [
+    "Social",
+    "Sports",
+    "Games",
+    "Food",
+    "Learning",
+    "Outdoors",
+    "Arts & Culture",
+] as const;
+
+export type EventTag = typeof EVENT_TAGS[number];
+
 /**
  * mock data array for event
  */
@@ -5,13 +17,15 @@
 export interface EventCard {
     // event id, unique identifier
     eventId: string;
+    creatorId: string;
     eventName: string;
     startTime: Date;
     endTime: Date;
-    // may create an enum for category
+    // Kept as `category` for API/database compatibility; shown as “Tag” in the UI.
     category?: string;
     description?: string;
     location?: string;
+    minParticipant?: number;
     // comments / questins session
     comment?: string;
     imageUrl?: string;
@@ -27,7 +41,7 @@ export interface EventManageView extends EventCard {
 
 // user-info object embeded in the detailed event-view
 export interface UserSummary {
-    // userId: string;
+    userId: string;
     userName: string;
     intraName?: string;
     intraUrl?: string;
@@ -50,12 +64,12 @@ export interface CreateEventDTO {
     eventName: string;
     startTime: Date;
     endTime: Date;
-    category?: string;
+    category?: EventTag;
     description?: string;
     location?: string;
     // minimal ppl to make this event able to happen
     // NOTE: this should be mandtory
-    minPaticipant?: number;
+    minParticipant?: number;
 }
 
 // on updating, all filed opyional cuz user may only update ONE item
@@ -65,8 +79,8 @@ export interface UpdateEventDTO {
     eventName?: string;
     startTime?: Date;
     endTime?: Date;
-    category?: string;
+    category?: EventTag;
     description?: string;
     location?: string;
-    minPaticipant?: number;
+    minParticipant?: number;
 }
