@@ -1,7 +1,7 @@
 /**
  * event service implementation
  */
-import type { EventCard, EventManageView, UserSummary, EventDetailView, InternalEventEntity, CreateEventDTO, UpdateEventDTO } from "../event.types";
+import { EVENT_TAGS, type EventCard, type EventManageView, type UserSummary, type EventDetailView, type InternalEventEntity, type CreateEventDTO, type UpdateEventDTO, type EventTag } from "../event.types";
 import { eventRepository } from "../event.repository";
 
 // centralize error handler, using super()
@@ -11,10 +11,69 @@ export class EventServiceError extends Error {
     }
 }
 
+function requiredText(value: unknown, field: string, maxLength: number): string {
+    if (typeof value !== "string" || !value.trim() || value.trim().length > maxLength) {
+        throw new EventServiceError(`Invalid ${field}.`, 400);
+    }
+    return value.trim();
+}
+
+function optionalText(value: unknown, field: string, maxLength: number): string | undefined {
+    if (value === undefined) return undefined;
+    if (typeof value !== "string" || value.trim().length > maxLength) {
+        throw new EventServiceError(`Invalid ${field}.`, 400);
+    }
+    return value.trim() || undefined;
+}
+
+function optionalDate(value: unknown, field: string): Date | undefined {
+    if (value === undefined) return undefined;
+    const date = value instanceof Date ? value : new Date(value as string | number);
+    if (Number.isNaN(date.getTime())) throw new EventServiceError(`Invalid ${field}.`, 400);
+    return date;
+}
+
+function optionalTag(value: unknown, required: boolean): EventTag | undefined {
+    if (value === undefined) {
+        if (required) throw new EventServiceError("A tag is required.", 400);
+        return undefined;
+    }
+    if (typeof value !== "string" || !EVENT_TAGS.includes(value as EventTag)) {
+        throw new EventServiceError("Invalid tag.", 400);
+    }
+    return value as EventTag;
+}
+
+function normalizeEventInput(input: unknown, required: boolean): CreateEventDTO | UpdateEventDTO {
+    if (typeof input !== "object" || input === null || Array.isArray(input)) {
+        throw new EventServiceError("Invalid event data.", 400);
+    }
+    const value = input as Record<string, unknown>;
+    const eventName = required ? requiredText(value.eventName, "event name", 255) : optionalText(value.eventName, "event name", 255);
+    const startTime = optionalDate(value.startTime, "start time");
+    const endTime = optionalDate(value.endTime, "end time");
+    if (required && (!startTime || !endTime)) throw new EventServiceError("Start and end times are required.", 400);
+    const category = optionalTag(value.category, required);
+    const description = optionalText(value.description, "description", 5000);
+    const location = optionalText(value.location, "location", 255);
+    const minParticipant = value.minParticipant === undefined ? undefined : value.minParticipant;
+    if (minParticipant !== undefined && (!Number.isInteger(minParticipant) || (minParticipant as number) < 1)) {
+        throw new EventServiceError("Minimum participants must be a positive integer.", 400);
+    }
+    return {
+        ...(eventName !== undefined ? { eventName } : {}),
+        ...(startTime ? { startTime } : {}),
+        ...(endTime ? { endTime } : {}),
+        ...(category ? { category } : {}),
+        ...(description !== undefined ? { description } : {}),
+        ...(location !== undefined ? { location } : {}),
+        ...(minParticipant !== undefined ? { minParticipant: minParticipant as number } : {}),
+    };
+}
+
 // public view of card, centrailized here
 function publicCard(event: InternalEventEntity): EventCard {
     const {
-        creatorId,
         safetyCheck,
         createdAt,
         updatedAt,
@@ -50,7 +109,6 @@ class EventService {
         return ((await eventRepository.getAll()).map(event => {
             const {
                 safetyCheck,
-                creatorId,
                 createdAt,
                 updatedAt,
                 ...publicView
@@ -68,9 +126,10 @@ class EventService {
     // POST to create new event
     // async createEvent(creatorId, eventInput): Promise<EventDTO | undefine> {}
     async createEvent(creatorId: string, eventInput: CreateEventDTO): Promise<EventManageView | undefined> {
+        const input = normalizeEventInput(eventInput, true) as CreateEventDTO;
         const curTime = Date.now();
-        const startTime = eventInput.startTime;
-        const endTime = eventInput.endTime;
+        const startTime = input.startTime;
+        const endTime = input.endTime;
 
         // event time logic check
         if (curTime > new Date(startTime).getTime()) {
@@ -87,7 +146,7 @@ class EventService {
             creatorId,
             createdAt: new Date(),
             updatedAt: new Date(),
-            ...eventInput
+            ...input
         };
         // push to db
         await eventRepository.createEvent(newEventEntity);
@@ -107,14 +166,15 @@ class EventService {
         eventInput: UpdateEventDTO
     ): Promise<EventManageView | undefined> {
         const event = await this.requireOwner(eventId, userId);
+        const input = normalizeEventInput(eventInput, false) as UpdateEventDTO;
         // normal event time check
-        const startTime = eventInput.startTime ?? event.startTime;
-        const endTime = eventInput.endTime ?? event.endTime;
+        const startTime = input.startTime ?? event.startTime;
+        const endTime = input.endTime ?? event.endTime;
         if ((new Date(endTime).getTime() < new Date(startTime).getTime()) || new Date(startTime).getTime() < Date.now()) {
             throw new EventServiceError("Invalid event time.", 400);
         }
 
-        const updatedEvent = await eventRepository.updateEvent(eventId, eventInput);
+        const updatedEvent = await eventRepository.updateEvent(eventId, input);
         if (!updatedEvent) {
             throw new EventServiceError("Event not found.", 404);
         }
@@ -202,29 +262,34 @@ class EventService {
 
         try {
             // this is the 'GET' request (check in user-routes), which returns user-profile
-            const response = await fetch(`${userServiceUrl}/users/${creatorId}`, {
-                headers: internalToken
-                    ? { "x-internal-token": internalToken }
-                    : undefined,
-            });
+            const response = await fetch(
+                `${userServiceUrl}/users/${creatorId}`,
+                internalToken ? { headers: { "x-internal-token": internalToken } } : {},
+            );
             if (!response.ok) {
                 throw new Error(`Fail to get user service. Response status: ${response.status}`);
             }
             
             // convert response to json
-            const user = await response.json();
+            const user = await response.json() as {
+                userName: string;
+                intraName?: string;
+                intraUrl?: string;
+            };
 
             // extract needed info
-            const userSumForEvent = {
+            const userSumForEvent: UserSummary = {
+                userId: creatorId,
                 userName: user.userName,
-                intraName: user.intraName ?? undefined,
-                intraUrl: user.intraUrl ?? undefined, 
+                ...(user.intraName ? { intraName: user.intraName } : {}),
+                ...(user.intraUrl ? { intraUrl: user.intraUrl } : {}),
             };
             return userSumForEvent;
 
         } catch {
             // this is the fallback, so return type never be unfined
             return {
+                userId: creatorId,
                 userName: "User service is currently unavailable."
             }
         }
