@@ -8,6 +8,7 @@ export async function authGatewayRoutes(fastify: FastifyInstance) {
         "/auth/register",
         {
             schema: {
+                tags: ["auth"],
                 body: {
                     type: "object",
                     additionalProperties: false,
@@ -29,6 +30,7 @@ export async function authGatewayRoutes(fastify: FastifyInstance) {
         "/auth/login",
         {
             schema: {
+                tags:["auth"],
                 body: {
                     type: "object",
                     additionalProperties: false,

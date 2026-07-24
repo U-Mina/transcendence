@@ -32,7 +32,6 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "Get event by id",
                 description: "Return detailed event card by event id",
-                tags: ["events"],
                 params: {
                     type: "object",
                     required: ["eventId"],
@@ -59,7 +58,6 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "List all events",
                 description: "Returns all public event cards",
-                tags: ["events"],
             }
         }, async (_, reply) => {
             const result = await proxyToService(
@@ -80,7 +78,6 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "Create new event.",
                 description: "Create a new event for current user",
-                tags: ["events"],
                 body: {
                     type: "object",
                     additionalProperties: false,
@@ -110,7 +107,6 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "Delete event.",
                 description: "User can delete the event she/he created.",
-                tags: ["events"],
                 params: eventIdParams,
             },
         },
@@ -137,7 +133,6 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "Update existing event.",
                 description: "User of event updates their event card.",
-                tags: ["events"],
                 params: eventIdParams,
                 body: {
                     type: "object",
