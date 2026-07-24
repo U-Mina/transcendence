@@ -5,8 +5,7 @@
  */
 import bcrypt from "bcryptjs";
 import { userRepository } from "../user.repository";
-import type { InternalUserEntity, CreateUserDTO, UpdateUserDTO, PublicUserProfile, LoginUserDTO, RegisterUserDTO } from "../users.types";
-import { toUnicode } from "node:punycode";
+import type { InternalUserEntity, UpdateUserDTO, PublicUserProfile, CommunityUser, LoginUserDTO, RegisterUserDTO } from "../users.types";
 // the current id will extract from JWT later, now statically pass
 
 /**
@@ -39,9 +38,22 @@ function normalizeEmail(email: string): string {
     return email.trim().toLowerCase();
 }
 
+function validateEmail(email: string): boolean {
+    return email.length <= 255 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function publicProfile(user: InternalUserEntity): PublicUserProfile {
+    return {
+        userName: user.userName,
+        ...(user.intraName ? { intraName: user.intraName } : {}),
+        ...(user.intraUrl ? { intraUrl: user.intraUrl } : {}),
+        ...(user.avatarUrl ? { avatarUrl: user.avatarUrl } : {}),
+    };
+}
+
 class UserService {
 
-    async getUserById(targetId: string, currentUserId: string): Promise<SafeUser | PublicUserProfile> {
+    async getUserById(targetId: string, currentUserId?: string): Promise<SafeUser | PublicUserProfile> {
         const user = await userRepository.getUserById(targetId);
         if (!user) {
             throw new UserServiceError("User not found.", 404);
@@ -52,19 +64,15 @@ class UserService {
             return withoutPassword(user);
         }
     
-        const {
-            createdAt,
-            updatedAt,
-            id,
-            passwordHash,
-            ...publicProfile
-        } = user;
-        return publicProfile;
+        return publicProfile(user);
     }
     
-    async getAllUser(): Promise<SafeUser[]> {
-        // remove password hash from every object
-        return (await userRepository.getAllUser()).map(withoutPassword);
+    async getAllUser(): Promise<CommunityUser[]> {
+        return (await userRepository.getAllUser()).map((user) => ({
+            id: user.id,
+            userName: user.userName,
+            ...(user.avatarUrl ? { avatarUrl: user.avatarUrl } : {}),
+        }));
     }
     
     // register of new user
@@ -74,7 +82,7 @@ class UserService {
         const userEmail = typeof userInput.email === "string" ? normalizeEmail(userInput.email) : "";
         const password = typeof userInput.password === "string" ? userInput.password : "";
 
-        if (!userName || !userEmail) {
+        if (userName.length < 2 || userName.length > 100 || !validateEmail(userEmail)) {
             throw new UserServiceError("Invalid registration data.", 400);
         }
         if (password.length < 8 || password.length > 72) {
@@ -126,7 +134,18 @@ class UserService {
         if (userId !== targetProfileId) {
             throw new UserServiceError("Forbidden operation.", 403);
         }
-        const updated =  await userRepository.updateUser(targetProfileId, updatedInfo);
+        const userName = updatedInfo.userName === undefined ? undefined : updatedInfo.userName.trim();
+        const userContact = updatedInfo.userContact === undefined || updatedInfo.userContact === null
+            ? updatedInfo.userContact
+            : updatedInfo.userContact.trim();
+        if ((userName !== undefined && (userName.length < 2 || userName.length > 100))
+            || (typeof userContact === "string" && userContact.length > 50)) {
+            throw new UserServiceError("Invalid profile data.", 400);
+        }
+        const updated =  await userRepository.updateUser(targetProfileId, {
+            ...(userName !== undefined ? { userName } : {}),
+            ...(userContact !== undefined ? { userContact } : {}),
+        });
         if (!updated) {
             throw new UserServiceError("User not found.", 404);
         }
