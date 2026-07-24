@@ -1,0 +1,50 @@
+meta {
+  name: Create event as owner
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/events
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ownerToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "eventName": "Bruno Cross-Service Event",
+    "startTime": "{{startTime}}",
+    "endTime": "{{endTime}}",
+    "category": "sports",
+    "description": "Created by Bruno collection",
+    "location": "Berlin",
+    "minPaticipant": 2
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.eventId) {
+    bru.setEnvVar("eventId", body.eventId);
+  }
+}
+
+tests {
+  test("create event returns 201", function () {
+    expect(res.getStatus()).to.equal(201);
+  });
+
+  test("eventId saved and creator is owner", function () {
+    const body = res.getBody();
+    expect(body.eventId).to.be.a("string");
+    expect(body.creatorId).to.equal(bru.getEnvVar("ownerId"));
+  });
+}

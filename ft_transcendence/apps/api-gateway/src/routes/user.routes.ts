@@ -7,7 +7,7 @@ import { proxyToService } from "../services/proxy.service";
 import { authMiddleware, identityHeaders } from "../middleware/auth.middleware";
 import { MediaError, removeStoredUpload, saveImage } from "../services/media.service";
 
-const USER_SERVICE_URL = process.env.USER_SERVICE_URL ?? "http://localhost:3001";
+const USER_SERVICE_URL = process.env.USER_SERVICE_URL ?? "https://localhost:3001";
 
 export async function UserGatewayRoutes(fastify: FastifyInstance) {
     // get all users is now implemented, but it SHOULD go 'advanced user management' module

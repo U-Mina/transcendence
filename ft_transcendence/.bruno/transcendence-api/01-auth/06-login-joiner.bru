@@ -1,0 +1,42 @@
+meta {
+  name: Login joiner
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "{{joinerEmail}}",
+    "password": "{{password}}"
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.accessToken) {
+    bru.setEnvVar("joinerToken", body.accessToken);
+  }
+  if (body && body.user && body.user.id) {
+    bru.setEnvVar("joinerId", body.user.id);
+  }
+}
+
+tests {
+  test("login joiner returns 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("joiner token saved", function () {
+    expect(bru.getEnvVar("joinerToken")).to.be.a("string").and.not.empty;
+  });
+}

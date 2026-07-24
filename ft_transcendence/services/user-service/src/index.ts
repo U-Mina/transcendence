@@ -4,19 +4,32 @@ import Fastify from "fastify";
 import { healthCheckRoutes } from "./routes/health.routes";
 import { userServiceRoutes } from "./routes/user.routes";
 import { metricsRoutes } from "./routes/metrics.routes";
+import { requireInternalServiceToken } from "./middleware/internal-auth.middleware";
 import {
     httpRequestsTotal,
     httpRequestDurationSeconds,
 } from "./metrics/http.metrics";
+import fs from "node:fs";
 
 // Create a Fastify instance
 const fastify = Fastify({
     logger: true,
+
+    https: {
+        key: fs.readFileSync(process.env.TLS_KEY_PATH!),
+        cert: fs.readFileSync(process.env.TLS_CERT_PATH!),
+    },
 });
 
 // Start the server
 const start = async () => {
     try {
+        if (!process.env.INTERNAL_SERVICE_TOKEN) {
+            throw new Error("INTERNAL_SERVICE_TOKEN must be configured for user-service.");
+        }
+
+        fastify.addHook("onRequest", requireInternalServiceToken);
+
         fastify.addHook("onRequest", async (request) => {
             request.metricsStartTime = process.hrtime.bigint();
         });
@@ -56,7 +69,7 @@ const start = async () => {
 
         // Start listening, host is 0.0.0.0 for Docker containers to access the service
         await fastify.listen({
-            port: 3001,
+            port: Number(process.env.PORT ?? 3001),
             host: "0.0.0.0",
         });
     } catch (error) {

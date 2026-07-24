@@ -34,6 +34,12 @@ function mapEventRow(row: EventRow): InternalEventEntity {
     if (row.comment !== null) {
         mapped.comment = row.comment;
     }
+    if (row.minParticipant !== null) {
+        mapped.minPaticipant = row.minParticipant;
+    }
+    if (row.imageUrl !== null) {
+        mapped.imageUrl = row.imageUrl;
+    }
     return mapped;
 }
 
@@ -42,11 +48,6 @@ class EventRepository {
     async getAll(): Promise<InternalEventEntity[]> {
         const rows = await prisma.event.findMany({ orderBy: { createdAt: "desc" } });
         return rows.map(mapEventRow);
-    }
-
-    async getAll(): Promise<InternalEventEntity[]> {
-        const [rows] = await pool.query<EventRow[]>(`SELECT ${eventColumns} FROM events`);
-        return rows.map((row) => this.mapEventRow(row));
     }
 
     async getEventById(eventId: string): Promise<InternalEventEntity | undefined> {
@@ -70,6 +71,8 @@ class EventRepository {
                 description: event.description ?? null,
                 location: event.location ?? null,
                 comment: event.comment ?? null,
+                minParticipant: event.minPaticipant ?? null,
+                imageUrl: event.imageUrl ?? null,
                 safetyCheck: event.safetyCheck,
             },
         });
@@ -92,6 +95,8 @@ class EventRepository {
                 description: event.description ?? null,
                 location: event.location ?? null,
                 comment: event.comment ?? null,
+                minParticipant: event.minPaticipant ?? null,
+                imageUrl: event.imageUrl ?? null,
                 safetyCheck: event.safetyCheck,
             },
             update: {
@@ -102,6 +107,8 @@ class EventRepository {
                 description: event.description ?? null,
                 location: event.location ?? null,
                 comment: event.comment ?? null,
+                minParticipant: event.minPaticipant ?? null,
+                imageUrl: event.imageUrl ?? null,
                 safetyCheck: event.safetyCheck,
             },
         });
@@ -157,6 +164,64 @@ class EventRepository {
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
                 // record to delete not found
                 return false;
+            }
+            throw error;
+        }
+    }
+
+    async joinEvent(eventId: string, userId: string): Promise<void> {
+        try {
+            await prisma.eventParticipant.create({
+                data: { eventId, userId },
+            });
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+                // preserve legacy MySQL duplicate-key signal expected by event.service
+                const duplicate = new Error("Duplicate join") as Error & { code: string };
+                duplicate.code = "ER_DUP_ENTRY";
+                throw duplicate;
+            }
+            throw error;
+        }
+    }
+
+    async cancelJoin(eventId: string, userId: string): Promise<boolean> {
+        try {
+            await prisma.eventParticipant.delete({
+                where: { eventId_userId: { eventId, userId } },
+            });
+            return true;
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+                return false;
+            }
+            throw error;
+        }
+    }
+
+    async getJoinedEvents(userId: string): Promise<InternalEventEntity[]> {
+        const rows = await prisma.eventParticipant.findMany({
+            where: { userId },
+            include: { event: true },
+            orderBy: { joinedAt: "desc" },
+        });
+        return rows.map((row) => mapEventRow(row.event));
+    }
+
+    async getJoinedCount(eventId: string): Promise<number> {
+        return prisma.eventParticipant.count({ where: { eventId } });
+    }
+
+    async updateImage(eventId: string, imageUrl: string): Promise<InternalEventEntity | undefined> {
+        try {
+            const updated = await prisma.event.update({
+                where: { eventId },
+                data: { imageUrl },
+            });
+            return mapEventRow(updated);
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+                return undefined;
             }
             throw error;
         }

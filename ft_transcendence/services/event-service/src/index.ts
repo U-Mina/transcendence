@@ -1,23 +1,35 @@
 /**
  * The main entry point of the event service server
  */
-
 import "dotenv/config";
 import Fastify from "fastify";
 
 import { healthCheckRoutes } from "./routes/health.routes";
 import { eventServiceRoutes } from "./routes/event.routes";
 import { metricsRoutes } from "./routes/metrics.routes";
+import { requireInternalServiceToken } from "./middleware/internal-auth.middleware";
 import {
     httpRequestsTotal,
     httpRequestDurationSeconds,
 } from "./metrics/http.metrics";
+import fs from "node:fs";
 
 const fastify = Fastify({
     logger: true,
+
+    https: {
+        key: fs.readFileSync(process.env.TLS_KEY_PATH!),
+        cert: fs.readFileSync(process.env.TLS_CERT_PATH!),
+    },
 });
 
 const start = async () => {
+    if (!process.env.INTERNAL_SERVICE_TOKEN) {
+        throw new Error("INTERNAL_SERVICE_TOKEN must be configured for event-service.");
+    }
+
+    fastify.addHook("onRequest", requireInternalServiceToken);
+
     fastify.addHook("onRequest", async (request) => {
         request.metricsStartTime = process.hrtime.bigint();
     });
@@ -57,7 +69,7 @@ const start = async () => {
 
     try {
         await fastify.listen({
-            port: 3002,
+            port: Number(process.env.PORT ?? 3002),
             host: "0.0.0.0",
         });
     } catch (error) {

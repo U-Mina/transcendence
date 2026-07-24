@@ -6,10 +6,6 @@ import { Prisma, type User as UserRow } from "@prisma/client";
 import type { InternalUserEntity, UpdateUserDTO } from "./users.types";
 import { prisma } from "./libs/prisma";
 
-const userColumns = `
-    id, user_name, user_email, password_hash, friend_list, user_contact,
-    intra_name, intra_url, avatar_url, created_at, updated_at`;
-
 function mapUserRow(row: UserRow): InternalUserEntity {
     const mapped: InternalUserEntity = {
         id: row.id,
@@ -19,6 +15,9 @@ function mapUserRow(row: UserRow): InternalUserEntity {
         updatedAt: row.updatedAt,
     };
 
+    if (row.passwordHash !== null) {
+        mapped.passwordHash = row.passwordHash;
+    }
     if (row.friendList !== null) {
         mapped.friendList = row.friendList;
     }
@@ -30,6 +29,9 @@ function mapUserRow(row: UserRow): InternalUserEntity {
     }
     if (row.intraUrl !== null) {
         mapped.intraUrl = row.intraUrl;
+    }
+    if (row.avatarUrl !== null) {
+        mapped.avatarUrl = row.avatarUrl;
     }
 
     return mapped;
@@ -46,16 +48,23 @@ class UserRepository {
         return row ? mapUserRow(row) : undefined;
     }
 
+    async getUserByEmail(userEmail: string): Promise<InternalUserEntity | undefined> {
+        const row = await prisma.user.findUnique({ where: { userEmail } });
+        return row ? mapUserRow(row) : undefined;
+    }
+
     async createNewUser(newProfile: InternalUserEntity): Promise<void> {
         await prisma.user.create({
             data: {
                 id: newProfile.id,
                 userName: newProfile.userName,
                 userEmail: newProfile.userEmail,
+                passwordHash: newProfile.passwordHash ?? null,
                 friendList: newProfile.friendList ?? null,
                 userContact: newProfile.userContact ?? null,
                 intraName: newProfile.intraName ?? null,
                 intraUrl: newProfile.intraUrl ?? null,
+                avatarUrl: newProfile.avatarUrl ?? null,
             },
         });
     }
@@ -68,18 +77,22 @@ class UserRepository {
                 id: profile.id,
                 userName: profile.userName,
                 userEmail: profile.userEmail,
+                passwordHash: profile.passwordHash ?? null,
                 friendList: profile.friendList ?? null,
                 userContact: profile.userContact ?? null,
                 intraName: profile.intraName ?? null,
                 intraUrl: profile.intraUrl ?? null,
+                avatarUrl: profile.avatarUrl ?? null,
             },
             update: {
                 userName: profile.userName,
                 userEmail: profile.userEmail,
+                passwordHash: profile.passwordHash ?? null,
                 friendList: profile.friendList ?? null,
                 userContact: profile.userContact ?? null,
                 intraName: profile.intraName ?? null,
                 intraUrl: profile.intraUrl ?? null,
+                avatarUrl: profile.avatarUrl ?? null,
             },
         });
         return mapUserRow(upserted);
@@ -105,6 +118,21 @@ class UserRepository {
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
                 // record to update not found
+                return undefined;
+            }
+            throw error;
+        }
+    }
+
+    async updateAvatar(userId: string, avatarUrl: string): Promise<InternalUserEntity | undefined> {
+        try {
+            const updated = await prisma.user.update({
+                where: { id: userId },
+                data: { avatarUrl },
+            });
+            return mapUserRow(updated);
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
                 return undefined;
             }
             throw error;

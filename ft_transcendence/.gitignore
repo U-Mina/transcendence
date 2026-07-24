@@ -4,34 +4,6 @@ __DS_Store
 
 # --- Dependencies (Never commit these) ---
 node_modules/
-.pnpm-store/
-
-# --- Environment Variables (Keep sensitive data private) ---
-.env
-.env.*
-!.env.example
-
-# --- Build and Log Files ---
-dist/
-build/
-*.log
-*.sqlite3
-*.sqlite3-journal
-
-# --- IDE and Editor Files ---
-.vscode/
-.idea/
-.DS_Store
-
-# --- Prisma (Keep migration files, ignore auto-generated client) ---
-# Migration files must be committed, but the generated client should not
-node_modules/@prisma/client/
-
-services/user-service/prisma/migrations/*
-services/event-service/prisma/migrations/*
-
-# json gitignore
-node_modules/
 uploads/
 .node_modules/
 built/*
@@ -98,3 +70,29 @@ package-lock.json
 .eslintcache
 *v8.log
 /lib/
+
+.certificates/*
+!.certificates/.gitkeep
+.pnpm-store/
+
+# --- Environment Variables (Keep sensitive data private) ---
+.env
+.env.*
+!.env.example
+
+# --- Build and Log Files ---
+dist/
+build/
+*.log
+*.sqlite3
+*.sqlite3-journal
+
+# --- IDE and Editor Files ---
+.vscode/
+.idea/
+.DS_Store
+
+# --- Prisma (Keep migration files, ignore auto-generated client) ---
+# Migration files must be committed so `prisma migrate deploy` works on clean clones
+node_modules/@prisma/client/
+

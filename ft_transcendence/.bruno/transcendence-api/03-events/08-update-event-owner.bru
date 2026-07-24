@@ -1,0 +1,36 @@
+meta {
+  name: Update event as owner
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{baseUrl}}/events/{{eventId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ownerToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "eventName": "Bruno Event Updated",
+    "description": "updated by owner"
+  }
+}
+
+tests {
+  test("owner update returns 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("name changed", function () {
+    expect(res.getBody().eventName).to.equal("Bruno Event Updated");
+  });
+}

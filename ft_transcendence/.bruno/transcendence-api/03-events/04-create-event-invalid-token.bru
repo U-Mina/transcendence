@@ -1,0 +1,42 @@
+meta {
+  name: Create event with invalid token
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/events
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{invalidToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "eventName": "Should Fail Bad Token",
+    "startTime": "{{startTime}}",
+    "endTime": "{{endTime}}"
+  }
+}
+
+tests {
+  test("invalid token cannot create event — 401", function () {
+    expect(res.getStatus()).to.equal(401);
+  });
+
+  test("gateway rejects before event-service", function () {
+    expect(res.getBody().error).to.equal("Invalid or expired access token.");
+  });
+}
+
+docs {
+  Cross-service rule: a bad user JWT must not create an event.
+  Gateway auth middleware blocks the request; event-service is never called.
+}

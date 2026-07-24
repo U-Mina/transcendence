@@ -1,0 +1,21 @@
+meta {
+  name: Joiner cannot delete owner event
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseUrl}}/events/{{eventId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{joinerToken}}
+}
+
+tests {
+  test("non-owner delete returns 403", function () {
+    expect(res.getStatus()).to.equal(403);
+  });
+}

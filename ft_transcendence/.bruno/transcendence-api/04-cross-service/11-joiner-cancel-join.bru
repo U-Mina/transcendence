@@ -1,0 +1,21 @@
+meta {
+  name: Joiner cancels join
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{baseUrl}}/events/{{eventId}}/join
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{joinerToken}}
+}
+
+tests {
+  test("cancel join returns 204", function () {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

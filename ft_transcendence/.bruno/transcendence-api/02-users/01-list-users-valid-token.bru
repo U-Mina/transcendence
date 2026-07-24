@@ -1,0 +1,25 @@
+meta {
+  name: List users with valid token
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ownerToken}}
+}
+
+tests {
+  test("list users returns 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("body is an array", function () {
+    expect(res.getBody()).to.be.an("array");
+  });
+}

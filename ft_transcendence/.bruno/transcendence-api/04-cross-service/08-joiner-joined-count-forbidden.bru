@@ -1,0 +1,21 @@
+meta {
+  name: Joiner cannot get joined count
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/events/{{eventId}}/joined-count
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{joinerToken}}
+}
+
+tests {
+  test("non-owner joined-count returns 403", function () {
+    expect(res.getStatus()).to.equal(403);
+  });
+}

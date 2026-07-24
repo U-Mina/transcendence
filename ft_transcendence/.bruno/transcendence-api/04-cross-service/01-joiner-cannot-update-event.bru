@@ -1,0 +1,35 @@
+meta {
+  name: Joiner cannot update owner event
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/events/{{eventId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{joinerToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "eventName": "Hijacked by joiner"
+  }
+}
+
+tests {
+  test("non-owner update returns 403", function () {
+    expect(res.getStatus()).to.equal(403);
+  });
+}
+
+docs {
+  Valid joiner JWT still cannot update an event owned by someone else.
+}

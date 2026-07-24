@@ -1,0 +1,26 @@
+meta {
+  name: Event image without file
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/events/{{eventId}}/image
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ownerToken}}
+}
+
+tests {
+  test("missing multipart file returns 400", function () {
+    expect(res.getStatus()).to.equal(400);
+  });
+}
+
+docs {
+  Full image upload needs a real file attached in Bruno UI (field name: `file`).
+  This request checks the missing-file path.
+}

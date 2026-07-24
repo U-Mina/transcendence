@@ -17,7 +17,8 @@ export async function ensureUploadDirectory() {
 }
 
 export async function saveImage(part: MultipartFile, category: "avatars" | "events"): Promise<{ url: string; path: string }> {
-    const extension = extensions[part.mimetype];
+    const mime = (part.mimetype || "").toLowerCase();
+    const extension = extensions[mime];
     if (!extension) {
         throw new MediaError("Only JPEG, PNG, and WebP images are supported.", 415);
     }

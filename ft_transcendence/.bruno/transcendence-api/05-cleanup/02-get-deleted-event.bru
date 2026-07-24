@@ -1,0 +1,17 @@
+meta {
+  name: Get deleted event is 404
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/events/{{eventId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("deleted event returns 404", function () {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

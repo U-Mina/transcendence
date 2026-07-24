@@ -1,0 +1,31 @@
+meta {
+  name: Update profile with invalid token
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{baseUrl}}/users/{{ownerId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{garbageToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "userName": "should_fail"
+  }
+}
+
+tests {
+  test("garbage JWT returns 401", function () {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

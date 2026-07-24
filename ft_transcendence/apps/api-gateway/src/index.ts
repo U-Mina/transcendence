@@ -18,9 +18,15 @@ import {
     httpRequestDurationSeconds,
 } from "./metrics/http.metrics";
 import Fastify from "fastify";
+import fs from "node:fs";
 
 const fastify = Fastify({
     logger: true,
+
+    https: {
+        key: fs.readFileSync(process.env.TLS_KEY_PATH!),
+        cert: fs.readFileSync(process.env.TLS_CERT_PATH!),
+    },
 });
 
 /**
@@ -31,6 +37,9 @@ const start = async () => {
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
         throw new Error("JWT_SECRET must be configured for the API gateway.");
+    }
+    if (!process.env.INTERNAL_SERVICE_TOKEN) {
+        throw new Error("INTERNAL_SERVICE_TOKEN must be configured for the API gateway.");
     }
     await ensureUploadDirectory();
     await fastify.register(jwt, {
@@ -56,7 +65,7 @@ const start = async () => {
                 description: "API documentation for the Transcendence social-media web application",
                 version: "1.0.0"
             },
-            servers: [{ url: "http://localhost:3000" }],
+            servers: [{ url: "https://localhost:3000" }],
             tags: [ {name: "auth"}, {name: "system"}, {name: "events"}, {name: "users"} ],
             components: {
                 securitySchemes: {
@@ -117,7 +126,7 @@ const start = async () => {
 
     try {
         await fastify.listen({
-            port: 3000,
+            port: Number(process.env.PORT ?? 3000),
             host: "0.0.0.0",
         });
     } catch (error) {
