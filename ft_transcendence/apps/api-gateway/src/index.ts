@@ -66,7 +66,7 @@ const start = async () => {
                 version: "1.0.0"
             },
             servers: [{ url: "https://localhost:3000" }],
-            tags: [ {name: "auth"}, {name: "system"}, {name: "events"}, {name: "users"} ],
+            tags: [ {name: "auth"} ],
             components: {
                 securitySchemes: {
                     bearerAuth: {
