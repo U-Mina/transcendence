@@ -17,10 +17,19 @@ export type UserProfile = {
   updatedAt?: string;
 };
 
-export const EVENT_TAGS = ["Social", "Sports", "Games", "Food", "Learning", "Outdoors", "Arts & Culture"] as const;
-export type EventTag = typeof EVENT_TAGS[number];
+export const EVENT_TAGS = [
+  "Social",
+  "Sports",
+  "Games",
+  "Food",
+  "Learning",
+  "Outdoors",
+  "Arts & Culture",
+] as const;
+export type EventTag = (typeof EVENT_TAGS)[number];
 
-export const displayTag = (value?: string) => EVENT_TAGS.includes(value as EventTag) ? value : "Uncategorized";
+export const displayTag = (value?: string) =>
+  EVENT_TAGS.includes(value as EventTag) ? value : "Uncategorized";
 
 export type EventCard = {
   eventId: string;
