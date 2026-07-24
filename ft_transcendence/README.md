@@ -37,8 +37,12 @@ A **Resources** section listing classic references related to the topic (documen
 tation, articles, tutorials, etc.), as well as a description of how AI was used —
 specifying for which tasks and which parts of the project.
 
-Use the API gateway as the frontend/public entry point:
-[http://localhost:3000](http://localhost:3000)
+The React development frontend is available at [http://localhost:8080](http://localhost:8080).
+It forwards `/api` and `/uploads` requests to the API gateway at
+[https://localhost:3000](https://localhost:3000). The browser-facing frontend
+is intentionally HTTP in local development; the gateway, user service, event
+service, and database connections use TLS. When running Vite outside Docker,
+trust the local CA or set `NODE_EXTRA_CA_CERTS=.certificates/ca/ca.crt`.
 Protected endpoints require:
 Authorization: Bearer 
 API gateway — public API
