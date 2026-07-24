@@ -1,46 +1,64 @@
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { DashboardLayout } from "./components/DashboardLayout";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+import { AuthenticationPage } from "./pages/AuthenticationPage";
+import { CommunityPage } from "./pages/CommunityPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { EventDetailsPage } from "./pages/EventDetailsPage";
+import { EventEditorPage } from "./pages/EventEditorPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { PublicProfilePage } from "./pages/PublicProfilePage";
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { EventsPage } from "./pages/EventsPage";
-import { Layout } from "./components/Wrapper/Layout";
-import { SingleEventDetailsPage } from "./pages/SingleEventDetailsPage";
-import { CreateEventPage } from "./pages/CreateEventPage";
-import { SignUpPage } from "./pages/SignUpPage";
-import { LoginPage } from "./pages/LoginPage";
-import { OtherProfilePage } from "./pages/OtherProfilePage";
-import { OwnProfilePage } from "./pages/OwnProfilePage";
-import { EditProfilePage } from "./pages/EditProfilePage";
-// import { UpdateEventPage } from "./pages/UpdateEventPage";
-import { RequireAuth } from "./components/RequireAuth";
 
-/*
-React Router: wraps the app in a browser router & defines its routes
-- Layout Wrapper will be the parent route,
-     so that every child is rendered inside its Outlet
-     -> so layout automatically appears for all those pages
-*/
-// https://reactnative.dev/docs/network
-function App() 
-{
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/signup" element={<SignUpPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/" element={<Layout />}>
-                    <Route index element={<EventsPage />} />
-                    <Route path="events" element={<EventsPage />} />
-                    <Route path="events/:eventId" element={<SingleEventDetailsPage />} />
-                    <Route path="profile/:userId" element={<OtherProfilePage />} />
-                    <Route element={<RequireAuth />}>
-                        <Route path="create" element={<CreateEventPage />} />
-                        <Route path="profile" element={<OwnProfilePage />} />
-                        <Route path="profile/edit" element={<EditProfilePage />} />
-                        {/* <Route path="events/:eventId/edit" element={<UpdateEventPage />} /> */}
-                    </Route>
-                </Route>
-            </Routes>
-        </BrowserRouter>
-    );
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<AuthenticationPage />} />
+          <Route path="/register" element={<AuthenticationPage register />} />
+          <Route element={<DashboardLayout />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="/events" element={<Navigate to="/" replace />} />
+            <Route path="/events/:eventId" element={<EventDetailsPage />} />
+            <Route
+              path="/events/new"
+              element={
+                <ProtectedRoute>
+                  <EventEditorPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/events/:eventId/edit"
+              element={
+                <ProtectedRoute>
+                  <EventEditorPage edit />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/users/:userId" element={<PublicProfilePage />} />
+            <Route
+              path="/people"
+              element={
+                <ProtectedRoute>
+                  <CommunityPage />
+                </ProtectedRoute>
+              }
+            />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
-
-export default App
