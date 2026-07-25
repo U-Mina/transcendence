@@ -10,6 +10,9 @@ const proxyTarget = process.env.VITE_PROXY_TARGET ?? 'https://localhost:3000'
 export default defineConfig({
   plugins: [react()],
   server: {
+    watch: {
+      usePolling: true,
+    },
     proxy: {
       '/api': {
         target: proxyTarget,
