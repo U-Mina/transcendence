@@ -1,101 +1,248 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
-        },
+  "annotations": [
+    {
+      "kind": "AnnotationQuery",
+      "spec": {
+        "builtIn": true,
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
-  "editable": true,
-  "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
-  "liveNow": false,
-  "panels": [
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        }
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "id": 1,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "13.1.1",
-      "targets": [
-        {
+        "query": {
           "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
+            "name": "-- Grafana --"
           },
-          "editorMode": "code",
-          "expr": "up{job=\"mysqld-exporter\"}",
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
+          "group": "grafana",
+          "kind": "DataQuery",
+          "spec": {},
+          "version": "v0"
         }
-      ],
-      "title": "MySQL Status",
-      "type": "stat"
+      }
     }
   ],
-  "preload": false,
-  "refresh": "",
-  "schemaVersion": 42,
-  "time": {
-    "from": "now-6h",
-    "to": "now"
+  "cursorSync": "Off",
+  "editable": true,
+  "elements": {
+    "panel-1": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "prometheus"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "up{job=\"mysqld-exporter\"}",
+                      "legendFormat": "__auto",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 1,
+        "links": [],
+        "title": "MySQL Status",
+        "vizConfig": {
+          "group": "stat",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            }
+          },
+          "version": "13.1.1"
+        }
+      }
+    },
+    "panel-2": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "prometheus"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "mysql_global_status_threads_connected{job=\"mysqld-exporter\"}",
+                      "legendFormat": "__auto",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "A"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 2,
+        "links": [],
+        "title": "MySQL Connections",
+        "vizConfig": {
+          "group": "gauge",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": 0
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "options": {
+              "barShape": "flat",
+              "barWidthFactor": 0.5,
+              "effects": {
+                "barGlow": false,
+                "centerGlow": false,
+                "gradient": true
+              },
+              "endpointMarker": "point",
+              "minVizHeight": 75,
+              "minVizWidth": 75,
+              "orientation": "auto",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "segmentCount": 1,
+              "segmentSpacing": 0.3,
+              "shape": "gauge",
+              "showThresholdLabels": false,
+              "showThresholdMarkers": true,
+              "sizing": "auto",
+              "sparkline": true,
+              "textMode": "auto"
+            }
+          },
+          "version": "13.1.1"
+        }
+      }
+    }
   },
-  "timepicker": {
-    "refresh_intervals": [
+  "layout": {
+    "kind": "GridLayout",
+    "spec": {
+      "items": [
+        {
+          "kind": "GridLayoutItem",
+          "spec": {
+            "element": {
+              "kind": "ElementReference",
+              "name": "panel-1"
+            },
+            "height": 8,
+            "width": 12,
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "kind": "GridLayoutItem",
+          "spec": {
+            "element": {
+              "kind": "ElementReference",
+              "name": "panel-2"
+            },
+            "height": 8,
+            "width": 12,
+            "x": 12,
+            "y": 0
+          }
+        }
+      ]
+    }
+  },
+  "links": [],
+  "liveNow": false,
+  "preload": false,
+  "tags": [],
+  "timeSettings": {
+    "autoRefresh": "",
+    "autoRefreshIntervals": [
       "5s",
       "10s",
       "30s",
@@ -106,11 +253,13 @@
       "1h",
       "2h",
       "1d"
-    ]
+    ],
+    "fiscalYearStartMonth": 0,
+    "from": "now-6h",
+    "hideTimepicker": false,
+    "timezone": "browser",
+    "to": "now"
   },
-  "timezone": "browser",
   "title": "Database",
-  "version": 2,
-  "uid": "adzs8h9",
-  "id": 381687298969600
+  "variables": []
 }
