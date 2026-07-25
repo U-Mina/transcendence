@@ -99,3 +99,15 @@ groups:
         annotations:
           summary: "High CPU usage on {{ $labels.job }}"
           description: "CPU usage on {{ $labels.job }} exceeded 80% of one CPU core for at least two minutes."
+
+      - alert: HighResidentMemory
+        expr: |
+          sum by(job)(
+            process_resident_memory_bytes
+          ) > 500000000
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High resident memory usage on {{ $labels.job }}"
+          description: "Resident memory usage on {{ $labels.job }} exceeded 500 MB for at least two minutes."
