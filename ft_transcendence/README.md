@@ -78,3 +78,28 @@ other Gateway Endpoints:
 | GET | `/api/v1/status` | Gateway plus user/event service health summary |
 | GET | `/uploads/:category/:filename` | Publicly serve saved avatar/event images |
 | GET | `/docs` | Swagger UI |
+<<<<<<< HEAD
+=======
+
+## Email Notifications Setup
+
+Alertmanager uses a Gmail App Password to send email notifications.
+
+Before running the project:
+
+1. Copy the example secret:
+
+```bash
+cp .secrets/gmail_app_password_example .secrets/gmail_app_password
+```
+
+2. Open `.secrets/gmail_app_password` and replace:
+
+```text
+<FILL_IN_YOUR_GMAIL_APP_PASSWORD>
+```
+
+with your own 16-character Gmail App Password.
+
+> **Note:** The real `gmail_app_password` file is ignored by Git and must never be committed.
+>>>>>>> 0a9f8e4 (README updated with information about gmail_app_password for alerting.)

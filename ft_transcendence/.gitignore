@@ -96,4 +96,4 @@ build/
 # Migration files must be committed so `prisma migrate deploy` works on clean clones
 node_modules/@prisma/client/
 
-.secrets
+.secrets/gmail_app_password

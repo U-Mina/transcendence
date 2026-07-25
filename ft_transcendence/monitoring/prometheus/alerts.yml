@@ -9,3 +9,105 @@ groups:
         annotations:
           summary: "Service {{ $labels.instance }} is down"
           description: "Prometheus could not scrape {{ $labels.instance }} for more than one minute."
+
+      - alert: HighHttp5xxErrorRate
+        expr: |
+          (
+            sum by (job) (
+              rate(http_requests_total{status_code=~"5.."}[5m])
+            )
+            /
+            sum by (job) (
+              rate(http_requests_total[5m])
+            )
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High HTTP 5xx error rate on {{ $labels.job }}"
+          description: "More than 5% of requests to {{ $labels.job }} returned a 5xx response for at least two minutes."
+
+      - alert: HighAverageRequestDuration
+        expr: |
+          (
+            sum by (job) (
+              rate(http_request_duration_seconds_sum[5m])
+            )
+            /
+            sum by (job) (
+              rate(http_request_duration_seconds_count[5m])
+            )
+          ) > 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request latency on {{ $labels.job }}"
+          description: "Average request duration on {{ $labels.job }} exceeded one second for at least two minutes."
+
+      - alert: HighRequestRate
+        expr: |
+          sum by (job) (
+            rate(http_requests_total[1m])
+          ) > 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request rate on {{ $labels.job }}"
+          description: "The request rate for {{ $labels.job }} exceeded 10 requests per second for at least two minutes."
+
+      - alert: HighHeapUtilization
+        expr: |
+          100 *
+          sum by(job)(
+            nodejs_heap_size_used_bytes
+          )
+          /
+          sum by(job)(
+            nodejs_heap_size_total_bytes
+          ) > 90
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High heap utilization on {{ $labels.job }}"
+          description: "Heap utilization on {{ $labels.job }} exceeded 90% for at least two minutes."
+
+      - alert: HighEventLoopLag
+        expr: |
+          1000 *
+          max by(job)(
+            nodejs_eventloop_lag_p99_seconds
+          ) > 100
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High event loop lag on {{ $labels.job }}"
+          description: "The event loop lag on {{ $labels.job }} exceeded 100 ms for at least two minutes."
+
+      - alert: HighCpuUsage
+        expr: |
+          sum by(job)(
+            rate(process_cpu_seconds_total[1m])
+          ) > 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.job }}"
+          description: "CPU usage on {{ $labels.job }} exceeded 80% of one CPU core for at least two minutes."
+
+      - alert: HighResidentMemory
+        expr: |
+          sum by(job)(
+            process_resident_memory_bytes
+          ) > 500000000
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High resident memory usage on {{ $labels.job }}"
+          description: "Resident memory usage on {{ $labels.job }} exceeded 500 MB for at least two minutes."
