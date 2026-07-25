@@ -111,3 +111,12 @@ groups:
         annotations:
           summary: "High resident memory usage on {{ $labels.job }}"
           description: "Resident memory usage on {{ $labels.job }} exceeded 500 MB for at least two minutes."
+
+      - alert: MySQLDown
+        expr: mysql_up{job="mysqld-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MySQL is unavailable"
+          description: "The MySQL exporter could not connect to the MySQL database for more than one minute."
