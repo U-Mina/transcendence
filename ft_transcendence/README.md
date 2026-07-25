@@ -69,6 +69,24 @@ API gateway — public API
 | POST   | `/users/me/avatar`              | Yes     | Upload/replace own avatar; multipart field name: `file`              |
 | GET    | `/users/me/events`              | Yes     | List events joined by current user                                   |
 
+### Public API (`/api/v1/public`) — API key + rate limit
+
+External clients use this surface (separate from JWT app routes).
+
+- **Auth:** header `X-API-Key` = `PUBLIC_API_KEY` from `.env`
+- **Rate limit:** 100 requests per minute per client (HTTP 429 when exceeded)
+- **Mutations:** also send `X-User-Id` (UUID of the acting user who owns the event)
+- **Docs:** Swagger UI at `/docs` → tag **public**
+
+| Method | Endpoint | Purpose |
+| ------ | -------- | ------- |
+| GET | `/api/v1/public/events` | List events |
+| GET | `/api/v1/public/events/:eventId` | Get one event |
+| POST | `/api/v1/public/events` | Create event |
+| PUT | `/api/v1/public/events/:eventId` | Update event |
+| DELETE | `/api/v1/public/events/:eventId` | Delete event |
+| GET | `/api/v1/public/users/:userId` | Get public user profile |
+
 other Gateway Endpoints:
 
 | Method | Endpoint | Purpose |
