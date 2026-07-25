@@ -1,19 +1,13 @@
-/**
- * for now, fake api key
- * it will used for auth, to verify 'does this user can visit protected routes or not'
- * NOTE: role system is not implemented, all logged in user have will access
- */
+import type { FastifyReply, FastifyRequest } from "fastify";
 
-import type { FastifyRequest, FastifyReply } from "fastify";
-
-export async function authMiddleware(
-    request: FastifyRequest,
-    reply: FastifyReply,
-) {
-    const expectedApiKey = process.env.DEV_API_KEY ?? "dev-secret";
-    const apiKey = request.headers["x-api-key"];
-
-    if (expectedApiKey !== apiKey) {
-        return reply.status(401).send({ error: "Unauthoried user" });
+export async function authMiddleware(request: FastifyRequest, reply: FastifyReply) {
+    try {
+        await request.jwtVerify();
+    } catch {
+        return reply.status(401).send({ error: "Invalid or expired access token." });
     }
+}
+
+export function identityHeaders(request: FastifyRequest): Record<string, string> {
+    return { "x-user": request.user.id };
 }

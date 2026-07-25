@@ -22,10 +22,9 @@ services:
       - "${MYSQL_PORT}:3306"
 
     volumes:
-      - ./database/data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
       - ./.certificates/database:/certs/database:ro
       - ./.certificates/ca:/certs/ca:ro
-
     healthcheck:
       test:
         [
@@ -43,8 +42,7 @@ services:
     container_name: transcendence-user-service
     restart: unless-stopped
     working_dir: /app
-    command: sh -c "npm ci && npm run dev"
-
+    command: sh -c "npm install && npx prisma migrate deploy && npm run dev"
     volumes:
       - ./services/user-service:/app
       - user_service_node_modules:/app/node_modules
@@ -63,9 +61,9 @@ services:
       DATABASE_NAME: ${MYSQL_DATABASE}
       DATABASE_USER: ${MYSQL_USER}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-      DATABASE_CA_PATH: /certs/ca/ca.crt
-
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/user_service?sslaccept=accept_invalid_certs
+      SHADOW_DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/user_service_shadow?sslaccept=accept_invalid_certs
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
     ports:
       - "${USER_SERVICE_PORT}:3001"
 
@@ -79,8 +77,7 @@ services:
     container_name: transcendence-event-service
     restart: unless-stopped
     working_dir: /app
-    command: sh -c "npm ci && npm run dev"
-
+    command: sh -c "npm install && npx prisma migrate deploy && npm run dev"
     volumes:
       - ./services/event-service:/app
       - event_service_node_modules:/app/node_modules
@@ -99,11 +96,10 @@ services:
       DATABASE_NAME: ${MYSQL_DATABASE}
       DATABASE_USER: ${MYSQL_USER}
       DATABASE_PASSWORD: ${MYSQL_PASSWORD}
-      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/${MYSQL_DATABASE}
-      DATABASE_CA_PATH: /certs/ca/ca.crt
-
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/event_service?sslaccept=accept_invalid_certs
+      SHADOW_DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@database:3306/event_service_shadow?sslaccept=accept_invalid_certs
       USER_SERVICE_URL: https://user-service:3001
-
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
     ports:
       - "${EVENT_SERVICE_PORT}:3002"
 
@@ -136,6 +132,12 @@ services:
 
       USER_SERVICE_URL: https://user-service:3001
       EVENT_SERVICE_URL: https://event-service:3002
+      INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_AUDIENCE: ${JWT_AUDIENCE}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      UPLOAD_DIR: ${UPLOAD_DIR:-/app/uploads}
       DEV_API_KEY: ${DEV_API_KEY}
 
     ports:
@@ -225,6 +227,7 @@ services:
 
 
 volumes:
+  mysql_data:
   user_service_node_modules:
   event_service_node_modules:
   api_gateway_node_modules:

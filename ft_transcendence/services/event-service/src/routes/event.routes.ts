@@ -2,32 +2,46 @@
  * routes for event-service
  */
 import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
-import { eventService } from "../services/event.service";
+import { eventService, EventServiceError } from "../services/event.service";
 import type { CreateEventDTO, UpdateEventDTO } from "../event.types"
+
+function currentUserId(request: FastifyRequest): string | undefined {
+    const value = request.headers["x-user"];
+    return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+function sendEventError(reply: FastifyReply, error: unknown) {
+    if (error instanceof EventServiceError) {
+        return reply.status(error.statusCode).send({ error: error.message });
+    }
+    return reply.status(500).send({ error: "Event service operation failed." });
+}
+
+function requireUser(request: FastifyRequest, reply: FastifyReply): string | undefined {
+    const userId = currentUserId(request);
+    if (!userId) reply.status(401).send({ error: "Unauthenticated user." });
+    return userId;
+}
 
 export async function eventServiceRoutes(fastify: FastifyInstance) {
     // get event by id
     // the home page is /home, then on /home/events will go event board
-    fastify.get(
+    fastify.get<{
+        Params: {
+            eventId: string;
+        }
+    }>(
         "/events/:eventId",
-        async (
-            request: FastifyRequest<{
-                Params: { eventId: string }
-            }>,
-            reply: FastifyReply,
-        ) => {
+        async (request, reply) => {
             try {
-                // a dummy userId for now, later will be: request.user.id
-                const userId = request.headers["x-user"] as string;
-                const { eventId } = request.params;
-                const event = await eventService.getEventById(eventId);
+                const event = await eventService.getEventById(request.params.eventId);
     
                 if (!event) {
                     return reply.status(404).send({ error: "Event not found." });
                 }
                 return reply.status(200).send(event);
             } catch (error) {
-                return reply.status(500).send({ error: "Fail to get event." });
+                return sendEventError(reply, error);
             }
         },
     );
@@ -35,111 +49,180 @@ export async function eventServiceRoutes(fastify: FastifyInstance) {
     // get all event
     fastify.get(
         "/events",
-        async (
-            _: FastifyRequest,
-            reply: FastifyReply,
-        ) => {
+        async (_, reply) => {
             try {
                 const events = await eventService.getAllEvents();
-                // if (!eves || eves.length === 0) {
-                //     return reply.status(404).send({ error: "Events not found. " });
-                // }
                 // even on empty, the get all event is still valid!
                 return reply.status(200).send(events || []);
             } catch (error) {
-                return reply.status(500).send({ error: "Fail to fetch events." });
+                return sendEventError(reply, error);
             }
         },
     );
 
     // create a new event
-    fastify.post(
+    fastify.post<{
+        Body: CreateEventDTO;
+    }>(
         "/events",
-        async (
-            request: FastifyRequest<{
-                Body: CreateEventDTO,
-            }>,
-            reply: FastifyReply,
-        ) => {
+        async (request, reply) => {
+            // with real auth, token is in every request
+            const creatorId = requireUser(request, reply);
+            if (!creatorId) {
+                return ;
+            }
             try {
-                const creatorId = request.headers["x-user"] as string;
                 const newEvent = await eventService.createEvent(creatorId, request.body);
-                if (!newEvent) {
-                    return reply.status(500).send({ error: "Fail to create new Event." });
-                }
-                return reply.status(200).send(newEvent);
+                return reply.status(201).send(newEvent);
             } catch (error) {
-                return reply.status(500).send({ error: "Fail to create new event." });
+                return sendEventError(reply, error);
             }
         },
     );
 
     // update an existing event
-    fastify.put(
+    fastify.put<{
+        Params: {
+            eventId: string;
+        },
+        Body: UpdateEventDTO;
+    }>(
         "/events/:eventId",
-        async (
-            request: FastifyRequest<{
-                Params: {
-                    eventId: string,
-                },
-                Body: UpdateEventDTO,
-            }>,
-            reply: FastifyReply,
-        ) => {
+        async (request, reply) => {
+            const userId = requireUser(request, reply);
+            if (!userId) {
+                return;
+            }
             try {
-                // TODO: no manual pass userId later
-                const userId = request.headers["x-user"] as string;
                 const updatedEvent = await eventService.updateEvent(request.params.eventId, userId, request.body);
-                if (!updatedEvent) {
-                    return reply.status(500).send({ error: "Fail to update event." });
-                }
                 return reply.status(200).send(updatedEvent);
             } catch (error) {
-                if (error instanceof Error) {
-                    if (error.message.includes("not found")) {
-                        return reply.status(404).send({ error: error.message });
-                    } else if (error.message.includes("forbidden")) {
-                        return reply.status(403).send({ error: error.message });
-                    } else {
-                        return reply.status(500).send({ error: "Fail to update event. "});
-                    }
-                }
+                return sendEventError(reply, error);
             }
         },
     );
 
     // delete an event
-    fastify.delete(
+    fastify.delete<{
+        Params: {
+            eventId: string;
+        }
+    }>(
         "/events/:eventId",
-        async (
-            request: FastifyRequest<{
-                Params: {
-                    eventId: string,
-                }
-            }>,
-            reply: FastifyReply,
-        ) => {
+        async (request, reply) => {
+            const userId = requireUser(request, reply);
+            if (!userId) {
+                return;
+            }
             try {
-                // temp userId
-                const userId = request.headers["x-user"] as string;
                 const { eventId } = request.params;
                 const deletion = await eventService.deleteEvent(userId, eventId);
-                // return value is not true, mean deletion fail
-                if (!deletion) {
-                    return reply.status(404).send({ error: "Event not found." });
-                }
-                return reply.status(200).send({ msg: "Successfully deleted event." });
+                return reply.status(204).send({ msg: "Successfully deleted event." });
             } catch (error) {
-                if (error instanceof Error) {
-                    if (error.message.includes("not found")) {
-                        return reply.status(404).send({ error: error.message });
-                    } else if (error.message.includes("forbidden")) {
-                        return reply.status(403).send({ error: error.message });
-                    } else {
-                        return reply.status(500).send({ error: "Fail to delete." });
-                    }
-                }
+                return sendEventError(reply, error);
             }
         },
     );
+
+    fastify.post<{
+        Params: {
+            eventId: string;
+        }
+    }>(
+        "/events/:eventId/join",
+        async (request, reply) => {
+        const userId = requireUser(request, reply);
+        if (!userId) {
+            return;
+        }
+        try {
+            await eventService.joinEvent(request.params.eventId, userId);
+            return reply.status(201).send({ message: "Event joined successfully." });
+        } catch (error) {
+            return sendEventError(reply, error);
+        }
+    });
+
+    // cancel joined event
+    fastify.delete<{
+        Params: {
+            eventId: string;
+        }
+    }>(
+        "/events/:eventId/join",
+        async (request, reply) => {
+        const userId = requireUser(request, reply);
+        if (!userId) {
+            return;
+        }
+        try {
+            await eventService.cancelJoin(request.params.eventId, userId);
+            return reply.status(204).send();
+        } catch (error) {
+            return sendEventError(reply, error);
+        }
+    });
+
+    fastify.get<{
+        Params: {
+            userId: string;
+        }
+    }>(
+        "/users/:userId/events",
+        async (request, reply) => {
+        const userId = requireUser(request, reply);
+        if (!userId) {
+            return;
+        }
+        if (userId !== request.params.userId) {
+            return reply.status(403).send({ error: "Forbidden operation." });
+        }
+        try {
+            const eventList = await eventService.getJoinedEvents(userId);
+            return reply.status(200).send(eventList);
+        } catch (error) {
+            return sendEventError(reply, error);
+        }
+    });
+
+    fastify.get<{
+        Params: {
+            eventId: string;
+        }
+    }>(
+        "/events/:eventId/joined-count",
+        async (request, reply) => {
+        const userId = requireUser(request, reply);
+        if (!userId) {
+            return;
+        }
+        try {
+            const joinedCount = await eventService.getJoinedCount(request.params.eventId, userId);
+            return reply.status(200).send(joinedCount);
+        } catch (error) {
+            return sendEventError(reply, error);
+        }
+    });
+
+    fastify.put<{
+        Params: {
+            eventId: string;
+        };
+        Body: {
+            imageUrl: string;
+        }
+    }>(
+        "/events/:eventId/image",
+        async (request, reply) => {
+        const userId = requireUser(request, reply);
+        if (!userId) {
+            return;
+        }
+        try {
+            const newImg = await eventService.replaceImage(request.params.eventId, userId, request.body.imageUrl);
+            return reply.status(200).send(newImg);
+        } catch (error) {
+            return sendEventError(reply, error);
+        }
+    });
 }

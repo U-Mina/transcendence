@@ -1,0 +1,27 @@
+meta {
+  name: Get event by id
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/events/{{eventId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test("get event returns 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("includes creator summary from user-service", function () {
+    const body = res.getBody();
+    expect(body).to.have.property("creator");
+    expect(body.creator).to.have.property("userName");
+  });
+}
+
+docs {
+  Cross-service: event detail fetches creator profile from user-service.
+}

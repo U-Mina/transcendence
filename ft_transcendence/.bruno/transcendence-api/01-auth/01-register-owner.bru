@@ -1,0 +1,43 @@
+meta {
+  name: Register owner
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "userName": "{{ownerUserName}}",
+    "email": "{{ownerEmail}}",
+    "password": "{{password}}"
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.id) {
+    bru.setEnvVar("ownerId", body.id);
+  }
+}
+
+tests {
+  test("register owner returns 201", function () {
+    expect(res.getStatus()).to.equal(201);
+  });
+
+  test("response has id and no passwordHash", function () {
+    const body = res.getBody();
+    expect(body).to.have.property("id");
+    expect(body).to.have.property("userEmail");
+    expect(body).to.not.have.property("passwordHash");
+  });
+}

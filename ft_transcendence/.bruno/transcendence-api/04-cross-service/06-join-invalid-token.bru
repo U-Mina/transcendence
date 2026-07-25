@@ -1,0 +1,21 @@
+meta {
+  name: Join with invalid token
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/events/{{eventId}}/join
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{invalidToken}}
+}
+
+tests {
+  test("invalid token cannot join — 401", function () {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

@@ -1,0 +1,33 @@
+meta {
+  name: Create event past start time
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/events
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ownerToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "eventName": "Past Event",
+    "startTime": "2020-01-01T10:00:00.000Z",
+    "endTime": "2020-01-01T12:00:00.000Z"
+  }
+}
+
+tests {
+  test("past start time returns 400", function () {
+    expect(res.getStatus()).to.equal(400);
+  });
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Joiner joins same event again
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/events/{{eventId}}/join
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{joinerToken}}
+}
+
+tests {
+  test("duplicate join returns 409", function () {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

@@ -1,6 +1,6 @@
-import { pool } from "./pool";
+import { prisma } from "../libs/prisma";
 
 export async function checkDatabaseHealth(): Promise<{ status: "healthy" }> {
-    await pool.query("SELECT 1");
+    await prisma.$queryRaw`SELECT 1`;
     return { status: "healthy" };
 }

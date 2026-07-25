@@ -11,6 +11,14 @@ type ProxyResult = {
     body: unknown,
 }
 
+function internalServiceHeaders(headers?: Record<string, string>): Record<string, string> {
+    const token = process.env.INTERNAL_SERVICE_TOKEN;
+    return {
+        ...headers,
+        ...(token ? { "x-internal-token": token } : {}),
+    };
+}
+
 /** headers: {
  * "content-type": "application/json",
  * "x-user": request.header["x-user"]
@@ -22,35 +30,45 @@ export async function proxyToService(
     body?: unknown,
     headers?: Record<string, string>
 ): Promise<ProxyResult> {
-    // put in try catch block, maybe remove later(?)
+    // put in try catch block
     try {
+        const forwardedHeaders = internalServiceHeaders(headers);
         // this avoid pass body empty case (undefined) to fecth() which will cause ts error
         const requestInit: RequestInit = {
             method: method,
             headers: {
-                ...headers,
+                ...forwardedHeaders,
             }
         }
         // ONLY when body is NOT empty, we define header
         if (body !== undefined) {
             requestInit.headers = {
                 "content-type": "application/json",
-                ...headers,
+                ...forwardedHeaders,
             };
             requestInit.body = JSON.stringify(body);
         }
 
         // call internal service with fetch(), by default method is GET
         const response = await fetch(url, requestInit);
-        // read response body, convert to json
-        const result = await response.json();
+        // robust parse for result body
+        const text = await response.text();
+        let responseBody: unknown = {};
+        if (text.length > 0) {
+            try {
+                responseBody = JSON.parse(text);
+
+            } catch {
+                responseBody = { message: text };
+            }
+        }
 
         // even any error occurs, such as !response.ok, simply return '!ok status'
         return {
             statusCode: response.status,
-            body: result
+            body: responseBody
         }
-    } catch (error) {
+    } catch {
         return {
             statusCode: 502,
             body: {

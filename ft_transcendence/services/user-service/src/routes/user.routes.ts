@@ -5,12 +5,59 @@
  * - /Post to update profile
  */
 import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
-import { userService } from "../services/user.service";
-import type { CreateUserDTO, UpdateUserDTO } from "../users.types";
+import { userService, UserServiceError } from "../services/user.service";
+import type { UpdateUserDTO, RegisterUserDTO, LoginUserDTO } from "../users.types";
 
 // NOTE: dashboard is /home
 
+/**
+ * extract the user id from the request headers
+ */
+function currentUserId(request: FastifyRequest): string | undefined {
+    const value = request.headers["x-user"];
+    return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+/**
+ * sendUserError is a helper function to send a user service error to the client
+ */
+function sendUserError(reply: FastifyReply, error: unknown) {
+    if (error instanceof UserServiceError) return reply.status(error.statusCode).send({ error: error.message });
+    return reply.status(500).send({ error: "User service operation failed." });
+}
+
 export async function userServiceRoutes(fastify: FastifyInstance) {
+
+    // user registration routes
+    fastify.post<{
+        Body: RegisterUserDTO;
+    }>(
+        "/auth/register",
+        async (request, reply) => {
+            try {
+                const newUser = await userService.registerUser(request.body);
+                return reply.status(201).send(newUser)
+            } catch (error) {
+                return sendUserError(reply, error);
+            }
+        }
+    );
+
+    // user login, this is public endpoint
+    fastify.post<{
+        Body: LoginUserDTO;
+    }>(
+        "/auth/login",
+        async (request, reply) => {
+            try {
+                const realUser = await userService.loginUser(request.body);
+                return reply.status(200).send(realUser);
+            } catch (error) {
+                return sendUserError(reply, error);
+            }
+        }
+    );
+
     // get internal whole userEntity
     fastify.get(
         "/users/:userId",
@@ -31,15 +78,7 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
                return reply.status(200).send(userProfile);
 
             } catch (error) {
-                if (error instanceof Error) {
-                    if (error.message.includes("not found")) {
-                        return reply.status(404).send({ error: error.message});
-                    } else if (error.message.includes("Forbidden")) {
-                        return reply.status(403).send({ error: error.message });
-                    } else {
-                        return reply.status(500).send({ error: error.message });
-                    }
-                }
+                return sendUserError(reply, error);
             }
         },
     );
@@ -55,35 +94,14 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
                 const allUsers = await userService.getAllUser();
                 return reply.status(200).send(allUsers || []);
             } catch (error) {
-                return reply.status(500).send({ error: "Fail to get user list." });
+                return sendUserError(reply, error);
             }
-        },
-    );
-
-    // create new user
-    fastify.post(
-        "/users",
-        async (
-            request: FastifyRequest<{
-                Body: CreateUserDTO,
-            }>,
-            reply: FastifyReply,
-        ) => {
-            try {
-                const newUser = await userService.createNewUser(request.body);
-                if (!newUser) {
-                    return reply.status(500).send({ error: "Fail to create new user." });
-                }
-                return reply.status(200).send(newUser);
-            } catch (error) {
-                return reply.status(500).send({ error: "Fail to create new user." });
-            } 
         },
     );
 
     // update existing
     fastify.put(
-        "/user/:userId",
+        "/users/:userId",
         async (
             request: FastifyRequest<{
                 Params: {
@@ -94,23 +112,67 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const current_user_id = request.headers["x-user"] as string;
-                const { userId } = request.params;
-                const updatedUser = await userService.updateUser(current_user_id, userId, request.body);
+                // this is REAL / auth userid, so it will have a match compare
+                const userId = currentUserId(request);
+                if (!userId) {
+                    return reply.status(401).send({ error: "Unauthenticated user." });
+                }
+                if (userId !== request.params.userId) {
+                    return reply.status(403).send({ error: "Forbidden operation." });
+                }
+                const updatedUser = await userService.updateUser(
+                    userId,
+                    request.params.userId,
+                    request.body
+                );
+
                 if (!updatedUser) {
                     return reply.status(500).send({ error: "Fail to update profile." });
                 }
                 return reply.status(200).send(updatedUser);
             } catch (err) {
-                if (err instanceof Error) {
-                    if (err.message.includes("not found")) {
-                        return reply.status(404).send({ error: err.message });
-                    } else if (err.message.includes("Forbidden")) {
-                        return reply.status(403).send({ error: err.message });
-                    } else {
-                        return reply.status(500).send({ error: err.message });
-                    }
+                return sendUserError(reply, err);
+            }
+        },
+    );
+
+    // update user avatar picture
+    fastify.put(
+        "/users/:userId/avatar",
+        async (
+            request: FastifyRequest<{
+                Params: {
+                    userId: string,
+                },
+                Body: {
+                    avatarUrl: string,
+                },
+            }>,
+            reply: FastifyReply,
+        ) => {
+            try {
+                // this is REAL / auth userid, so it will have a match compare later
+                const userId = currentUserId(request);
+                if (!userId) {
+                    return reply.status(401).send({
+                        error: "Unauthenticated user.",
+                    });
                 }
+                if (userId !== request.params.userId) {
+                    return reply.status(403).send({
+                        error: "Forbidden operation.",
+                    });
+                }
+                const updatedUser = await userService.replaceAvatar(
+                    userId,
+                    request.body.avatarUrl,
+                );
+                if (!updatedUser) {
+                    return reply.status(500).send({ error: "Fail to update profile." });
+                }
+                return reply.status(200).send(updatedUser);
+            } catch (err) {
+                return sendUserError(reply, err);
             }
         },
     );
@@ -127,23 +189,17 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
             reply: FastifyReply,
         ) => {
             try {
-                const current_user_id = request.headers["x-user"] as string;
-                const { userId } = request.params;
-                const deleted = await userService.deleteUser(current_user_id, userId);
-                if (!deleted) {
-                    return reply.status(500).send({ error: "Fail to delete user profile." });
+                const userId = currentUserId(request);
+                if (!userId) {
+                    return reply.status(401).send({ error: "Unauthenticated user." });
                 }
-                return reply.status(200).send({ message: "Successfully deleted user." });
+                if (userId !== request.params.userId) {
+                    return reply.status(403).send({ error: "Forbidden operation." });
+                }
+                await userService.deleteUser(userId, request.params.userId);                
+                return reply.status(204).send({ message: "Successfully deleted user." });
             } catch (error) {
-                if (error instanceof Error) {
-                    if (error.message.includes("not found")) {
-                        return reply.status(404).send({ error: error.message });
-                    } else if (error.message.includes("Forbidden")) {
-                        return reply.status(403).send({ error: error.message });
-                    } else {
-                        return reply.status(500).send({ error: "Fail to delete user profile." });
-                    }
-                }
+                return sendUserError(reply, error); 
             }
         },
     );

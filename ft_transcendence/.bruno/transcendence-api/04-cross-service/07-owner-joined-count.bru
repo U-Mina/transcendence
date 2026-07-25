@@ -1,0 +1,27 @@
+meta {
+  name: Owner gets joined count
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/events/{{eventId}}/joined-count
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{ownerToken}}
+}
+
+tests {
+  test("owner joined-count returns 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("count is at least 1", function () {
+    const body = res.getBody();
+    const count = typeof body === "number" ? body : body.count ?? body;
+    expect(Number(count)).to.be.at.least(1);
+  });
+}

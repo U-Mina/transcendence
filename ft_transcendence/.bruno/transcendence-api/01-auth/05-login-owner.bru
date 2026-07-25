@@ -1,0 +1,45 @@
+meta {
+  name: Login owner
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "{{ownerEmail}}",
+    "password": "{{password}}"
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (body && body.accessToken) {
+    bru.setEnvVar("ownerToken", body.accessToken);
+  }
+  if (body && body.user && body.user.id) {
+    bru.setEnvVar("ownerId", body.user.id);
+  }
+}
+
+tests {
+  test("login owner returns 200", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("returns accessToken and user", function () {
+    const body = res.getBody();
+    expect(body).to.have.property("accessToken");
+    expect(body).to.have.property("user");
+    expect(body.user).to.have.property("id");
+  });
+}
