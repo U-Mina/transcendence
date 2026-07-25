@@ -245,20 +245,22 @@ services:
     depends_on:
       api-gateway:
         condition: service_started
-
+  
   mysqld-exporter:
     image: prom/mysqld-exporter:latest
-    container_name: mysqld-exporter
+    container_name: transcendence-mysqld-exporter
     restart: unless-stopped
+
     depends_on:
       database:
         condition: service_healthy
+
     command:
       - "--config.my-cnf=/cfg/.my.cnf"
+
     volumes:
       - ./monitoring/mysqld-exporter/.my.cnf:/cfg/.my.cnf:ro
-    networks:
-      - transcendence-network
+      - ./.certificates/ca:/certs/ca:ro
 
 volumes:
   mysql_data:
