@@ -138,7 +138,7 @@ services:
       JWT_AUDIENCE: ${JWT_AUDIENCE}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
       UPLOAD_DIR: ${UPLOAD_DIR:-/app/uploads}
-      DEV_API_KEY: ${DEV_API_KEY}
+      PUBLIC_API_KEY: ${PUBLIC_API_KEY}
 
     ports:
       - "${API_GATEWAY_PORT}:3000"
