@@ -2,8 +2,8 @@ global:
   resolve_timeout: 5m
 
   smtp_smarthost: smtp.gmail.com:587
-  smtp_from: transcendencealert@gmail.com
-  smtp_auth_username: transcendencealert@gmail.com
+  smtp_from: ${ALERT_EMAIL_FROM}
+  smtp_auth_username: ${ALERT_EMAIL_FROM}
   smtp_auth_password_file: /run/secrets/gmail_app_password
   smtp_require_tls: true
 
@@ -21,5 +21,5 @@ route:
 receivers:
   - name: gmail-alerts
     email_configs:
-      - to: transcendencealert@gmail.com
+      - to: ${ALERT_EMAIL_TO}
         send_resolved: true
