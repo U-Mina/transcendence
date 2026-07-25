@@ -2,6 +2,8 @@ import type {
   EventCard,
   EventDetail,
   EventInput,
+  EventSearchOptions,
+  PaginatedEvents,
   SessionUser,
   UserProfile,
 } from "../types/api";
@@ -66,7 +68,15 @@ export const transcendenceApi = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(input),
     }),
-  events: () => request<EventCard[]>("/events"),
+  // send (optional) event search options (instead of also all events) and receive one page of matching events
+  events: (options: EventSearchOptions = {}) => {
+    const search = new URLSearchParams();
+    for (const [key, value] of Object.entries(options)) {
+      if (value !== undefined && value !== "") search.set(key, String(value));
+    }
+    const query = search.toString();
+    return request<PaginatedEvents>(`/events${query ? `?${query}` : ""}`);
+  },
   event: (eventId: string) => request<EventDetail>(`/events/${eventId}`),
   createEvent: (input: EventInput, token: string) =>
     request<EventCard>("/events", {
