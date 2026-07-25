@@ -10,6 +10,7 @@ import { healthCheckRoutes } from "./routes/health.routes";
 import { eventGatewayRoutes } from "./routes/event.routes";
 import { UserGatewayRoutes } from "./routes/user.routes";
 import { authGatewayRoutes } from "./routes/auth.routes";
+import { publicApiRoutes } from "./routes/public.routes";
 import { ensureUploadDirectory, uploadDirectory } from "./services/media.service";
 import { internalServiceStatusCheckRoutes } from "./routes/status.routes";
 import { metricsRoutes } from "./routes/metrics.routes";
@@ -41,6 +42,9 @@ const start = async () => {
     if (!process.env.INTERNAL_SERVICE_TOKEN) {
         throw new Error("INTERNAL_SERVICE_TOKEN must be configured for the API gateway.");
     }
+    if (!process.env.PUBLIC_API_KEY && !process.env.DEV_API_KEY) {
+        throw new Error("PUBLIC_API_KEY must be configured for the public API surface.");
+    }
     await ensureUploadDirectory();
     await fastify.register(jwt, {
         secret: jwtSecret,
@@ -62,18 +66,39 @@ const start = async () => {
             openapi: "3.0.0",
             info: {
                 title: "Transcendence API",
-                description: "API documentation for the Transcendence social-media web application",
+                description:
+                    "API documentation for the Transcendence social-media web application.\n\n" +
+                    "**Public API** (`/api/v1/public/*`): authenticate with header `X-API-Key` " +
+                    "(env `PUBLIC_API_KEY`). Rate limited to **100 requests per minute** per client. " +
+                    "Mutating event routes also require `X-User-Id` (acting user UUID).\n\n" +
+                    "**App API** (`/api/v1/*`): authenticate with Bearer JWT after login/register.",
                 version: "1.0.0"
             },
             servers: [{ url: "https://localhost:3000" }],
-            tags: [ {name: "auth"} ],
+            tags: [
+                { name: "auth", description: "JWT registration and login" },
+                {
+                    name: "public",
+                    description:
+                        "Public database API — X-API-Key + rate limit (100 req/min). " +
+                        "GET/POST/PUT/DELETE events and GET user profiles.",
+                },
+            ],
             components: {
                 securitySchemes: {
                     bearerAuth: {
                         type: "http",
                         scheme: "bearer",
                         bearerFormat: "JWT"
-                    }
+                    },
+                    apiKey: {
+                        type: "apiKey",
+                        name: "X-API-Key",
+                        in: "header",
+                        description:
+                            "Public API key from PUBLIC_API_KEY. Required on /api/v1/public/* routes. " +
+                            "Rate limit: 100 requests per minute.",
+                    },
                 }
             }            
         }
@@ -123,6 +148,7 @@ const start = async () => {
     fastify.register(eventGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(UserGatewayRoutes, { prefix: "/api/v1" });
     fastify.register(internalServiceStatusCheckRoutes, { prefix: "/api/v1" });
+    fastify.register(publicApiRoutes, { prefix: "/api/v1/public" });
 
     try {
         await fastify.listen({
