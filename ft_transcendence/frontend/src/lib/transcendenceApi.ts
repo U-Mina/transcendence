@@ -106,7 +106,11 @@ export const transcendenceApi = {
   users: (token: string) => request<UserProfile[]>("/users", { token }),
   updateUser: (
     userId: string,
-    input: { userName: string; userContact?: string | null },
+    input: {
+      userName: string;
+      userContact?: string | null;
+      intraUrl?: string | null;
+    },
     token: string,
   ) =>
     request<UserProfile>(`/users/${userId}`, {
