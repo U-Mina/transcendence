@@ -4,7 +4,7 @@
  */
 import { Prisma, type Event as EventRow } from "@prisma/client";
 import { prisma } from "./libs/prisma";
-import type { InternalEventEntity, UpdateEventDTO } from "./event.types";
+import type { EventListQuery, InternalEventEntity, UpdateEventDTO } from "./event.types";
 
 // Local dev fallback: used whenever the caller didn't resolve a real
 // user id from the `x-user` header (e.g. calling the API directly in dev).
@@ -48,6 +48,42 @@ class EventRepository {
     async getAll(): Promise<InternalEventEntity[]> {
         const rows = await prisma.event.findMany({ orderBy: { createdAt: "desc" } });
         return rows.map(mapEventRow);
+    }
+
+    /*
+     * Prisma talks to MySQL
+     * 1. builds the filters (ex. category, word search)
+     * 2. which database column to sort by (event name, create date, start date)
+     * 3. (findMany) do pagination (ex. creates page 2 w second 10 events) (Prisma skips)
+     * 4. (count) calculates how many pages exists/needed
+     */
+    async search(query: EventListQuery): Promise<{ items: InternalEventEntity[]; total: number }> {
+        const where: Prisma.EventWhereInput = {
+            ...(query.category ? { category: query.category } : {}),
+            ...(query.q ? {
+                OR: [
+                    { eventName: { contains: query.q } },
+                    { description: { contains: query.q } },
+                    { location: { contains: query.q } },
+                ],
+            } : {}),
+        };
+        const orderBy: Prisma.EventOrderByWithRelationInput = query.sort === "eventName"
+            ? { eventName: query.order }
+            : query.sort === "createdAt"
+                ? { createdAt: query.order }
+                : { startTime: query.order };
+        const [rows, total] = await prisma.$transaction([
+            prisma.event.findMany({
+                where,
+                orderBy: [orderBy, { eventId: "asc" }],
+                skip: (query.page - 1) * query.pageSize,
+                take: query.pageSize,
+            }),
+            prisma.event.count({ where }),
+        ]);
+
+        return { items: rows.map(mapEventRow), total };
     }
 
     async getEventById(eventId: string): Promise<InternalEventEntity | undefined> {
