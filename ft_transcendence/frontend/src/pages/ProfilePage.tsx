@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ActionButton } from "../components/ActionButton";
-import { Alert, Avatar, EmptyState } from "../components";
+import { Alert, Avatar, Button, EmptyState, Modal } from "../components";
 import { EventTile } from "../components/EventTile";
 import { ProfileEditForm } from "../components/ProfileEditForm";
 import { useAuth } from "../context/AuthContext";
@@ -17,6 +17,7 @@ export function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [joined, setJoined] = useState<EventCard[]>([]);
   const [error, setError] = useState("");
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -61,8 +62,7 @@ export function ProfilePage() {
   }
 
   // delete one's account
-  async function deleteAccount() {
-    if (!window.confirm(t("profile.delete_confirm"))) return;
+  async function confirmDeleteAccount() {
     try {
       await transcendenceApi.deleteUser(
         activeSession.user.id,
@@ -72,6 +72,7 @@ export function ProfilePage() {
       navigate("/register");
     } catch (cause) {
       setError(errorText(cause));
+      setConfirmDeleteOpen(false);
     }
   }
 
@@ -104,11 +105,29 @@ export function ProfilePage() {
             </Alert>
           )}
           <div style={{ marginTop: "24px" }}>
-            <ActionButton variant="danger" onClick={deleteAccount}>
+            <Button variant="danger" onClick={() => setConfirmDeleteOpen(true)}>
               {t("profile.delete_account")}
-            </ActionButton>
+            </Button>
           </div>
         </section>
+
+        <Modal
+          isOpen={confirmDeleteOpen}
+          onClose={() => setConfirmDeleteOpen(false)}
+          title={t("profile.delete_account")}
+          footer={
+            <>
+              <Button variant="subtle" onClick={() => setConfirmDeleteOpen(false)}>
+                Cancel
+              </Button>
+              <Button variant="danger" onClick={confirmDeleteAccount}>
+                {t("profile.delete_account")}
+              </Button>
+            </>
+          }
+        >
+          <p style={{ margin: 0 }}>{t("profile.delete_confirm")}</p>
+        </Modal>
         <section>
           <div className="section-heading">
             <div>

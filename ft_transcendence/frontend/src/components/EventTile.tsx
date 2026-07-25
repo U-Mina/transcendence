@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { displayTag, type EventCard } from "../types/api";
 import { ActionButton, ActionLink } from "./ActionButton";
+import { Badge } from "./Badge";
 
 type Props = {
   event: EventCard;
@@ -49,11 +50,11 @@ export function EventTile({
           <p className="event-description">{event.description}</p>
         )}
         <div className="event-footer">
-          <span className="tag">
+          <Badge variant="soft">
             {t(`tags.${event.category || "Uncategorized"}`, {
               defaultValue: displayTag(event.category),
             })}
-          </span>
+          </Badge>
           {isOwner ? (
             <ActionLink variant="subtle" to={`/events/${event.eventId}/edit`}>
               {t("events.tile.manage")}
