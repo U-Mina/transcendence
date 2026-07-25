@@ -56,4 +56,21 @@ groups:
           severity: warning
         annotations:
           summary: "High request rate on {{ $labels.job }}"
-          description: "The request rate for {{ $labels.job }} exceeded 100 requests per second for at least two minutes."
+          description: "The request rate for {{ $labels.job }} exceeded 10 requests per second for at least two minutes."
+
+      - alert: HighHeapUtilization
+        expr: |
+          100 *
+          sum by(job)(
+            nodejs_heap_size_used_bytes
+          )
+          /
+          sum by(job)(
+            nodejs_heap_size_total_bytes
+          ) > 90
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High heap utilization on {{ $labels.job }}"
+          description: "Heap utilization on {{ $labels.job }} exceeded 90% for at least two minutes."
