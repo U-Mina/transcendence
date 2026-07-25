@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { ActionLink } from "../components/ActionButton";
 import { EventSearchToolbar } from "../components/EventSearchToolbar";
-import { EventTile } from "../components/EventTile";
 import { useAuth } from "../context/AuthContext";
 import { transcendenceApi } from "../lib/transcendenceApi";
 import type { EventCard } from "../types/api";
@@ -15,7 +14,6 @@ export function DashboardPage() {
   const [tag, setTag] = useState("all");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [busyId, setBusyId] = useState("");
 
   // fetch data from api
   useEffect(() => {
@@ -102,10 +100,22 @@ export function DashboardPage() {
         <div className="empty-state">Loading your next plans…</div>
       ) : visible.length ? (
         <div>
-          {/* todo: filter events based on joined */}
-          <p>Upcoming events</p>
-          {/* for now placeholde */}
-          
+          <div className="event-grid">
+            {visible.map((event) => (
+              <EventTile
+                key={event.eventId}
+                event={event}
+                joined={joined.has(event.eventId)}
+                isOwner={session?.user.id === event.creatorId}
+                busy={busyId === event.eventId}
+                onJoinToggle={
+                  session && session.user.id !== event.creatorId
+                    ? () => toggle(event)
+                    : undefined
+                }
+              />
+            ))}
+          </div>
         </div>
       ) : (
         <div className="empty-state">
