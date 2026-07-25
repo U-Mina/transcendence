@@ -174,5 +174,144 @@
         "img_sup": "Utilisez une image JPEG, PNG ou WebP de moins de 5 Mo."
       }
     }
+  },
+  "legal": {
+    "nav_label": "Mentions légales",
+    "eyebrow": "Mentions légales",
+    "privacy_label": "Politique de confidentialité",
+    "terms_label": "Conditions d'utilisation",
+    "see_also": "Voir aussi :",
+    "last_updated": "Dernière mise à jour : 25 juillet 2026",
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": "Cette politique de confidentialité explique comment Vibe Checker (« nous » ou « l'application ») collecte, utilise, stocke et protège les informations personnelles lorsque vous utilisez notre application web. Vibe Checker est un projet éducatif réalisé dans le cadre du cursus 42.",
+      "sections": [
+        {
+          "heading": "1. Qui nous sommes",
+          "paragraphs": [
+            "Vibe Checker est une plateforme sociale d'événements créée par des étudiants pour découvrir, créer et rejoindre des plans locaux. Ce n'est pas un produit commercial ; elle est exploitée à des fins d'apprentissage et d'évaluation."
+          ]
+        },
+        {
+          "heading": "2. Informations que nous collectons",
+          "paragraphs": [
+            "Données de compte : nom d'affichage, adresse e-mail et un hash de mot de passe salé (nous ne stockons jamais votre mot de passe en clair).",
+            "Données de profil que vous choisissez d'ajouter : note de contact, URL de profil optionnelle et avatar.",
+            "Données d'événements : titres, horaires, lieux, descriptions, catégories, images, ainsi que les créateurs et participants.",
+            "Données techniques nécessaires au fonctionnement : jetons d'authentification dans le navigateur, journaux de requêtes et métriques opérationnelles pour le monitoring."
+          ]
+        },
+        {
+          "heading": "3. Comment nous utilisons vos informations",
+          "paragraphs": [
+            "Nous les utilisons pour créer et sécuriser votre compte, afficher les profils et événements, traiter les inscriptions et téléversements, et maintenir le service (santé, sauvegardes, monitoring).",
+            "Nous ne vendons pas vos données personnelles et ne les utilisons pas pour de la publicité tierce."
+          ]
+        },
+        {
+          "heading": "4. Stockage et protection",
+          "paragraphs": [
+            "Les mots de passe sont hachés avec un algorithme salé moderne avant stockage.",
+            "Les services backend communiquent en HTTPS/TLS. Les images téléversées sont stockées sur le serveur d'application et servies via des routes contrôlées.",
+            "Des sauvegardes de base de données peuvent être créées pour la reprise après incident."
+          ]
+        },
+        {
+          "heading": "5. Partage et visibilité",
+          "paragraphs": [
+            "Les listes d'événements publics et les informations de profil publiques peuvent être visibles par les autres utilisateurs.",
+            "Une API publique distincte peut exposer certaines données aux clients présentant une clé API valide, avec limitation de débit."
+          ]
+        },
+        {
+          "heading": "6. Cookies et stockage local",
+          "paragraphs": [
+            "Nous utilisons le stockage du navigateur pour vous garder connecté et mémoriser votre langue. Ces éléments sont nécessaires aux fonctionnalités de base, pas à de la publicité."
+          ]
+        },
+        {
+          "heading": "7. Vos choix",
+          "paragraphs": [
+            "Vous pouvez mettre à jour votre profil et votre avatar depuis votre page de profil.",
+            "Vous pouvez supprimer votre compte depuis votre page de profil.",
+            "Pour toute question liée aux données pendant l'évaluation, contactez l'équipe du projet via vos canaux 42 habituels."
+          ]
+        },
+        {
+          "heading": "8. Conservation",
+          "paragraphs": [
+            "Nous conservons les données de compte et d'événements tant que votre compte est actif et que l'environnement du projet fonctionne. Les sauvegardes peuvent conserver des copies pendant une fenêtre de rétention limitée."
+          ]
+        },
+        {
+          "heading": "9. Modifications",
+          "paragraphs": [
+            "Nous pouvons mettre à jour cette politique à mesure que le projet évolue. La date en haut de cette page sera alors modifiée."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "intro": "Ces conditions d'utilisation (« Conditions ») régissent votre usage de Vibe Checker. En créant un compte ou en utilisant l'application, vous acceptez ces Conditions. Vibe Checker est un projet éducatif du cursus 42.",
+      "sections": [
+        {
+          "heading": "1. Le service",
+          "paragraphs": [
+            "Vibe Checker permet de parcourir des événements, d'en créer et gérer, de rejoindre des plans, et de maintenir un profil avec avatar optionnel.",
+            "Le service est fourni tel quel pour l'apprentissage, la démonstration et l'évaluation par les pairs. Aucune garantie de disponibilité n'est donnée."
+          ]
+        },
+        {
+          "heading": "2. Comptes",
+          "paragraphs": [
+            "Vous devez fournir des informations d'inscription exactes et garder vos identifiants confidentiels.",
+            "Vous êtes responsable de l'activité effectuée via votre compte.",
+            "Vous pouvez supprimer votre compte depuis les paramètres de profil."
+          ]
+        },
+        {
+          "heading": "3. Usage acceptable",
+          "paragraphs": [
+            "N'utilisez pas Vibe Checker pour harceler autrui, téléverser du contenu illicite, tenter d'attaquer le système, abuser de l'API publique ou perturber l'accès des autres utilisateurs.",
+            "Le contenu publié doit rester respectueux dans un environnement communautaire / campus."
+          ]
+        },
+        {
+          "heading": "4. Contenu soumis",
+          "paragraphs": [
+            "Vous conservez la propriété du contenu que vous créez.",
+            "En publiant du contenu, vous autorisez l'application à le stocker, l'afficher et le traiter pour faire fonctionner la plateforme.",
+            "Vous confirmez disposer des droits sur les images que vous téléversez."
+          ]
+        },
+        {
+          "heading": "5. Événements et rencontres",
+          "paragraphs": [
+            "Les organisateurs sont responsables de l'exactitude des détails. Rejoindre un événement dans l'app ne crée pas de contrat entre utilisateurs.",
+            "Les rencontres en personne se font à vos propres risques ; appliquez les précautions habituelles."
+          ]
+        },
+        {
+          "heading": "6. Propriété intellectuelle",
+          "paragraphs": [
+            "Le code, la marque et le design de Vibe Checker appartiennent aux auteurs du projet, sauf mention contraire."
+          ]
+        },
+        {
+          "heading": "7. Avertissement",
+          "paragraphs": [
+            "L'application est fournie sans garantie. Dans la mesure permise, nous ne sommes pas responsables des pertes de données, événements manqués ou dommages liés à l'usage de cette plateforme éducative."
+          ]
+        },
+        {
+          "heading": "8. Modifications et contact",
+          "paragraphs": [
+            "Nous pouvons mettre à jour ces Conditions. Continuer à utiliser l'application vaut acceptation des Conditions révisées.",
+            "Pour toute question, contactez l'équipe Vibe Checker via vos canaux de projet 42."
+          ]
+        }
+      ]
+    }
   }
 }
