@@ -8,6 +8,7 @@ type Props = {
   onSave: (input: {
     userName: string;
     userContact: string | null;
+    intraUrl: string | null;
     avatar?: File;
   }) => Promise<void>;
 };
@@ -21,6 +22,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
     const data = new FormData(event.currentTarget);
     const userName = String(data.get("userName") || "").trim();
     const userContact = String(data.get("userContact") || "").trim();
+    const intraUrl = String(data.get("intraUrl") || "").trim();
     const avatar = data.get("avatar");
 
     if (userName.length < 2 || userName.length > 100) {
@@ -28,7 +30,11 @@ export function ProfileEditForm({ profile, onSave }: Props) {
     }
 
     if (userContact.length > 50) {
-      return setError("Contact must be at most 50 characters.");
+      return setError("About me must be at most 50 characters.");
+    }
+
+    if (intraUrl.length > 255) {
+      return setError("Intra URL must be at most 255 characters.");
     }
 
     if (avatar instanceof File && avatar.size && !imageIsSupported(avatar)) {
@@ -42,6 +48,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
       await onSave({
         userName,
         userContact: userContact || null,
+        intraUrl: intraUrl || null,
         avatar: avatar instanceof File && avatar.size ? avatar : undefined,
       });
     } catch (cause) {
@@ -71,6 +78,16 @@ export function ProfileEditForm({ profile, onSave }: Props) {
           maxLength={50}
           defaultValue={profile?.userContact || ""}
           placeholder="Optional contact detail"
+        />
+      </label>
+      <label>
+        Intra Profile URL
+        <input
+          name="intraUrl"
+          type="url"
+          maxLength={255}
+          defaultValue={profile?.intraUrl || ""}
+          placeholder="https://profile.intra.42.fr/users/..."
         />
       </label>
       <label>

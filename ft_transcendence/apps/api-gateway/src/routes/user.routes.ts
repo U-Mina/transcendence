@@ -21,6 +21,7 @@ const profileBody = {
     properties: {
         userName: { type: "string", minLength: 2, maxLength: 100 },
         userContact: { type: ["string", "null"], maxLength: 50 },
+        intraUrl: { type: ["string", "null"], maxLength: 255 },
     },
 };
 
