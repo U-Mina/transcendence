@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { EventForm } from "../components/EventForm";
+import { EventInputForm } from "../components/EventInputForm";
 import { useAuth } from "../context/AuthContext";
 import { transcendenceApi } from "../lib/transcendenceApi";
 import type { EventDetail, EventInput } from "../types/api";
@@ -69,7 +69,7 @@ export function EventEditorPage({ edit }: { edit?: boolean }) {
       {error ? (
         <p className="form-error">{error}</p>
       ) : (
-        <EventForm event={event || undefined} onSave={save} />
+        <EventInputForm event={event || undefined} onSave={save} />
       )}
     </section>
   );
