@@ -53,6 +53,16 @@ export type EventDetail = EventCard & {
   };
 };
 
+export type EventInput = {
+  eventName: string;
+  startTime: string;
+  endTime: string;
+  category: EventTag;
+  description?: string;
+  location?: string;
+  minParticipant?: number;
+};
+
 export type EventSearchOptions = {
   q?: string;
   category?: string;
@@ -68,14 +78,4 @@ export type PaginatedEvents = {
   pageSize: number;
   total: number;
   totalPages: number;
-};
-
-export type EventInput = {
-  eventName: string;
-  startTime: string;
-  endTime: string;
-  category: EventTag;
-  description?: string;
-  location?: string;
-  minParticipant?: number;
 };
