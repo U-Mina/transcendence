@@ -46,14 +46,15 @@ export async function eventServiceRoutes(fastify: FastifyInstance) {
         },
     );
 
-    // get all event
-    fastify.get(
+    // get events with optional search, filter, sort, and pagination query options
+    fastify.get<{
+        Querystring: Record<string, unknown>;
+    }>(
         "/events",
-        async (_, reply) => {
+        async (request, reply) => {
             try {
-                const events = await eventService.getAllEvents();
-                // even on empty, the get all event is still valid!
-                return reply.status(200).send(events || []);
+                const events = await eventService.getAllEvents(request.query);
+                return reply.status(200).send(events);
             } catch (error) {
                 return sendEventError(reply, error);
             }
