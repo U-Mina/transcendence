@@ -87,3 +87,15 @@ groups:
         annotations:
           summary: "High event loop lag on {{ $labels.job }}"
           description: "The event loop lag on {{ $labels.job }} exceeded 100 ms for at least two minutes."
+
+      - alert: HighCpuUsage
+        expr: |
+          sum by(job)(
+            rate(process_cpu_seconds_total[1m])
+          ) > 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.job }}"
+          description: "CPU usage on {{ $labels.job }} exceeded 80% of one CPU core for at least two minutes."
