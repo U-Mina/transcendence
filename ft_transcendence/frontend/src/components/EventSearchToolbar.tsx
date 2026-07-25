@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { EVENT_TAGS } from "../types/api";
 
 type Props = {
@@ -13,20 +14,21 @@ export function EventSearchToolbar({
   onQueryChange,
   onTagChange,
 }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="discovery-toolbar">
       <input
         aria-label="Search events"
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
-        placeholder="Search events, places, ideas…"
+        placeholder={t("toolbar.search_placeholder")}
       />
       <select
         aria-label="Filter by tag"
         value={tag}
         onChange={(event) => onTagChange(event.target.value)}
       >
-        <option value="all">All tags</option>
+        <option value="all">{t("toolbar.all_tags")}</option>
         {EVENT_TAGS.map((item) => (
           <option key={item} value={item}>
             {item}

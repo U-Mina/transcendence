@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ActionButton } from "../components/ActionButton";
 import { useAuth } from "../context/AuthContext";
 import { errorText } from "../utils/formatters";
@@ -17,6 +18,7 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
   const { session, login, register: signUp } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
@@ -33,14 +35,14 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
     setError("");
 
     if (register && (userName.length < 2 || userName.length > 100)) {
-      return setError("Name must be between 2 and 100 characters.");
+      return setError(t("auth.error.name_len"));
     }
     if (password.length > 72) {
-      return setError("Password must be at most 72 characters.");
+      return setError(t("auth.error.password_len"));
     }
 
     if (register && password !== String(data.get("passwordConfirm") || "")) {
-      return setError("Passwords do not match.");
+      return setError(t("auth.error.password_match"));
     }
 
     setPending(true);
@@ -60,27 +62,27 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
     <div className="auth-page">
       {/* title */}
       <Link className="auth-brand" to="/">
-        Your Vibe Checker
+        {t("auth.brand_title")}
       </Link>
       {/* card */}
       <section className="auth-card">
         <p className="eyebrow">
-          {register ? "Join the community" : "Welcome back"}
+          {register ? t("auth.register_eyebrow") : t("auth.login_eyebrow")}
         </p>
         <h1>
           {register
-            ? "Make room for more good plans."
-            : "Your next plan is waiting."}
+            ? t("auth.register_title")
+            : t("auth.login_title")}
         </h1>
         <p className="muted">
           {register
-            ? "Create an account to host and join local moments."
-            : "Log in to manage your events and connections."}
+            ? t("auth.register_desc")
+            : t("auth.login_desc")}
         </p>
         <form onSubmit={submit} className="stack-form">
           {register && (
             <label>
-              Name
+              {t("auth.field.name")}
               <input
                 name="userName"
                 required
@@ -92,7 +94,7 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
           )}
           {/* email of the format of xx@xx.com */}
           <label>
-            Email
+            {t("auth.field.email")}
             <input
               name="email"
               type="email"
@@ -103,7 +105,7 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
           </label>
           {/* the validation of password in frontend is just for UX. the true validation is in backend */}
           <label>
-            Password
+            {t("auth.field.password")}
             <input
               name="password"
               type="password"
@@ -116,7 +118,7 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
           {/* required info for register is name, email and password confirm */}
           {register && (
             <label>
-              Confirm password
+              {t("auth.field.confirm_password")}
               <input
                 name="passwordConfirm"
                 type="password"
@@ -134,18 +136,18 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
           )}
           <ActionButton type="submit" className="wide" disabled={pending}>
             {pending
-              ? "Just a moment…"
+              ? t("auth.pending")
               : register
-                ? "Create account"
-                : "Log in"}
+                ? t("auth.create_account")
+                : t("auth.login")}
           </ActionButton>
         </form>
 
         {/* when unloggin user use url to vist, will be redirect to login/register first */}
         <p className="auth-switch">
-          {register ? "Already a member?" : "New here?"}{" "}
+          {register ? t("auth.switch.already") : t("auth.switch.new")}{" "}
           <Link to={register ? "/login" : "/register"}>
-            {register ? "Log in" : "Create an account"}
+            {register ? t("auth.login") : t("auth.create_account")}
           </Link>
         </p>
       </section>

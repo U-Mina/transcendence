@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { transcendenceApi } from "../lib/transcendenceApi";
 import type { UserProfile } from "../types/api";
 import { errorText } from "../utils/formatters";
@@ -7,6 +8,7 @@ import { errorText } from "../utils/formatters";
 // this is the view of public available info of per user
 export function PublicProfilePage() {
   const { userId } = useParams();
+  const { t } = useTranslation();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -29,7 +31,7 @@ export function PublicProfilePage() {
   if (!user) {
     return (
       <section className="page">
-        <div className="empty-state">Loading profile…</div>
+        <div className="empty-state">{t("profile.public.loading")}</div>
       </section>
     );
   }
@@ -45,23 +47,23 @@ export function PublicProfilePage() {
           )}
         </div>
         <div>
-          <p className="eyebrow">Community member</p>
+          <p className="eyebrow">{t("profile.public.eyebrow")}</p>
           {/* for availability */}
           <h1>{user.userName}</h1>
           {user.intraName && <p className="muted">{user.intraName}</p>}
         </div>
       </div>
       <section className="panel">
-        <h2>About me</h2>
+        <h2>{t("profile.public.about_me")}</h2>
         {user.userContact ? (
           <p>{user.userContact}</p>
         ) : (
-          <p className="muted">This person chose not to leave any note.</p>
+          <p className="muted">{t("profile.public.no_note")}</p>
         )}
         {user.intraUrl && (
           <p style={{ marginTop: "16px" }}>
             <a href={user.intraUrl} target="_blank" rel="noreferrer">
-              View profile link ↗
+              {t("profile.public.view_link")}
             </a>
           </p>
         )}

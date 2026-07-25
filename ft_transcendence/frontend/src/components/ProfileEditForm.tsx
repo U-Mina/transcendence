@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import type { UserProfile } from "../types/api";
 import { errorText, imageIsSupported } from "../utils/formatters";
 import { ActionButton } from "./ActionButton";
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function ProfileEditForm({ profile, onSave }: Props) {
+  const { t } = useTranslation();
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -26,19 +28,19 @@ export function ProfileEditForm({ profile, onSave }: Props) {
     const avatar = data.get("avatar");
 
     if (userName.length < 2 || userName.length > 100) {
-      return setError("Name must be between 2 and 100 characters.");
+      return setError(t("profile.form.error.name_len"));
     }
 
     if (userContact.length > 50) {
-      return setError("Contact must be at most 50 characters.");
+      return setError(t("profile.form.error.contact_len"));
     }
 
     if (intraUrl.length > 255) {
-      return setError("Intra URL must be at most 255 characters.");
+      return setError(t("profile.form.error.url_len"));
     }
 
     if (avatar instanceof File && avatar.size && !imageIsSupported(avatar)) {
-      return setError("Use a JPEG, PNG, or WebP image under 5 MiB.");
+      return setError(t("profile.form.error.avatar_size"));
     }
 
     setSaving(true);
@@ -62,7 +64,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
     <form className="stack-form profile-edit-form" onSubmit={submit}>
       {/* the validation of user input in frontend */}
       <label>
-        Display name
+        {t("profile.form.name_label")}
         <input
           name="userName"
           required
@@ -72,26 +74,26 @@ export function ProfileEditForm({ profile, onSave }: Props) {
         />
       </label>
       <label>
-        About Me & Contact
+        {t("profile.form.contact_label")}
         <input
           name="userContact"
           maxLength={50}
           defaultValue={profile?.userContact || ""}
-          placeholder="Optional contact detail"
+          placeholder={t("profile.form.contact_placeholder")}
         />
       </label>
       <label>
-        Profile URL
+        {t("profile.form.url_label")}
         <input
           name="intraUrl"
           type="url"
           maxLength={255}
           defaultValue={profile?.intraUrl || ""}
-          placeholder="https://profile.intra.42.fr/users/..."
+          placeholder={t("profile.form.url_placeholder")}
         />
       </label>
       <label>
-        Update avatar
+        {t("profile.form.avatar_label")}
         <input
           name="avatar"
           type="file"
@@ -104,7 +106,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
         </p>
       )}
       <ActionButton type="submit" disabled={saving}>
-        {saving ? "Saving…" : "Save profile"}
+        {saving ? t("profile.form.saving") : t("profile.form.save")}
       </ActionButton>
     </form>
   );
