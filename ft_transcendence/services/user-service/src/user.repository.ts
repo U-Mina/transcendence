@@ -33,6 +33,9 @@ function mapUserRow(row: UserRow): InternalUserEntity {
     if (row.avatarUrl !== null) {
         mapped.avatarUrl = row.avatarUrl;
     }
+    if (row.lastSeenAt !== null) {
+        mapped.lastSeenAt = row.lastSeenAt;
+    }
 
     return mapped;
 }
@@ -132,6 +135,21 @@ class UserRepository {
             const updated = await prisma.user.update({
                 where: { id: userId },
                 data: { avatarUrl },
+            });
+            return mapUserRow(updated);
+        } catch (error) {
+            if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+                return undefined;
+            }
+            throw error;
+        }
+    }
+
+    async touchLastSeen(userId: string, at: Date = new Date()): Promise<InternalUserEntity | undefined> {
+        try {
+            const updated = await prisma.user.update({
+                where: { id: userId },
+                data: { lastSeenAt: at },
             });
             return mapUserRow(updated);
         } catch (error) {
