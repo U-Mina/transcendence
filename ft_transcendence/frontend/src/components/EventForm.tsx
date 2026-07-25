@@ -22,6 +22,8 @@ export function EventForm({ event, onSave }: Props) {
 
   async function submit(form: FormEvent<HTMLFormElement>) {
     form.preventDefault();
+
+    // sanitize user input for event form
     const data = new FormData(form.currentTarget);
     const eventName = String(data.get("eventName") || "").trim();
     const category = String(data.get("category") || "");
@@ -30,11 +32,14 @@ export function EventForm({ event, onSave }: Props) {
     const image = data.get("image");
     const minimumText = String(data.get("minParticipant") || "");
     const minParticipant = minimumText ? Number(minimumText) : undefined;
+
     setError("");
-    if (!eventName || eventName.length > 255)
+
+    if (!eventName || eventName.length > 255) {
       return setError(
         "Event name is required and must be at most 255 characters.",
       );
+    }
     if (!EVENT_TAGS.includes(category as EventTag))
       return setError("Choose one of the available tags.");
     if (
@@ -43,7 +48,10 @@ export function EventForm({ event, onSave }: Props) {
       start <= new Date()
     )
       return setError("Start time must be in the future.");
-    if (end <= start) return setError("End time must be after start time.");
+    if (end <= start) {
+      return setError("End time must be after start time.");
+    }
+
     if (
       minParticipant !== undefined &&
       (!Number.isInteger(minParticipant) || minParticipant < 1)
@@ -73,6 +81,7 @@ export function EventForm({ event, onSave }: Props) {
     }
   }
 
+  // event form with required and optional field
   return (
     <form className="event-form" onSubmit={submit}>
       <div className="form-grid">
