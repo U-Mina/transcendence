@@ -566,6 +566,7 @@
 .profile-layout {
   display: grid;
   grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+  align-items: start;
   gap: 42px;
 }
 .panel {
