@@ -95,5 +95,3 @@ build/
 # --- Prisma (Keep migration files, ignore auto-generated client) ---
 # Migration files must be committed so `prisma migrate deploy` works on clean clones
 node_modules/@prisma/client/
-
-.secrets
