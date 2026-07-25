@@ -160,13 +160,14 @@ services:
       - "--web.config.file=/etc/prometheus/web.yml"
 
     ports:
-      - "9090:9090"
+      - "${PROMETHEUS_PORT}:9090"
 
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./monitoring/prometheus/web.yml:/etc/prometheus/web.yml:ro
       - ./.certificates/prometheus:/certs/prometheus:ro
       - ./.certificates/ca:/certs/ca:ro
+      - ./monitoring/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
 
 
   grafana:
@@ -175,7 +176,7 @@ services:
     restart: unless-stopped
 
     ports:
-      - "3003:3000"
+      - "${GRAFANA_PORT}:3000"
 
     environment:
       GF_SECURITY_ADMIN_USER: ${GF_ADMIN}
@@ -195,6 +196,26 @@ services:
     depends_on:
       - prometheus
 
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: transcendence-alertmanager
+    restart: unless-stopped
+
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager"
+      - "--web.config.file=/etc/alertmanager/web.yml"
+
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./monitoring/alertmanager/web.yml:/etc/alertmanager/web.yml:ro
+      - ./.certificates/alertmanager:/certs/alertmanager:ro
+      - ./.secrets/gmail_app_password:/run/secrets/gmail_app_password:ro
+      - alertmanager_data:/alertmanager
+
+    ports:
+        - "${ALERTMANAGER_PORT}:9093"
 
   frontend:
     build:
@@ -232,3 +253,4 @@ volumes:
   api_gateway_node_modules:
   grafana_data:
   frontend_node_modules:
+  alertmanager_data:
