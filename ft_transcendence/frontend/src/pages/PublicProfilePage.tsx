@@ -52,24 +52,18 @@ export function PublicProfilePage() {
         </div>
       </div>
       <section className="panel">
-        <h2>About {user.userName}</h2>
-        {user.userContact || user.intraUrl ? (
-          <div>
-            {user.userContact && (
-              <p>
-                <strong>Contact:</strong> {user.userContact}
-              </p>
-            )}
-            {user.intraUrl && (
-              <p>
-                <a href={user.intraUrl} target="_blank" rel="noreferrer">
-                  View profile link ↗
-                </a>
-              </p>
-            )}
-          </div>
+        <h2>Contact Me!</h2>
+        {user.userContact ? (
+          <p>{user.userContact}</p>
         ) : (
-          <p className="muted">This member has not added public contact info yet.</p>
+          <p className="muted">This member has not added an "About me" section yet.</p>
+        )}
+        {user.intraUrl && (
+          <p style={{ marginTop: "16px" }}>
+            <a href={user.intraUrl} target="_blank" rel="noreferrer">
+              View Intra profile link ↗
+            </a>
+          </p>
         )}
       </section>
     </section>
