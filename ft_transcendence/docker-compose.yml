@@ -268,6 +268,33 @@ services:
       - ./.certificates/mysqld-exporter:/certs/mysqld-exporter:ro
       - ./.certificates/ca:/certs/ca:ro
 
+  # Automated DB (+ uploads) backups over TLS. Health endpoints remain on the app services.
+  db-backup:
+    image: mysql:8.4
+    container_name: transcendence-db-backup
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: database
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      SSL_CA: /certs/ca/ca.crt
+      BACKUP_DIR: /backups
+      UPLOADS_DIR: /uploads
+      BACKUP_INTERVAL_SECONDS: ${BACKUP_INTERVAL_SECONDS:-86400}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+    volumes:
+      - ./backups:/backups
+      - ./apps/api-gateway/uploads:/uploads:ro
+      - ./scripts/backup-database.sh:/backup-database.sh:ro
+      - ./scripts/restore-database.sh:/restore-database.sh:ro
+      - ./scripts/db-backup-loop.sh:/db-backup-loop.sh:ro
+      - ./.certificates/ca:/certs/ca:ro
+    entrypoint: ["/bin/bash", "/db-backup-loop.sh"]
+
 volumes:
   mysql_data:
   user_service_node_modules:

@@ -96,8 +96,6 @@ other Gateway Endpoints:
 | GET | `/api/v1/status` | Gateway plus user/event service health summary |
 | GET | `/uploads/:category/:filename` | Publicly serve saved avatar/event images |
 | GET | `/docs` | Swagger UI |
-<<<<<<< HEAD
-=======
 
 ## Email Notifications Setup
 
@@ -120,4 +118,47 @@ cp .secrets/gmail_app_password_example .secrets/gmail_app_password
 with your own 16-character Gmail App Password.
 
 > **Note:** The real `gmail_app_password` file is ignored by Git and must never be committed.
->>>>>>> 0a9f8e4 (README updated with information about gmail_app_password for alerting.)
+
+## Backups and disaster recovery
+
+Health checks live on the gateway and services (`GET /health`, `GET /health/db`, `GET /api/v1/status`).
+Automated backups are handled by the **`db-backup`** Compose service.
+
+### What is backed up
+
+- **MySQL** — full logical dump over TLS (`mysqldump --ssl-mode=REQUIRED`) → `backups/mysql-full-<timestamp>.sql.gz`
+- **Uploads** (avatars / event images) — if present under `apps/api-gateway/uploads` → `backups/uploads-<timestamp>.tar.gz`
+- Old files older than `BACKUP_RETENTION_DAYS` (default **7**) are deleted automatically
+
+### Schedule
+
+- On start, `db-backup` runs one backup immediately, then every `BACKUP_INTERVAL_SECONDS` (default **86400** = 24h).
+- Configure both vars in `.env` (see `.env.example`).
+
+### Manual backup / restore
+
+```bash
+# One-shot backup (stack must be able to reach the database)
+make backup
+
+# List dumps
+ls -lah backups/
+
+# Restore MySQL from a dump (OVERWRITES databases)
+make restore FILE=backups/mysql-full-YYYYMMDDTHHMMSSZ.sql.gz
+
+# Then restart app services
+docker compose restart user-service event-service api-gateway
+```
+
+### If the database dies (runbook)
+
+1. Confirm health: `curl -k https://localhost:3000/api/v1/status` and/or `docker compose ps`
+2. Pick the newest good dump in `./backups/`
+3. Bring MySQL back if needed: `docker compose up -d database` (wait until healthy)
+4. Restore: `make restore FILE=backups/mysql-full-....sql.gz`
+5. Restart services: `docker compose restart user-service event-service api-gateway`
+6. Optional uploads: `tar -xzf backups/uploads-....tar.gz -C apps/api-gateway`
+7. Re-check `/health` and log in to verify data
+
+Dump files under `backups/` are gitignored — keep copies off-machine for real disasters.
