@@ -206,6 +206,11 @@
   background: transparent;
   border-color: #b9bad1;
 }
+.button-subtle:hover:not(:disabled) {
+  color: var(--indigo);
+  background: var(--soft);
+  border-color: var(--indigo);
+}
 .button-danger {
   background: transparent;
   color: var(--danger);
@@ -291,11 +296,14 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   overflow: hidden;
 }
-.file-input-box:hover,
+.file-input-box:hover:not(:disabled),
 .file-input-box:focus {
+  background: #f7f3eb;
+  color: var(--ink);
   border-color: var(--indigo);
   box-shadow: 0 0 0 3px rgba(57, 59, 119, 0.12);
   outline: 0;
+  transform: none;
 }
 .file-input-badge {
   display: inline-flex;
