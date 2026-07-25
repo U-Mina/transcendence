@@ -61,7 +61,6 @@ export function EventEditorPage({ edit }: { edit?: boolean }) {
         {edit ? "Keep it fresh" : "Host something good"}
       </p>
       <h1>
-        arial-label="Edit Event"
         {edit ? "Edit your event" : "Create an event"}
       </h1>
       <p className="muted">

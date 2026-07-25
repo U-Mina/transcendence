@@ -36,7 +36,7 @@ export function PublicProfilePage() {
 
   return (
     <section className="page narrow">
-      <div className="profile-header">
+      <div className="profile-header public-profile-header">
         <div className="profile-avatar">
           {user.avatarUrl ? (
             <img src={user.avatarUrl} alt="" />
@@ -47,10 +47,7 @@ export function PublicProfilePage() {
         <div>
           <p className="eyebrow">Community member</p>
           {/* for availability */}
-          <h1>
-            {user.userName}
-            arial-label="User Name"
-          </h1>
+          <h1>{user.userName}</h1>
           {user.intraName && <p className="muted">{user.intraName}</p>}
         </div>
       </div>
