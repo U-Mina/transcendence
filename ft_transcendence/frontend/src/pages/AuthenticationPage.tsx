@@ -32,10 +32,33 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
     const userName = String(data.get("userName") || "").trim();
     setError("");
 
-    return (
-      <div>
-        
-      </div>
-    );
+    if (register && (userName.length < 2 || userName.length > 100)) {
+      return setError("Name must be between 2 and 100 characters.");
+    }
+    if (password.length > 72) {
+      return setError("Password must be at most 72 characters.");
+    }
+
+    if (register && password !== String(data.get("passwordConfirm") || "")) {
+      return setError("Passwords do not match.");
+    }
+
+    setPending(true);
+    
+    try {
+      if (register) await signUp(userName, email, password);
+      else await login(email, password);
+      navigate(returnPath(location.state), { replace: true });
+    } catch (cause) {
+      setError(errorText(cause));
+    } finally {
+      setPending(false);
+    }
   }
+
+  return (
+    <div className="auth-page">
+      
+    </div>
+  );
 }
