@@ -58,7 +58,97 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
 
   return (
     <div className="auth-page">
-      
+      {/* title */}
+      <Link className="auth-brand" to="/">
+        Your Vibe Checker
+      </Link>
+      {/* card */}
+      <section className="auth-card">
+        <p className="eyebrow">
+          {register ? "Join the community" : "Welcome back"}
+        </p>
+        <h1>
+          {register
+            ? "Make room for more good plans."
+            : "Your next plan is waiting."}
+        </h1>
+        <p className="muted">
+          {register
+            ? "Create an account to host and join local moments."
+            : "Log in to manage your events and connections."}
+        </p>
+        <form onSubmit={submit} className="stack-form">
+          {register && (
+            <label>
+              Name
+              <input
+                name="userName"
+                required
+                minLength={2}
+                maxLength={100}
+                autoComplete="name"
+              />
+            </label>
+          )}
+          {/* email of the format of xx@xx.com */}
+          <label>
+            Email
+            <input
+              name="email"
+              type="email"
+              required
+              maxLength={255}
+              autoComplete="email"
+            />
+          </label>
+          {/* the validation of password in frontend is just for UX. the true validation is in backend */}
+          <label>
+            Password
+            <input
+              name="password"
+              type="password"
+              required
+              minLength={register ? 8 : 1}
+              maxLength={72}
+              autoComplete="off"
+            />
+          </label>
+          {/* required info for register is name, email and password confirm */}
+          {register && (
+            <label>
+              Confirm password
+              <input
+                name="passwordConfirm"
+                type="password"
+                required
+                minLength={8}
+                maxLength={72}
+                autoComplete="new-password"
+              />
+            </label>
+          )}
+          {error && (
+            <p className="form-error" role="alert">
+              {error}
+            </p>
+          )}
+          <ActionButton type="submit" className="wide" disabled={pending}>
+            {pending
+              ? "Just a moment…"
+              : register
+                ? "Create account"
+                : "Log in"}
+          </ActionButton>
+        </form>
+
+        {/* when unloggin user use url to vist, will be redirect to login/register first */}
+        <p className="auth-switch">
+          {register ? "Already a member?" : "New here?"}{" "}
+          <Link to={register ? "/login" : "/register"}>
+            {register ? "Log in" : "Create an account"}
+          </Link>
+        </p>
+      </section>
     </div>
   );
 }
