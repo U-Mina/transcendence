@@ -61,7 +61,7 @@ export function PublicProfilePage() {
         {user.intraUrl && (
           <p style={{ marginTop: "16px" }}>
             <a href={user.intraUrl} target="_blank" rel="noreferrer">
-              View Intra profile link ↗
+              View profile link ↗
             </a>
           </p>
         )}

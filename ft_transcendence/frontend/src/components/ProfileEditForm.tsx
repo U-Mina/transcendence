@@ -81,7 +81,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
         />
       </label>
       <label>
-        Intra Profile URL
+        Profile URL
         <input
           name="intraUrl"
           type="url"
