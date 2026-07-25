@@ -7,6 +7,7 @@ import { CommunityPage } from "./pages/CommunityPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { EventDetailsPage } from "./pages/EventDetailsPage";
 import { EventEditorPage } from "./pages/EventEditorPage";
+import { LegalPage } from "./pages/LegalPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { PublicProfilePage } from "./pages/PublicProfilePage";
 import "./App.css";
@@ -55,6 +56,8 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/privacy" element={<LegalPage document="privacy" />} />
+            <Route path="/terms" element={<LegalPage document="terms" />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
