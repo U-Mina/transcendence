@@ -120,3 +120,12 @@ groups:
         annotations:
           summary: "MySQL is unavailable"
           description: "The MySQL exporter could not connect to the MySQL database for more than one minute."
+
+      - alert: HighMySQLConnections
+        expr: mysql_global_status_threads_connected{job="mysqld-exporter"} > 100
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High MySQL connection count"
+          description: "MySQL has more than 100 active connections for at least two minutes."
