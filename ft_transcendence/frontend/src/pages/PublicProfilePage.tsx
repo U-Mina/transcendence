@@ -53,15 +53,24 @@ export function PublicProfilePage() {
       </div>
       <section className="panel">
         <h2>About {user.userName}</h2>
-        <p>
-          {user.intraUrl ? (
-            <a href={user.intraUrl} target="_blank" rel="noreferrer">
-              View profile link
-            </a>
-          ) : (
-            "This member has not added a public bio yet."
-          )}
-        </p>
+        {user.userContact || user.intraUrl ? (
+          <div>
+            {user.userContact && (
+              <p>
+                <strong>Contact:</strong> {user.userContact}
+              </p>
+            )}
+            {user.intraUrl && (
+              <p>
+                <a href={user.intraUrl} target="_blank" rel="noreferrer">
+                  View profile link ↗
+                </a>
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="muted">This member has not added public contact info yet.</p>
+        )}
       </section>
     </section>
   );

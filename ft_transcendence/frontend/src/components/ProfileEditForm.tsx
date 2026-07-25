@@ -37,7 +37,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
 
     setSaving(true);
     setError("");
-    
+
     try {
       await onSave({
         userName,
@@ -65,7 +65,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
         />
       </label>
       <label>
-        Contact
+        About Me
         <input
           name="userContact"
           maxLength={50}
