@@ -141,3 +141,12 @@ groups:
         annotations:
           summary: "MySQL is executing slow queries"
           description: "MySQL recorded more than five slow queries within five minutes."
+
+      - alert: HighMySQLThreadsRunning
+        expr: mysql_global_status_threads_running{job="mysqld-exporter"} > 20
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High number of running MySQL threads"
+          description: "More than 20 MySQL threads have been actively executing queries for at least two minutes."
