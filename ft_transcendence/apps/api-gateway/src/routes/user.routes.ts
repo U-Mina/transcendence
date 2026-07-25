@@ -8,6 +8,22 @@ import { authMiddleware, identityHeaders } from "../middleware/auth.middleware";
 import { MediaError, removeStoredUpload, saveImage } from "../services/media.service";
 
 const USER_SERVICE_URL = process.env.USER_SERVICE_URL ?? "https://localhost:3001";
+const userIdParams = {
+    type: "object",
+    additionalProperties: false,
+    required: ["userId"],
+    properties: { userId: { type: "string", format: "uuid" } },
+};
+const profileBody = {
+    type: "object",
+    additionalProperties: false,
+    minProperties: 1,
+    properties: {
+        userName: { type: "string", minLength: 2, maxLength: 100 },
+        userContact: { type: ["string", "null"], maxLength: 50 },
+        intraUrl: { type: ["string", "null"], maxLength: 255 },
+    },
+};
 
 export async function UserGatewayRoutes(fastify: FastifyInstance) {
     // get all users is now implemented, but it SHOULD go 'advanced user management' module
@@ -28,11 +44,28 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
         Params: { userId: string };
     }>(
         '/users/:userId',
+        {
+            schema: 
+                {
+                    params: userIdParams,
+                }
+        },
         async (request, reply) => {
             const { userId } = request.params;
+            let headers: Record<string, string> | undefined;
+            if (request.headers.authorization) {
+                try {
+                    await request.jwtVerify();
+                    headers = identityHeaders(request);
+                } catch {
+                    return reply.status(401).send({ error: "Invalid or expired access token." });
+                }
+            }
             const result = await proxyToService(
                 "GET",
-                `${USER_SERVICE_URL}/users/${userId}`
+                `${USER_SERVICE_URL}/users/${userId}`,
+                undefined,
+                headers,
             );
             return reply.status(result.statusCode).send(result.body);
         }
@@ -44,7 +77,7 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
         Body: unknown;
     }>(
         "/users/:userId",
-        { preHandler: authMiddleware },
+        { preHandler: authMiddleware, schema: { params: userIdParams, body: profileBody } },
         async (request, reply) => {
             const { userId } = request.params;
             const result = await proxyToService(
@@ -62,7 +95,7 @@ export async function UserGatewayRoutes(fastify: FastifyInstance) {
         Params: { userId: string };
     }>(
         "/users/:userId",
-        { preHandler: authMiddleware },
+        { preHandler: authMiddleware, schema: { params: userIdParams } },
         async (request, reply) => {
             const { userId } = request.params;
             const result = await proxyToService(

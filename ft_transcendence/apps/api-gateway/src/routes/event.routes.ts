@@ -5,6 +5,22 @@ import { MediaError, removeStoredUpload, saveImage } from "../services/media.ser
 // NOTE: if import the data-type, it is against microservice
 
 const EVENT_SERVICE_URL = process.env.EVENT_SERVICE_URL ?? "https://localhost:3002";
+const EVENT_TAGS = ["Social", "Sports", "Games", "Food", "Learning", "Outdoors", "Arts & Culture"];
+const eventIdParams = {
+    type: "object",
+    additionalProperties: false,
+    required: ["eventId"],
+    properties: { eventId: { type: "string", format: "uuid" } },
+};
+const eventBodyProperties = {
+    eventName: { type: "string", minLength: 1, maxLength: 255 },
+    startTime: { type: "string", format: "date-time" },
+    endTime: { type: "string", format: "date-time" },
+    category: { type: "string", enum: EVENT_TAGS },
+    description: { type: "string", maxLength: 5000 },
+    location: { type: "string", maxLength: 255 },
+    minParticipant: { type: "integer", minimum: 1 },
+};
 
 export async function eventGatewayRoutes(fastify: FastifyInstance) {
     // get event by id
@@ -16,7 +32,6 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "Get event by id",
                 description: "Return detailed event card by event id",
-                tags: ["events"],
                 params: {
                     type: "object",
                     required: ["eventId"],
@@ -43,7 +58,6 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "List all events",
                 description: "Returns all public event cards",
-                tags: ["events"],
             }
         }, async (_, reply) => {
             const result = await proxyToService(
@@ -64,18 +78,11 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "Create new event.",
                 description: "Create a new event for current user",
-                tags: ["events"],
                 body: {
                     type: "object",
-                    required: ["eventName", "startTime", "endTime"],
-                    properties: {
-                        eventName: { type: "string", minLength: 1 },
-                        startTime: { type: "string", format: "date-time" },
-                        endTime: { type: "string", format: "date-time" },
-                        category: { type: "string" },
-                        description: { type: "string" },
-                        location: { type: "string" },
-                    },
+                    additionalProperties: false,
+                    required: ["eventName", "startTime", "endTime", "category"],
+                    properties: eventBodyProperties,
                 },
             },
         },
@@ -100,14 +107,7 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "Delete event.",
                 description: "User can delete the event she/he created.",
-                tags: ["events"],
-                params: {
-                    type: "object",
-                    required: ["eventId"],
-                    properties: {
-                        eventId: { type: "string" },
-                    },
-                },
+                params: eventIdParams,
             },
         },
         async (request, reply) => {
@@ -133,24 +133,12 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
             schema: {
                 summary: "Update existing event.",
                 description: "User of event updates their event card.",
-                tags: ["events"],
-                params: {
-                    type: "object",
-                    required: ["eventId"],
-                    properties: {
-                        eventId: { type: "string" },
-                    },
-                },
+                params: eventIdParams,
                 body: {
                     type: "object",
-                    properties: {
-                        eventName: { type: "string", minLength: 1 },
-                        startTime: { type: "string", format: "date-time" },
-                        endTime: { type: "string", format: "date-time" },
-                        category: { type: "string" },
-                        descrption: { type: "string" },
-                        location: { type: "string" },
-                    },
+                    additionalProperties: false,
+                    minProperties: 1,
+                    properties: eventBodyProperties,
                 },
             }
         },

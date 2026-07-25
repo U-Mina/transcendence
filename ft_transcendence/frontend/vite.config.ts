@@ -1,17 +1,26 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-const proxyTarget = process.env.VITE_PROXY_TARGET ?? 'http://localhost:3000'
+// The browser talks to Vite over HTTP in development. Vite forwards API and
+// uploaded-media requests to the HTTPS gateway, keeping the gateway as the
+// only backend entry point.
+const proxyTarget = process.env.VITE_PROXY_TARGET ?? 'https://localhost:3000'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
+    watch: {
+      usePolling: true,
+    },
     proxy: {
-      '/events': {
+      '/api': {
         target: proxyTarget,
         changeOrigin: true,
-        rewrite: (path) => `/api/v1${path}`,
+      },
+      '/uploads': {
+        target: proxyTarget,
+        changeOrigin: true,
       },
     },
   },

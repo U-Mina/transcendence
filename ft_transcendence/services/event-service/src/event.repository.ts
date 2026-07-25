@@ -35,7 +35,7 @@ function mapEventRow(row: EventRow): InternalEventEntity {
         mapped.comment = row.comment;
     }
     if (row.minParticipant !== null) {
-        mapped.minPaticipant = row.minParticipant;
+        mapped.minParticipant = row.minParticipant;
     }
     if (row.imageUrl !== null) {
         mapped.imageUrl = row.imageUrl;
@@ -71,7 +71,7 @@ class EventRepository {
                 description: event.description ?? null,
                 location: event.location ?? null,
                 comment: event.comment ?? null,
-                minParticipant: event.minPaticipant ?? null,
+                minParticipant: event.minParticipant ?? null,
                 imageUrl: event.imageUrl ?? null,
                 safetyCheck: event.safetyCheck,
             },
@@ -95,7 +95,7 @@ class EventRepository {
                 description: event.description ?? null,
                 location: event.location ?? null,
                 comment: event.comment ?? null,
-                minParticipant: event.minPaticipant ?? null,
+                minParticipant: event.minParticipant ?? null,
                 imageUrl: event.imageUrl ?? null,
                 safetyCheck: event.safetyCheck,
             },
@@ -107,7 +107,7 @@ class EventRepository {
                 description: event.description ?? null,
                 location: event.location ?? null,
                 comment: event.comment ?? null,
-                minParticipant: event.minPaticipant ?? null,
+                minParticipant: event.minParticipant ?? null,
                 imageUrl: event.imageUrl ?? null,
                 safetyCheck: event.safetyCheck,
             },
@@ -136,8 +136,8 @@ class EventRepository {
         if (eventInput.location !== undefined) {
             data.location = eventInput.location ?? null;
         }
-        if (eventInput.minPaticipant !== undefined) {
-            data.minParticipant = eventInput.minPaticipant ?? null;
+        if (eventInput.minParticipant !== undefined) {
+            data.minParticipant = eventInput.minParticipant ?? null;
         }
 
         if (Object.keys(data).length === 0) {

@@ -3,11 +3,15 @@
  */
 export interface PublicUserProfile {
     userName: string;
-    userEmail: string;
-    friendList?: string;
-    userContact?: string;
     intraName?: string;
     intraUrl?: string;
+    avatarUrl?: string;
+    userContact?: string;
+}
+
+export interface CommunityUser {
+    id: string;
+    userName: string;
     avatarUrl?: string;
 }
 
@@ -17,7 +21,10 @@ export interface PublicUserProfile {
  */
 export interface InternalUserEntity extends PublicUserProfile {
     id: string;
+    userEmail: string;
     passwordHash?: string;
+    friendList?: string;
+    userContact?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -55,5 +62,6 @@ export interface LoginUserDTO {
  */
 export interface UpdateUserDTO {
     userName?: string;
-    userContact?: string;
+    userContact?: string | null;
+    intraUrl?: string | null;
 }
