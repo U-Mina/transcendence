@@ -1,11 +1,14 @@
-import { useState } from "react";
-// use auth context to get session for verification
+import { useEffect, useState } from "react";
+import { ActionLink } from "../components/ActionButton";
+import { EventSearchToolbar } from "../components/EventSearchToolbar";
+import { EventTile } from "../components/EventTile";
 import { useAuth } from "../context/AuthContext";
 import { transcendenceApi } from "../lib/transcendenceApi";
 import type { EventCard } from "../types/api";
 import { errorText } from "../utils/formatters";
 
 export function DashboardPage() {
+  const { session } = useAuth();
   const [events, setEvents] = useState<EventCard[]>([]);
   const [joined, setJoined] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState("");
@@ -71,5 +74,47 @@ export function DashboardPage() {
       setBusyId("");
     }
   }
+    return (
+    <section className="page">
+      <header className="page-hero">
+        <div>
+          <p className="eyebrow">Community calendar</p>
+          <h1>Make time for what matters.</h1>
+          <p>
+            Discover simple reasons to get out, meet people, and do something
+            memorable.
+          </p>
+        </div>
+        {session && <ActionLink to="/events/new">Create an event</ActionLink>}
+      </header>
+      <EventSearchToolbar
+        query={query}
+        tag={tag}
+        onQueryChange={setQuery}
+        onTagChange={setTag}
+      />
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
+      {loading ? (
+        <div className="empty-state">Loading your next plans…</div>
+      ) : visible.length ? (
+        <div>
+          {/* todo: filter events based on joined */}
+          <p>Upcoming events</p>
+          {/* for now placeholde */}
+          
+        </div>
+      ) : (
+        <div className="empty-state">
+          <h2>No events found</h2>
+          <p>Try a different search, or be the first to make a plan.</p>
+          {session && <ActionLink to="/events/new">Create an event</ActionLink>}
+        </div>
+      )}
+    </section>
+  )
 
 }
