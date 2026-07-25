@@ -22,14 +22,22 @@ export function ProfileEditForm({ profile, onSave }: Props) {
     const userName = String(data.get("userName") || "").trim();
     const userContact = String(data.get("userContact") || "").trim();
     const avatar = data.get("avatar");
-    if (userName.length < 2 || userName.length > 100)
+
+    if (userName.length < 2 || userName.length > 100) {
       return setError("Name must be between 2 and 100 characters.");
-    if (userContact.length > 50)
+    }
+
+    if (userContact.length > 50) {
       return setError("Contact must be at most 50 characters.");
-    if (avatar instanceof File && avatar.size && !imageIsSupported(avatar))
+    }
+
+    if (avatar instanceof File && avatar.size && !imageIsSupported(avatar)) {
       return setError("Use a JPEG, PNG, or WebP image under 5 MiB.");
+    }
+
     setSaving(true);
     setError("");
+    
     try {
       await onSave({
         userName,
@@ -45,6 +53,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
 
   return (
     <form className="stack-form profile-edit-form" onSubmit={submit}>
+      {/* the validation of user input in frontend */}
       <label>
         Name
         <input
