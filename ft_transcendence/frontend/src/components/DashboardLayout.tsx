@@ -103,6 +103,10 @@ export function DashboardLayout() {
               </ActionLink>
             </div>
           )}
+          <nav className="sidebar-legal" aria-label={t("legal.nav_label")}>
+            <Link to="/privacy">{t("legal.privacy_label")}</Link>
+            <Link to="/terms">{t("legal.terms_label")}</Link>
+          </nav>
         </div>
       </aside>
       <main className="main-content">
