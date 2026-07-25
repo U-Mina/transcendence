@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Alert, Avatar, Button, EmptyState, Modal } from "../components";
+import { Alert } from "../components/Alert";
+import { Avatar } from "../components/Avatar";
+import { Button } from "../components/Button";
+import { EmptyState } from "../components/EmptyState";
+import { Modal } from "../components/Modal";
 import { EventTile } from "../components/EventTile";
 import { ProfileEditForm } from "../components/ProfileEditForm";
 import { useAuth } from "../context/AuthContext";

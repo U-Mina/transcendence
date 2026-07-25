@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Alert, Avatar, Card } from "../components";
+import { Alert } from "../components/Alert";
+import { Avatar } from "../components/Avatar";
+import { Card } from "../components/Card";
 import { useAuth } from "../context/AuthContext";
 import { transcendenceApi } from "../lib/transcendenceApi";
 import type { UserProfile } from "../types/api";
