@@ -15,25 +15,41 @@ export function DashboardPage() {
   const [joined, setJoined] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("all");
+  const [sort, setSort] = useState("startTime:asc");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState("");
 
-  // fetch data from api
+  // reload events from the API whenever search, sorting, or page options change
+  // before advanced search: browser fethced all events & searched thru itself
+  // now page sends current controls to api
+  // when any value in .events changes, useeffect runs again and reloads
   useEffect(() => {
     let alive = true;
 
     (async () => {
       try {
-        const [all, mine] = await Promise.all([
-          transcendenceApi.events(),
+        const [sortField, order] = sort.split(":") as ["startTime" | "eventName", "asc" | "desc"];
+        const [result, mine] = await Promise.all([
+          transcendenceApi.events({
+            q: query,
+            category: tag === "all" ? undefined : tag,
+            sort: sortField,
+            order,
+            page,
+            pageSize,
+          }),
           session
             ? transcendenceApi.joinedEvents(session.token)
             : Promise.resolve([]),
         ]);
 
         if (alive) {
-          setEvents(all);
+          setEvents(result.items);
+          setTotalPages(result.totalPages);
           setJoined(new Set(mine.map((event) => event.eventId)));
         }
       } catch (cause) {
@@ -45,15 +61,7 @@ export function DashboardPage() {
     return () => {
       alive = false;
     };
-  }, [session?.token]);
-
-  const visible = events.filter(
-    (event) =>
-      (tag === "all" || event.category === tag) &&
-      `${event.eventName} ${event.description || ""} ${event.location || ""}`
-        .toLowerCase()
-        .includes(query.toLowerCase()),
-  );
+  }, [page, pageSize, query, session?.token, sort, tag]);
 
   async function toggle(event: EventCard) {
     if (!session) return;
@@ -91,8 +99,24 @@ export function DashboardPage() {
       <EventSearchToolbar
         query={query}
         tag={tag}
-        onQueryChange={setQuery}
-        onTagChange={setTag}
+        sort={sort}
+        pageSize={pageSize}
+        onQueryChange={(value) => {
+          setQuery(value);
+          setPage(1);
+        }}
+        onTagChange={(value) => {
+          setTag(value);
+          setPage(1);
+        }}
+        onSortChange={(value) => {
+          setSort(value);
+          setPage(1);
+        }}
+        onPageSizeChange={(value) => {
+          setPageSize(value);
+          setPage(1);
+        }}
       />
       {error && (
         <p className="form-error" role="alert">
@@ -101,10 +125,10 @@ export function DashboardPage() {
       )}
       {loading ? (
         <div className="empty-state">{t("dashboard.loading")}</div>
-      ) : visible.length ? (
+      ) : events.length ? (
         <div>
           <div className="event-grid">
-            {visible.map((event) => (
+            {events.map((event) => (
               <EventTile
                 key={event.eventId}
                 event={event}
@@ -119,6 +143,17 @@ export function DashboardPage() {
               />
             ))}
           </div>
+          {totalPages > 0 && (
+            <div className="pagination" aria-label="Event pagination">
+              <button type="button" onClick={() => setPage(page - 1)} disabled={page === 1}>
+                Previous
+              </button>
+              <span>Page {page} of {totalPages}</span>
+              <button type="button" onClick={() => setPage(page + 1)} disabled={page === totalPages}>
+                Next
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="empty-state">
