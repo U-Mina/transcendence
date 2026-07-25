@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   --ink: #29231e;
   --muted: #756b61;
@@ -251,6 +257,8 @@
 .event-form select,
 .event-form textarea {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px 13px;
@@ -271,6 +279,58 @@
 .event-form textarea:focus {
   border-color: var(--indigo);
   box-shadow: 0 0 0 3px rgba(57, 59, 119, 0.12);
+}
+.custom-file-input-wrapper {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.file-input-box {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: start;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  overflow: hidden;
+}
+.file-input-box:hover,
+.file-input-box:focus {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px rgba(57, 59, 119, 0.12);
+  outline: 0;
+}
+.file-input-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.file-input-text {
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 .event-grid {
   display: grid;
@@ -452,13 +512,25 @@
 .form-grid .full {
   grid-column: 1/-1;
 }
+.stack-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
 .event-form label,
 .stack-form label {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 7px;
   color: #54483d;
   font-size: 13px;
   font-weight: 750;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .event-form textarea {
   resize: vertical;
@@ -498,7 +570,7 @@
 }
 .profile-layout {
   display: grid;
-  grid-template-columns: 330px minmax(0, 1fr);
+  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
   gap: 42px;
 }
 .panel {
@@ -506,6 +578,10 @@
   border: 1px solid var(--line);
   border-radius: 13px;
   background: var(--paper);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .panel a:not(.button) {
   color: var(--indigo);
