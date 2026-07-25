@@ -52,7 +52,7 @@ export function PublicProfilePage() {
         </div>
       </div>
       <section className="panel">
-        <h2>About me & Contact</h2>
+        <h2>About me</h2>
         {user.userContact ? (
           <p>{user.userContact}</p>
         ) : (

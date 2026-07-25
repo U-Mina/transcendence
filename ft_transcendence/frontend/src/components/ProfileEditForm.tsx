@@ -62,7 +62,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
     <form className="stack-form profile-edit-form" onSubmit={submit}>
       {/* the validation of user input in frontend */}
       <label>
-        Name
+        Display name
         <input
           name="userName"
           required
@@ -72,7 +72,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
         />
       </label>
       <label>
-        About Me
+        About Me & Contact
         <input
           name="userContact"
           maxLength={50}
@@ -91,7 +91,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
         />
       </label>
       <label>
-        New avatar
+        Update avatar
         <input
           name="avatar"
           type="file"
