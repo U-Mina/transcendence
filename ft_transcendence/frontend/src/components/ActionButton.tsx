@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, type LinkProps } from "react-router-dom";
-import { Button, type ButtonVariant } from "./Button";
+import { type ButtonVariant } from "./Button";
 
 export { Button as ActionButton } from "./Button";
 
