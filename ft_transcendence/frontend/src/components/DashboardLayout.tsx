@@ -24,7 +24,7 @@ export function DashboardLayout() {
     <div className="app-shell">
       <aside className="sidebar">
         <Link className="brand" to="/">
-          <span>✦</span>Vibe Checker
+          <span>✦</span> Vibe Checker
         </Link>
         <p className="brand-tagline">Find your people, make a plan.</p>
         <nav aria-label="Primary navigation" className="nav-list">
@@ -63,7 +63,7 @@ export function DashboardLayout() {
             </>
           ) : (
             <div className="auth-links">
-              <ActionLink variant="ghost" to="/login">
+              <ActionLink variant="ghost" className="small" to="/login">
                 Log in
               </ActionLink>
               <ActionLink className="small" to="/register">
