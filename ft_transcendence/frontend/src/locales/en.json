@@ -174,5 +174,144 @@
         "img_sup": "Use a JPEG, PNG, or WebP image under 5 MiB."
       }
     }
+  },
+  "legal": {
+    "nav_label": "Legal",
+    "eyebrow": "Legal",
+    "privacy_label": "Privacy Policy",
+    "terms_label": "Terms of Service",
+    "see_also": "See also:",
+    "last_updated": "Last updated: 25 July 2026",
+    "privacy": {
+      "title": "Privacy Policy",
+      "intro": "This Privacy Policy explains how Vibe Checker (“we”, “our”, or “the application”) collects, uses, stores, and protects personal information when you use our web application. Vibe Checker is an educational project developed as part of the 42 curriculum.",
+      "sections": [
+        {
+          "heading": "1. Who we are",
+          "paragraphs": [
+            "Vibe Checker is a student-built social events platform that helps people discover, create, and join local plans. It is not a commercial product and is operated for learning and evaluation purposes."
+          ]
+        },
+        {
+          "heading": "2. Information we collect",
+          "paragraphs": [
+            "Account data: display name, email address, and a salted password hash (we never store your password in plain text).",
+            "Profile data you choose to add: contact note, optional profile URL, and avatar image.",
+            "Event data: event titles, times, locations, descriptions, category tags, images, and who created or joined an event.",
+            "Technical data needed to run the service: authentication tokens stored in your browser, request logs, and operational metrics used for monitoring and reliability."
+          ]
+        },
+        {
+          "heading": "3. How we use your information",
+          "paragraphs": [
+            "We use your information to create and secure your account, show profiles and events to other users of the platform, process joins and uploads, and keep the service healthy (health checks, backups, and monitoring).",
+            "We do not sell your personal data. We do not use your data for third-party advertising."
+          ]
+        },
+        {
+          "heading": "4. How we store and protect data",
+          "paragraphs": [
+            "Passwords are hashed with a modern salted hashing algorithm before storage.",
+            "Backend services communicate over HTTPS/TLS. Uploaded images (avatars and event pictures) are stored on the application server and served through controlled upload routes.",
+            "Database backups may be created for disaster recovery. Backup files should be treated as sensitive and kept offline from public repositories."
+          ]
+        },
+        {
+          "heading": "5. Sharing and visibility",
+          "paragraphs": [
+            "Public event listings and public profile information (such as display name and avatar) may be visible to other users of the application.",
+            "A separate public API may expose selected event and profile data to clients that present a valid API key. That surface is rate-limited and intended for integration or evaluation, not for unrestricted scraping of private credentials."
+          ]
+        },
+        {
+          "heading": "6. Cookies and local storage",
+          "paragraphs": [
+            "We use browser storage to keep you signed in (for example, an access token) and to remember your language preference. These are required for basic app features, not for advertising trackers."
+          ]
+        },
+        {
+          "heading": "7. Your choices and rights",
+          "paragraphs": [
+            "You can update your profile information and avatar from your profile page.",
+            "You can delete your account from your profile page. Deleting your account removes your user record from the application database according to the current product behaviour.",
+            "If you need help with a data question during evaluation or coursework, contact the project team through your usual 42 communication channels."
+          ]
+        },
+        {
+          "heading": "8. Data retention",
+          "paragraphs": [
+            "We keep account and event data while your account remains active and the project environment is running. Backups may retain copies for a limited retention window configured by the operators."
+          ]
+        },
+        {
+          "heading": "9. Changes",
+          "paragraphs": [
+            "We may update this Privacy Policy as the project evolves. The “Last updated” date at the top of this page will change when we do."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "intro": "These Terms of Service (“Terms”) govern your use of Vibe Checker. By creating an account or using the application, you agree to these Terms. Vibe Checker is an educational 42 curriculum project.",
+      "sections": [
+        {
+          "heading": "1. The service",
+          "paragraphs": [
+            "Vibe Checker lets users browse community events, create and manage events, join plans hosted by others, and maintain a basic profile with an optional avatar.",
+            "The service is provided as-is for learning, demonstration, and peer evaluation. Availability, uptime, and feature completeness are not guaranteed."
+          ]
+        },
+        {
+          "heading": "2. Accounts",
+          "paragraphs": [
+            "You must provide accurate registration details and keep your login credentials confidential.",
+            "You are responsible for activity that happens under your account. If you believe your account was misused, change your password and notify the project team if appropriate.",
+            "You may delete your account from your profile settings."
+          ]
+        },
+        {
+          "heading": "3. Acceptable use",
+          "paragraphs": [
+            "Do not use Vibe Checker to harass others, upload unlawful or harmful content, attempt to break into the system, abuse the public API, or interfere with other users’ access.",
+            "Event content and profile text you publish should be respectful and appropriate for a shared campus / community environment."
+          ]
+        },
+        {
+          "heading": "4. Content you submit",
+          "paragraphs": [
+            "You keep ownership of the content you create (events, descriptions, images, profile notes).",
+            "By posting content, you grant the application permission to store, display, and process that content as needed to operate the platform (for example, showing an event page to other users).",
+            "You confirm that you have the rights to upload any images you submit."
+          ]
+        },
+        {
+          "heading": "5. Events and meetups",
+          "paragraphs": [
+            "Event hosts are responsible for the accuracy of event details. Joining an event in the app does not create a legal contract between users.",
+            "In-person meetups arranged through the platform are at your own risk. Practice normal personal safety when meeting people offline."
+          ]
+        },
+        {
+          "heading": "6. Intellectual property",
+          "paragraphs": [
+            "The Vibe Checker application code, branding, and design belong to the project authors unless otherwise stated. You may not present the project as a commercial product without permission from the team."
+          ]
+        },
+        {
+          "heading": "7. Disclaimer",
+          "paragraphs": [
+            "The application is provided without warranties of any kind, to the fullest extent permitted by applicable coursework and local rules. We are not liable for lost data, missed events, or damages arising from use of this educational platform."
+          ]
+        },
+        {
+          "heading": "8. Changes and contact",
+          "paragraphs": [
+            "We may update these Terms as features change. Continued use after updates means you accept the revised Terms.",
+            "For questions about these Terms during the project lifecycle, contact the Vibe Checker team through your 42 project channels."
+          ]
+        }
+      ]
+    }
   }
 }

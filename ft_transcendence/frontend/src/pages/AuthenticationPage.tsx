@@ -150,6 +150,11 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
             {register ? t("auth.login") : t("auth.create_account")}
           </Link>
         </p>
+        <nav className="auth-legal" aria-label={t("legal.nav_label")}>
+          <Link to="/privacy">{t("legal.privacy_label")}</Link>
+          <span aria-hidden="true">·</span>
+          <Link to="/terms">{t("legal.terms_label")}</Link>
+        </nav>
       </section>
     </div>
   );
