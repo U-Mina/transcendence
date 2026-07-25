@@ -6,6 +6,7 @@
   "nav": {
     "discover": "Découvrir les événements",
     "community": "Communauté",
+    "friends": "Amis",
     "create": "Créer un événement"
   },
   "account": {
@@ -84,6 +85,24 @@
         "avatar_size": "Utilisez une image JPEG, PNG ou WebP de moins de 5 Mo."
       }
     }
+  },
+  "friends": {
+    "eyebrow": "Vos connexions",
+    "title": "Amis",
+    "tab_all": "Tous les amis",
+    "tab_requests": "Demandes d'amis",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "empty_friends": "Aucun ami ajouté. Connectez-vous avec les membres !",
+    "empty_requests": "Aucune demande en attente.",
+    "add_friend": "Ajouter en ami",
+    "remove_friend": "Retirer des amis",
+    "accept": "Accepter",
+    "reject": "Refuser",
+    "cancel_request": "Annuler la demande",
+    "request_sent": "Demande envoyée",
+    "incoming_header": "Demandes reçues",
+    "outgoing_header": "Demandes envoyées"
   },
   "community": {
     "eyebrow": "La force du collectif",

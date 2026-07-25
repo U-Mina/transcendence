@@ -2,6 +2,9 @@ import type {
   EventCard,
   EventDetail,
   EventInput,
+  FriendRequestsResponse,
+  FriendUser,
+  HeartbeatResponse,
   SessionUser,
   UserProfile,
 } from "../types/api";
@@ -130,4 +133,33 @@ export const transcendenceApi = {
       body,
     });
   },
+  sendHeartbeat: (token: string) =>
+    request<HeartbeatResponse>("/users/me/heartbeat", {
+      method: "POST",
+      token,
+    }),
+  getFriends: (token: string) =>
+    request<FriendUser[]>("/users/me/friends", { token }),
+  getFriendRequests: (token: string) =>
+    request<FriendRequestsResponse>("/users/me/friend-requests", { token }),
+  sendFriendRequest: (userId: string, token: string) =>
+    request<FriendUser>(`/users/${userId}/friends`, {
+      method: "POST",
+      token,
+    }),
+  removeFriend: (friendId: string, token: string) =>
+    request<void>(`/users/me/friends/${friendId}`, {
+      method: "DELETE",
+      token,
+    }),
+  acceptFriendRequest: (requesterId: string, token: string) =>
+    request<FriendUser>(`/users/me/friend-requests/${requesterId}/accept`, {
+      method: "POST",
+      token,
+    }),
+  rejectFriendRequest: (requesterId: string, token: string) =>
+    request<void>(`/users/me/friend-requests/${requesterId}/reject`, {
+      method: "POST",
+      token,
+    }),
 };

@@ -206,6 +206,11 @@
   background: transparent;
   border-color: #b9bad1;
 }
+.button-subtle:hover:not(:disabled) {
+  color: var(--indigo);
+  background: var(--soft);
+  border-color: var(--indigo);
+}
 .button-danger {
   background: transparent;
   color: var(--danger);
@@ -291,11 +296,14 @@
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   overflow: hidden;
 }
-.file-input-box:hover,
+.file-input-box:hover:not(:disabled),
 .file-input-box:focus {
+  background: #f7f3eb;
+  color: var(--ink);
   border-color: var(--indigo);
   box-shadow: 0 0 0 3px rgba(57, 59, 119, 0.12);
   outline: 0;
+  transform: none;
 }
 .file-input-badge {
   display: inline-flex;
@@ -650,6 +658,7 @@
   margin: 24px 0 0;
   color: var(--muted);
   font-size: 14px;
+  text-align: center;
 }
 .auth-switch a {
   color: var(--indigo);
@@ -1132,5 +1141,75 @@
 }
 .legal-switch a:hover {
   text-decoration: underline;
+}
+
+/* ==========================================================================
+   Friend & Online Presence Styles
+   ========================================================================== */
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+.status-dot.online {
+  background-color: #2e7d32;
+  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.25);
+}
+.status-dot.offline {
+  background-color: #9e9e9e;
+}
+
+.friends-tab-nav {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.friends-tab-nav button {
+  position: relative;
+}
+
+.friend-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 20px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.friend-card-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.friend-card-actions .button {
+  flex: 1;
+}
+
+.request-badge-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: var(--coral);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  margin-left: 6px;
 }
 

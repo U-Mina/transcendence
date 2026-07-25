@@ -7,12 +7,14 @@ export interface PublicUserProfile {
     intraUrl?: string;
     avatarUrl?: string;
     userContact?: string;
+    isOnline?: boolean;
 }
 
 export interface CommunityUser {
     id: string;
     userName: string;
     avatarUrl?: string;
+    isOnline?: boolean;
 }
 
 /**

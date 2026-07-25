@@ -6,6 +6,7 @@
   "nav": {
     "discover": "استكشف الفعاليات",
     "community": "المجتمع",
+    "friends": "الأصدقاء",
     "create": "إنشاء فعالية"
   },
   "account": {
@@ -84,6 +85,24 @@
         "avatar_size": "استخدم صورة JPEG أو PNG أو WebP بحجم أقل من 5 ميغابايت."
       }
     }
+  },
+  "friends": {
+    "eyebrow": "روابطك",
+    "title": "الأصدقاء",
+    "tab_all": "كل الأصدقاء",
+    "tab_requests": "طلبات الصداقة",
+    "online": "متصل",
+    "offline": "غير متصل",
+    "empty_friends": "لم تقم بإضافة أصدقاء بعد. تواصل مع أعضاء المجتمع!",
+    "empty_requests": "لا توجد طلبات صداقة معلقة.",
+    "add_friend": "إضافة صديق",
+    "remove_friend": "إزالة الصديق",
+    "accept": "قبول",
+    "reject": "رفض",
+    "cancel_request": "إلغاء الطلب",
+    "request_sent": "تم إرسال الطلب",
+    "incoming_header": "الطلبات الواردة",
+    "outgoing_header": "الطلبات الصادرة"
   },
   "community": {
     "eyebrow": "قوة الجماعة",

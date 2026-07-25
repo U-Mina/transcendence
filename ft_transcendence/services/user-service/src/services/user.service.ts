@@ -5,6 +5,7 @@
  */
 import bcrypt from "bcryptjs";
 import { userRepository } from "../user.repository";
+import { isUserOnline } from "./friendship.service";
 import type { InternalUserEntity, UpdateUserDTO, PublicUserProfile, CommunityUser, LoginUserDTO, RegisterUserDTO } from "../users.types";
 // the current id will extract from JWT later, now statically pass
 
@@ -21,14 +22,17 @@ export class UserServiceError extends Error {
  * SafeUser is a type that removes the password hash from the user entity
  * this is used to return a user profile to the client without the password hash
  */
-export type SafeUser = Omit<InternalUserEntity, "passwordHash">;
+export type SafeUser = Omit<InternalUserEntity, "passwordHash"> & { isOnline?: boolean };
 
 /**
  * withoutPassword is a helper function to remove the password hash from the user entity
  */
 function withoutPassword(user: InternalUserEntity): SafeUser {
     const { passwordHash: _passwordHash, ...safeUser } = user;
-    return safeUser;
+    return {
+        ...safeUser,
+        isOnline: isUserOnline(user.lastSeenAt),
+    };
 }
 
 /**
@@ -45,6 +49,7 @@ function validateEmail(email: string): boolean {
 function publicProfile(user: InternalUserEntity): PublicUserProfile {
     return {
         userName: user.userName,
+        isOnline: isUserOnline(user.lastSeenAt),
         ...(user.userContact ? { userContact: user.userContact } : {}),
         ...(user.intraName ? { intraName: user.intraName } : {}),
         ...(user.intraUrl ? { intraUrl: user.intraUrl } : {}),
@@ -69,9 +74,11 @@ class UserService {
     }
     
     async getAllUser(): Promise<CommunityUser[]> {
+        const now = new Date();
         return (await userRepository.getAllUser()).map((user) => ({
             id: user.id,
             userName: user.userName,
+            isOnline: isUserOnline(user.lastSeenAt, now),
             ...(user.avatarUrl ? { avatarUrl: user.avatarUrl } : {}),
         }));
     }
