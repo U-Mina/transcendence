@@ -216,10 +216,6 @@ services:
     ports:
       - "9093:9093"
 
-    networks:
-      - prometheus
-
-
   frontend:
     build:
       context: ./frontend
@@ -256,4 +252,4 @@ volumes:
   api_gateway_node_modules:
   grafana_data:
   frontend_node_modules:
-  alertmanager-data:
+  alertmanager_data:

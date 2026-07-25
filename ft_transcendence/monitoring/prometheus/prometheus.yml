@@ -9,6 +9,17 @@ global:
 rule_files:
   - /etc/prometheus/alerts.yml
 
+alerting:
+  alertmanagers:
+    - scheme: https
+
+      static_configs:
+        - targets:
+            - alertmanager:9093
+
+      tls_config:
+        ca_file: /certs/ca/ca.crt
+        
 scrape_configs:
   - job_name: prometheus
     scheme: https
