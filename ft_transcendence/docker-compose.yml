@@ -17,6 +17,8 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_EXPORTER_USER: ${MYSQL_EXPORTER_USER}
+      MYSQL_EXPORTER_PASSWORD: ${MYSQL_EXPORTER_PASSWORD}
 
     ports:
       - "${MYSQL_PORT}:3306"
@@ -244,6 +246,19 @@ services:
       api-gateway:
         condition: service_started
 
+  mysqld-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: mysqld-exporter
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    command:
+      - "--config.my-cnf=/cfg/.my.cnf"
+    volumes:
+      - ./monitoring/mysqld-exporter/.my.cnf:/cfg/.my.cnf:ro
+    networks:
+      - transcendence-network
 
 volumes:
   mysql_data:
