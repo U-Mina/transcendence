@@ -9,3 +9,21 @@ groups:
         annotations:
           summary: "Service {{ $labels.instance }} is down"
           description: "Prometheus could not scrape {{ $labels.instance }} for more than one minute."
+          
+      - alert: HighHttp5xxErrorRate
+        expr: |
+          (
+            sum by (job) (
+              rate(http_requests_total{status_code=~"5.."}[5m])
+            )
+            /
+            sum by (job) (
+              rate(http_requests_total[5m])
+            )
+          ) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High HTTP 5xx error rate on {{ $labels.job }}"
+          description: "More than 5% of requests to {{ $labels.job }} returned a 5xx response for at least two minutes."
