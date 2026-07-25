@@ -1,8 +1,10 @@
+import i18n from "../i18n";
+
 // standard error output
 export const errorText = (error: unknown) =>
   error instanceof Error
     ? error.message
-    : "Something went wrong. Please try again.";
+    : i18n.t("error.generic", "Something went wrong. Please try again.");
 
 // formating input
 export const toLocalInput = (value: string) =>

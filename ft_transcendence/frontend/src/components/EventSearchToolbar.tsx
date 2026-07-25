@@ -18,20 +18,20 @@ export function EventSearchToolbar({
   return (
     <div className="discovery-toolbar">
       <input
-        aria-label="Search events"
+        aria-label={t("toolbar.aria_search")}
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
         placeholder={t("toolbar.search_placeholder")}
       />
       <select
-        aria-label="Filter by tag"
+        aria-label={t("toolbar.aria_filter_tag")}
         value={tag}
         onChange={(event) => onTagChange(event.target.value)}
       >
         <option value="all">{t("toolbar.all_tags")}</option>
         {EVENT_TAGS.map((item) => (
           <option key={item} value={item}>
-            {item}
+            {t(`tags.${item}`)}
           </option>
         ))}
       </select>

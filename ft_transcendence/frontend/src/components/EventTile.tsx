@@ -49,7 +49,11 @@ export function EventTile({
           <p className="event-description">{event.description}</p>
         )}
         <div className="event-footer">
-          <span className="tag">{displayTag(event.category)}</span>
+          <span className="tag">
+            {t(`tags.${event.category || "Uncategorized"}`, {
+              defaultValue: displayTag(event.category),
+            })}
+          </span>
           {isOwner ? (
             <ActionLink variant="subtle" to={`/events/${event.eventId}/edit`}>
               {t("events.tile.manage")}

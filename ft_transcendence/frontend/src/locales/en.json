@@ -21,6 +21,9 @@
     "ar": "AR",
     "zh": "ZH"
   },
+  "error": {
+    "generic": "Something went wrong. Please try again."
+  },
   "auth": {
     "error": {
       "name_len": "Name must be between 2 and 100 characters.",
@@ -98,7 +101,23 @@
       "subtitle": "Try a different search, or be the first to make a plan."
     }
   },
+  "file": {
+    "choose": "Choose file",
+    "no_file": "No file chosen"
+  },
+  "tags": {
+    "Social": "Social",
+    "Sports": "Sports",
+    "Games": "Games",
+    "Food": "Food",
+    "Learning": "Learning",
+    "Outdoors": "Outdoors",
+    "Arts & Culture": "Arts & Culture",
+    "Uncategorized": "Uncategorized"
+  },
   "toolbar": {
+    "aria_search": "Search events",
+    "aria_filter_tag": "Filter by tag",
     "search_placeholder": "Search events, places, ideas…",
     "all_tags": "All tags"
   },
