@@ -7,12 +7,6 @@ import { errorText } from "../utils/formatters";
 export function DashboardPage() {
   const { session } = useAuth();
   const [events, setEvents] = useState<EventCard[]>([]);
-  const [joined, setJoined] = useState<Set<string>>(new Set());
-  const [query, setQuery] = useState("");
-  const [tag, setTag] = useState("all");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [busyId, setBusyId] = useState("");
 
   // fetch data from api
   useEffect(() => {
@@ -36,12 +30,18 @@ export function DashboardPage() {
       } finally {
         if (alive) setLoading(false);
       }
-      // todo: handle error when fetching joined events
-      
     })();
         return () => {
       alive = false;
     };
   }, [session?.token]);
+
+  const visible = events.filter(
+  (event) =>
+    (tag === "all" || event.category === tag) &&
+    `${event.eventName} ${event.description || ""} ${event.location || ""}`
+      .toLowerCase()
+      .includes(query.toLowerCase()),
+  );
 
 }
