@@ -8,6 +8,7 @@ import {
 } from "../types/api";
 import { errorText, imageIsSupported, toLocalInput } from "../utils/formatters";
 import { ActionButton } from "./ActionButton";
+import { FileInput } from "./FileInput";
 
 type Props = {
   event?: EventDetail;
@@ -123,7 +124,7 @@ export function EventForm({ event, onSave }: Props) {
             </option>
             {EVENT_TAGS.map((item) => (
               <option key={item} value={item}>
-                {item}
+                {t(`tags.${item}`)}
               </option>
             ))}
           </select>
@@ -161,9 +162,8 @@ export function EventForm({ event, onSave }: Props) {
         </label>
         <label className="full">
           {t("events.form.image_label")}
-          <input
+          <FileInput
             name="image"
-            type="file"
             accept="image/jpeg,image/png,image/webp"
           />
         </label>

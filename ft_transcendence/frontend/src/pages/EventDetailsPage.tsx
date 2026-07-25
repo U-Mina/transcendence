@@ -106,7 +106,11 @@ export function EventDetailsPage() {
           )}
         </div>
         <div className="detail-copy">
-          <p className="eyebrow">{displayTag(detail.category)}</p>
+          <p className="eyebrow">
+            {t(`tags.${detail.category || "Uncategorized"}`, {
+              defaultValue: displayTag(detail.category),
+            })}
+          </p>
           <h1>{detail.eventName}</h1>
           <p className="detail-time">
             {new Date(detail.startTime).toLocaleString(i18n.language, {

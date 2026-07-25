@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { UserProfile } from "../types/api";
 import { errorText, imageIsSupported } from "../utils/formatters";
 import { ActionButton } from "./ActionButton";
+import { FileInput } from "./FileInput";
 
 type Props = {
   profile: UserProfile | null;
@@ -94,9 +95,8 @@ export function ProfileEditForm({ profile, onSave }: Props) {
       </label>
       <label>
         {t("profile.form.avatar_label")}
-        <input
+        <FileInput
           name="avatar"
-          type="file"
           accept="image/jpeg,image/png,image/webp"
         />
       </label>
