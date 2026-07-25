@@ -21,6 +21,9 @@
     "ar": "AR",
     "zh": "ZH"
   },
+  "error": {
+    "generic": "Une erreur s'est produite. Veuillez réessayer."
+  },
   "auth": {
     "error": {
       "name_len": "Le nom doit comporter entre 2 et 100 caractères.",
@@ -98,7 +101,23 @@
       "subtitle": "Essayez une autre recherche, ou soyez le premier à créer un événement."
     }
   },
+  "file": {
+    "choose": "Choisir un fichier",
+    "no_file": "Aucun fichier choisi"
+  },
+  "tags": {
+    "Social": "Social",
+    "Sports": "Sports",
+    "Games": "Jeux",
+    "Food": "Gastronomie",
+    "Learning": "Apprentissage",
+    "Outdoors": "Plein air",
+    "Arts & Culture": "Arts & Culture",
+    "Uncategorized": "Non catégorisé"
+  },
   "toolbar": {
+    "aria_search": "Rechercher des événements",
+    "aria_filter_tag": "Filtrer par tag",
     "search_placeholder": "Rechercher des événements, des lieux, des idées…",
     "all_tags": "Tous les tags"
   },

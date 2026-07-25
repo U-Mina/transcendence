@@ -21,6 +21,9 @@
     "ar": "AR",
     "zh": "ZH"
   },
+  "error": {
+    "generic": "出了些问题，请重试。"
+  },
   "auth": {
     "error": {
       "name_len": "姓名长度必须在 2 到 100 个字符之间。",
@@ -98,7 +101,23 @@
       "subtitle": "尝试更改搜索条件，或成为第一个发起活动的人。"
     }
   },
+  "file": {
+    "choose": "选择文件",
+    "no_file": "未选择文件"
+  },
+  "tags": {
+    "Social": "社交",
+    "Sports": "运动",
+    "Games": "游戏",
+    "Food": "美食",
+    "Learning": "学习",
+    "Outdoors": "户外",
+    "Arts & Culture": "艺术与文化",
+    "Uncategorized": "未分类"
+  },
   "toolbar": {
+    "aria_search": "搜索活动",
+    "aria_filter_tag": "按标签筛选",
     "search_placeholder": "搜索活动、地点、想法…",
     "all_tags": "所有标签"
   },
