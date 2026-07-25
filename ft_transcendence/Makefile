@@ -1,7 +1,7 @@
 COMPOSE = docker compose
 CERT_SCRIPT = ./scripts/generate-certificates.sh
 
-.PHONY: up down build rebuild restart logs ps clean fclean re prune
+.PHONY: up down build rebuild restart logs ps clean fclean re reset prune
 
 up:
 	@$(CERT_SCRIPT)
@@ -33,6 +33,11 @@ clean:
 
 fclean:
 	$(COMPOSE) down -v --rmi all --remove-orphans
+
+# Wipe DB volume and bring stack back up with Prisma migrations + default seeds.
+reset: clean
+	@$(CERT_SCRIPT)
+	$(COMPOSE) up -d --build --force-recreate
 
 re: fclean
 	@$(CERT_SCRIPT)
