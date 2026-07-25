@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ActionButton, ActionLink } from "../components/ActionButton";
+import { ActionLink } from "../components/ActionButton";
+import { Button } from "../components/Button";
 import { useAuth } from "../context/AuthContext";
 import { transcendenceApi } from "../lib/transcendenceApi";
 import { displayTag, type EventDetail } from "../types/api";
@@ -141,25 +142,23 @@ export function EventDetailsPage() {
                 <ActionLink to={`/events/${detail.eventId}/edit`}>
                   {t("events.edit")}
                 </ActionLink>
-                <ActionButton variant="danger" disabled={busy} onClick={remove}>
+                <Button variant="danger" loading={busy} onClick={remove}>
                   {t("events.delete")}
-                </ActionButton>
+                </Button>
                 {count !== null && (
                   <span className="count-pill">{count} {t("events.joined_count")}</span>
                 )}
               </>
             ) : (
-              <ActionButton
+              <Button
                 variant={joined ? "subtle" : "primary"}
                 onClick={joinToggle}
-                disabled={busy}
+                loading={busy}
               >
-                {busy
-                  ? t("events.saving")
-                  : joined
-                    ? t("events.cancel_spot")
-                    : t("events.join")}
-              </ActionButton>
+                {joined
+                  ? t("events.cancel_spot")
+                  : t("events.join")}
+              </Button>
             )}
           </div>
         </div>

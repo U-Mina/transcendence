@@ -1,7 +1,8 @@
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { ActionButton, ActionLink } from "./ActionButton";
+import { ActionLink } from "./ActionButton";
+import { Button } from "./Button";
 
 // if no avatar uploaded, will use name initial
 const initials = (name?: string) =>
@@ -55,11 +56,11 @@ export function DashboardLayout() {
         >
           <span style={{ fontSize: "0.85rem", color: "var(--color-text-muted)" }}>🌐</span>
           {(["en", "fr", "ar", "zh"] as const).map((lang) => (
-            <button
+            <Button
               key={lang}
-              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => i18n.changeLanguage(lang)}
-              className="button button-ghost"
               style={{
                 padding: "0.25rem 0.5rem",
                 fontSize: "0.75rem",
@@ -70,7 +71,7 @@ export function DashboardLayout() {
               }}
             >
               {lang.toUpperCase()}
-            </button>
+            </Button>
           ))}
         </div>
         <div className="sidebar-account">
@@ -89,9 +90,9 @@ export function DashboardLayout() {
                   <small>{t("account.view_profile")}</small>
                 </span>
               </Link>
-              <ActionButton variant="ghost" onClick={signOut}>
+              <Button variant="ghost" onClick={signOut}>
                 {t("account.logout")}
-              </ActionButton>
+              </Button>
             </>
           ) : (
             <div className="auth-links">

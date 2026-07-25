@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { displayTag, type EventCard } from "../types/api";
-import { ActionButton, ActionLink } from "./ActionButton";
+import { ActionLink } from "./ActionButton";
 import { Badge } from "./Badge";
+import { Button } from "./Button";
 
 type Props = {
   event: EventCard;
@@ -61,13 +62,13 @@ export function EventTile({
             </ActionLink>
           ) : (
             onJoinToggle && (
-              <ActionButton
+              <Button
                 variant={joined ? "subtle" : "primary"}
-                disabled={busy}
+                loading={busy}
                 onClick={onJoinToggle}
               >
-                {busy ? t("events.saving") : joined ? t("events.tile.cancel") : t("events.tile.join")}
-              </ActionButton>
+                {joined ? t("events.tile.cancel") : t("events.tile.join")}
+              </Button>
             )
           )}
         </div>

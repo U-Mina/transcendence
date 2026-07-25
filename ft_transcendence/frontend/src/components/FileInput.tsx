@@ -1,5 +1,6 @@
 import { useRef, useState, type ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { Button } from "./Button";
 
 type Props = {
   name: string;
@@ -26,8 +27,8 @@ export function FileInput({ name, accept }: Props) {
         onChange={handleChange}
         style={{ display: "none" }}
       />
-      <button
-        type="button"
+      <Button
+        variant="subtle"
         className="file-input-box"
         onClick={() => inputRef.current?.click()}
       >
@@ -35,7 +36,7 @@ export function FileInput({ name, accept }: Props) {
         <span className="file-input-text">
           {selectedFile ? selectedFile.name : t("file.no_file")}
         </span>
-      </button>
+      </Button>
     </div>
   );
 }

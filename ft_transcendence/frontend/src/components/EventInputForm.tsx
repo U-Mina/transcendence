@@ -7,7 +7,7 @@ import {
   type EventTag,
 } from "../types/api";
 import { errorText, imageIsSupported, toLocalInput } from "../utils/formatters";
-import { ActionButton } from "./ActionButton";
+import { Button } from "./Button";
 import { FileInput } from "./FileInput";
 
 type Props = {
@@ -184,9 +184,9 @@ export function EventInputForm({ event, onSave }: Props) {
           {error}
         </p>
       )}
-      <ActionButton type="submit" disabled={pending}>
-        {pending ? t("events.saving") : event ? t("events.form.save_changes") : t("events.form.publish")}
-      </ActionButton>
+      <Button type="submit" loading={pending}>
+        {event ? t("events.form.save_changes") : t("events.form.publish")}
+      </Button>
     </form>
   );
 }

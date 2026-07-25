@@ -1,5 +1,6 @@
 import { useEffect, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { Button } from "./Button";
 
 export type ModalProps = {
   isOpen: boolean;
@@ -52,14 +53,15 @@ export function Modal({
         {title && (
           <div className="modal-header">
             <h3 id="modal-title">{title}</h3>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="sm"
               className="modal-close"
               onClick={onClose}
               aria-label="Close modal"
             >
               ✕
-            </button>
+            </Button>
           </div>
         )}
         <div className="modal-body">{children}</div>
