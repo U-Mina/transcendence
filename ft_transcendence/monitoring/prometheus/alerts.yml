@@ -45,3 +45,15 @@ groups:
         annotations:
           summary: "High request latency on {{ $labels.job }}"
           description: "Average request duration on {{ $labels.job }} exceeded one second for at least two minutes."
+
+      - alert: HighRequestRate
+        expr: |
+          sum by (job) (
+            rate(http_requests_total[1m])
+          ) > 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request rate on {{ $labels.job }}"
+          description: "The request rate for {{ $labels.job }} exceeded 100 requests per second for at least two minutes."
