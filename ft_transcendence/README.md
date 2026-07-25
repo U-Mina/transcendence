@@ -9,6 +9,10 @@ We have built a dedicated custom design system with centralized tokens and reusa
 - **Icon Set**: Custom SVG sprite & 26 named icon components in `Icon.tsx`.
 - **10 Reusable UI Components**: `Button`, `Input`, `Select`, `Avatar`, `Badge`, `Card`, `Modal`, `EmptyState`, `Alert`, `Icon`.
 
+## Modules
+
+- Advanced search: API-backed event filters, sorting, and pagination.
+
 ### `database`
 
 
@@ -43,7 +47,7 @@ API gateway — public API
 | ------ | ------------------------------- | ------- | -------------------------------------------------------------------- |
 | POST   | `/auth/register`                | No      | Create an account. Body: `{ userName, email, password }`             |
 | POST   | `/auth/login`                   | No      | Log in. Body: `{ email, password }`. Returns `{ accessToken, user }` |
-| GET    | `/events`                       | No      | List public events                                                   |
+| GET    | `/events`                       | No      | Search/list events with filters, sorting, and pagination            |
 | GET    | `/events/:eventId`              | No      | Get one event                                                        |
 | POST   | `/events`                       | Yes| Create an event                                                      |
 | PUT    | `/events/:eventId`              | Yes     | Update an event; owner only                                          |
