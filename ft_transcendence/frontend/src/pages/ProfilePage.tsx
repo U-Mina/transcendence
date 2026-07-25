@@ -89,12 +89,14 @@ export function ProfilePage() {
       </div>
       <div className="profile-layout">
         <section className="panel">
-          <h2 className="mb-3">Edit profile</h2>
+          <h2>Edit profile</h2>
           <ProfileEditForm profile={profile} onSave={save} />
           {error && <p className="form-error">{error}</p>}
-          <ActionButton variant="danger" onClick={deleteAccount} className="mt-3">
-            Delete account
-          </ActionButton>
+          <div style={{ marginTop: '24px' }}>
+            <ActionButton variant="danger" onClick={deleteAccount}>
+              Delete account
+            </ActionButton>
+          </div>
         </section>
         <section>
           <div className="section-heading">
