@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ActionButton } from "../components/ActionButton";
+import { Alert, Avatar, EmptyState } from "../components";
 import { EventTile } from "../components/EventTile";
 import { ProfileEditForm } from "../components/ProfileEditForm";
 import { useAuth } from "../context/AuthContext";
@@ -77,13 +78,12 @@ export function ProfilePage() {
   return (
     <section className="page">
       <div className="profile-header">
-        <div className="profile-avatar">
-          {profile?.avatarUrl ? (
-            <img src={profile.avatarUrl} alt="" />
-          ) : (
-            profile?.userName.slice(0, 1).toUpperCase()
-          )}
-        </div>
+        <Avatar
+          size="xl"
+          src={profile?.avatarUrl}
+          name={profile?.userName || activeSession.user.userName || "?"}
+          className="profile-avatar"
+        />
         <div>
           <p className="eyebrow">{t("profile.eyebrow")}</p>
           <h1>
@@ -98,8 +98,12 @@ export function ProfilePage() {
         <section className="panel">
           <h2>{t("profile.edit_heading")}</h2>
           <ProfileEditForm profile={profile} onSave={save} />
-          {error && <p className="form-error">{error}</p>}
-          <div style={{ marginTop: '24px' }}>
+          {error && (
+            <Alert variant="error" onDismiss={() => setError("")}>
+              {error}
+            </Alert>
+          )}
+          <div style={{ marginTop: "24px" }}>
             <ActionButton variant="danger" onClick={deleteAccount}>
               {t("profile.delete_account")}
             </ActionButton>
@@ -124,10 +128,11 @@ export function ProfilePage() {
               ))}
             </div>
           ) : (
-            <div className="empty-state small">
-              <p>{t("profile.empty_joined")}</p>
-              <Link to="/">{t("profile.explore_events")}</Link>
-            </div>
+            <EmptyState
+              size="small"
+              description={t("profile.empty_joined")}
+              action={<Link to="/">{t("profile.explore_events")}</Link>}
+            />
           )}
         </section>
       </div>
