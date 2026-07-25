@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { transcendenceApi } from "../lib/transcendenceApi";
 import type { EventCard } from "../types/api";
 import { errorText } from "../utils/formatters";
+import { EventTile } from "../components/EventTile";
 
 export function DashboardPage() {
   const { session } = useAuth();
@@ -14,6 +15,7 @@ export function DashboardPage() {
   const [tag, setTag] = useState("all");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [busyId, setBusyId] = useState("");
 
   // fetch data from api
   useEffect(() => {
@@ -38,17 +40,17 @@ export function DashboardPage() {
         if (alive) setLoading(false);
       }
     })();
-        return () => {
+    return () => {
       alive = false;
     };
   }, [session?.token]);
 
   const visible = events.filter(
-  (event) =>
-    (tag === "all" || event.category === tag) &&
-    `${event.eventName} ${event.description || ""} ${event.location || ""}`
-      .toLowerCase()
-      .includes(query.toLowerCase()),
+    (event) =>
+      (tag === "all" || event.category === tag) &&
+      `${event.eventName} ${event.description || ""} ${event.location || ""}`
+        .toLowerCase()
+        .includes(query.toLowerCase()),
   );
 
   async function toggle(event: EventCard) {
@@ -72,7 +74,7 @@ export function DashboardPage() {
       setBusyId("");
     }
   }
-    return (
+  return (
     <section className="page">
       <header className="page-hero">
         <div>
@@ -125,6 +127,5 @@ export function DashboardPage() {
         </div>
       )}
     </section>
-  )
-
+  );
 }
