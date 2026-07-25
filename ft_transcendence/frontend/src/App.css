@@ -507,6 +507,14 @@
   border-radius: 13px;
   background: var(--paper);
 }
+.panel a:not(.button) {
+  color: var(--indigo);
+  font-weight: 700;
+  text-decoration: none;
+}
+.panel a:not(.button):hover {
+  text-decoration: underline;
+}
 .panel h2,
 .section-heading h2 {
   margin: 0 0 18px;
