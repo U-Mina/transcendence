@@ -92,4 +92,51 @@ export function EventInputForm({ event, onSave }: Props) {
     }
   }
 
+  return (
+    <form className="event-form" onSubmit={submit}>
+      <div className="form-grid">
+        {/* event input form */}
+        <label className="full">
+          Event name
+          <input
+            name="eventName"
+            required
+            maxLength={255}
+            defaultValue={event?.eventName}
+            autoComplete="off"
+          />
+        </label>
+        <label>
+          Start
+          <input
+            name="startTime"
+            type="datetime-local"
+            required
+            autoComplete="off"
+            defaultValue={event ? toLocalInput(event.startTime) : ""}
+          />
+        </label>
+        <label>
+          End
+          <input
+            name="endTime"
+            type="datetime-local"
+            required
+            autoComplete="off"
+            defaultValue={event ? toLocalInput(event.endTime) : ""}
+          />
+        </label>
+
+      </div>
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
+      <ActionButton type="submit" disabled={pending}>
+        {pending ? "Saving…" : event ? "Save changes" : "Publish event"}
+      </ActionButton>
+    </form>
+  );
+
 }
