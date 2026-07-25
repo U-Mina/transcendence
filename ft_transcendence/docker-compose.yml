@@ -257,9 +257,12 @@ services:
 
     command:
       - "--config.my-cnf=/cfg/.my.cnf"
+      - "--web.config.file=/cfg/web.yml"
 
     volumes:
       - ./monitoring/mysqld-exporter/.my.cnf:/cfg/.my.cnf:ro
+      - ./monitoring/mysqld-exporter/web.yml:/cfg/web.yml:ro
+      - ./.certificates/mysqld-exporter:/certs/mysqld-exporter:ro
       - ./.certificates/ca:/certs/ca:ro
 
 volumes:
