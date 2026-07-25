@@ -6,6 +6,7 @@
   "nav": {
     "discover": "Discover events",
     "community": "Community",
+    "friends": "Friends",
     "create": "Create an event"
   },
   "account": {
@@ -59,8 +60,9 @@
     "delete_confirm": "Delete your account permanently?",
     "plans_eyebrow": "Your plans",
     "joined_heading": "Joined events",
-    "empty_joined": "You have not joined anything yet.",
+    "empty_joined": "You haven't joined any events yet.",
     "explore_events": "Explore events",
+    "friends_count": "Friends",
     "public": {
       "eyebrow": "Community member",
       "about_me": "About me",
@@ -84,6 +86,24 @@
         "avatar_size": "Use a JPEG, PNG, or WebP image under 5 MiB."
       }
     }
+  },
+  "friends": {
+    "eyebrow": "Your connections",
+    "title": "Friends",
+    "tab_all": "All Friends",
+    "tab_requests": "Friend Requests",
+    "online": "Online",
+    "offline": "Offline",
+    "empty_friends": "No friends added yet. Connect with people in the community!",
+    "empty_requests": "No pending friend requests.",
+    "add_friend": "Add Friend",
+    "remove_friend": "Remove Friend",
+    "accept": "Accept",
+    "reject": "Reject",
+    "cancel_request": "Cancel Request",
+    "request_sent": "Request Sent",
+    "incoming_header": "Incoming Requests",
+    "outgoing_header": "Outgoing Requests"
   },
   "community": {
     "eyebrow": "The people make it",
