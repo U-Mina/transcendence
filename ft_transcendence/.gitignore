@@ -97,3 +97,4 @@ build/
 node_modules/@prisma/client/
 
 .secrets/gmail_app_password
+monitoring/mysqld-exporter/.my.cnf

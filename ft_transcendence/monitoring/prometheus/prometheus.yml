@@ -55,3 +55,8 @@ scrape_configs:
     static_configs:
       - targets:
           - event-service:3002
+
+  - job_name: mysqld-exporter
+    static_configs:
+      - targets:
+          - mysqld-exporter:9104
