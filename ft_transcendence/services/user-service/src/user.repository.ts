@@ -107,6 +107,9 @@ class UserRepository {
         if (updatedInfo.userContact !== undefined) {
             data.userContact = updatedInfo.userContact ?? null;
         }
+        if (updatedInfo.intraUrl !== undefined) {
+            data.intraUrl = updatedInfo.intraUrl ?? null;
+        }
 
         if (Object.keys(data).length === 0) {
             return this.getUserById(targetProfileId);

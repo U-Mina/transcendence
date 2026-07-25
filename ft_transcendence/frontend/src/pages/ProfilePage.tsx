@@ -37,11 +37,16 @@ export function ProfilePage() {
   async function save(input: {
     userName: string;
     userContact: string | null;
+    intraUrl: string | null;
     avatar?: File;
   }) {
     const user = await transcendenceApi.updateUser(
       activeSession.user.id,
-      { userName: input.userName, userContact: input.userContact },
+      {
+        userName: input.userName,
+        userContact: input.userContact,
+        intraUrl: input.intraUrl,
+      },
       activeSession.token,
     );
     const avatar = input.avatar
