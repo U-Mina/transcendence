@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
+import { Button } from "./Button";
 import { AlertCircleIcon, CheckCircleIcon, InfoIcon } from "./Icon";
 
 export type AlertVariant = "error" | "success" | "warning" | "info";
@@ -38,14 +39,15 @@ export function Alert({
         {children}
       </div>
       {onDismiss && (
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          size="sm"
           className="alert-dismiss"
           onClick={onDismiss}
           aria-label="Dismiss alert"
         >
           ✕
-        </button>
+        </Button>
       )}
     </div>
   );

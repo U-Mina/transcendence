@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import type { UserProfile } from "../types/api";
 import { errorText, imageIsSupported } from "../utils/formatters";
-import { ActionButton } from "./ActionButton";
+import { Button } from "./Button";
 import { FileInput } from "./FileInput";
 
 type Props = {
@@ -105,9 +105,9 @@ export function ProfileEditForm({ profile, onSave }: Props) {
           {error}
         </p>
       )}
-      <ActionButton type="submit" disabled={saving}>
-        {saving ? t("profile.form.saving") : t("profile.form.save")}
-      </ActionButton>
+      <Button type="submit" loading={saving}>
+        {t("profile.form.save")}
+      </Button>
     </form>
   );
 }

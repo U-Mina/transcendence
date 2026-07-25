@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ActionButton } from "../components/ActionButton";
+import { Button } from "../components/Button";
 import { useAuth } from "../context/AuthContext";
 import { errorText } from "../utils/formatters";
 
@@ -134,13 +134,11 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
               {error}
             </p>
           )}
-          <ActionButton type="submit" className="wide" disabled={pending}>
-            {pending
-              ? t("auth.pending")
-              : register
-                ? t("auth.create_account")
-                : t("auth.login")}
-          </ActionButton>
+          <Button type="submit" size="wide" loading={pending}>
+            {register
+              ? t("auth.create_account")
+              : t("auth.login")}
+          </Button>
         </form>
 
         {/* when unloggin user use url to vist, will be redirect to login/register first */}
