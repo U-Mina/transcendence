@@ -258,6 +258,9 @@ services:
     command:
       - "--config.my-cnf=/cfg/.my.cnf"
       - "--web.config.file=/cfg/web.yml"
+      
+    ports:
+      - "${MYSQL_EXPORTER_PORT}:9104"
 
     volumes:
       - ./monitoring/mysqld-exporter/.my.cnf:/cfg/.my.cnf:ro
