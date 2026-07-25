@@ -129,3 +129,15 @@ groups:
         annotations:
           summary: "High MySQL connection count"
           description: "MySQL has more than 100 active connections for at least two minutes."
+
+      - alert: MySQLSlowQueries
+        expr: |
+          increase(
+            mysql_global_status_slow_queries{job="mysqld-exporter"}[5m]
+          ) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MySQL is executing slow queries"
+          description: "MySQL recorded more than five slow queries within five minutes."
