@@ -197,6 +197,29 @@ services:
       - prometheus
 
 
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    restart: unless-stopped
+
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--storage.path=/alertmanager"
+      - "--web.config.file=/etc/alertmanager/web.yml"
+
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./monitoring/alertmanager/web.yml:/etc/alertmanager/web.yml:ro
+      - ./.certificates/alertmanager:/certs/alertmanager:ro
+      - alertmanager-data:/alertmanager
+
+    ports:
+      - "9093:9093"
+
+    networks:
+      - prometheus
+
+
   frontend:
     build:
       context: ./frontend
@@ -233,3 +256,4 @@ volumes:
   api_gateway_node_modules:
   grafana_data:
   frontend_node_modules:
+  alertmanager-data:
