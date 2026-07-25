@@ -6,6 +6,7 @@
  */
 import { type FastifyInstance, type FastifyRequest, type FastifyReply } from "fastify";
 import { userService, UserServiceError } from "../services/user.service";
+import { friendshipService } from "../services/friendship.service";
 import type { UpdateUserDTO, RegisterUserDTO, LoginUserDTO } from "../users.types";
 
 // NOTE: dashboard is /home
@@ -24,6 +25,15 @@ function currentUserId(request: FastifyRequest): string | undefined {
 function sendUserError(reply: FastifyReply, error: unknown) {
     if (error instanceof UserServiceError) return reply.status(error.statusCode).send({ error: error.message });
     return reply.status(500).send({ error: "User service operation failed." });
+}
+
+function requireUser(request: FastifyRequest, reply: FastifyReply): string | undefined {
+    const userId = currentUserId(request);
+    if (!userId) {
+        void reply.status(401).send({ error: "Unauthenticated user." });
+        return undefined;
+    }
+    return userId;
 }
 
 export async function userServiceRoutes(fastify: FastifyInstance) {
@@ -56,6 +66,100 @@ export async function userServiceRoutes(fastify: FastifyInstance) {
                 return sendUserError(reply, error);
             }
         }
+    );
+
+    // --- Friends & presence ---
+
+    fastify.post("/users/me/heartbeat", async (request, reply) => {
+        const userId = requireUser(request, reply);
+        if (!userId) return;
+        try {
+            return reply.status(200).send(await friendshipService.heartbeat(userId));
+        } catch (error) {
+            return sendUserError(reply, error);
+        }
+    });
+
+    fastify.get("/users/me/friends", async (request, reply) => {
+        const userId = requireUser(request, reply);
+        if (!userId) return;
+        try {
+            return reply.status(200).send(await friendshipService.listFriends(userId));
+        } catch (error) {
+            return sendUserError(reply, error);
+        }
+    });
+
+    fastify.get("/users/me/friend-requests", async (request, reply) => {
+        const userId = requireUser(request, reply);
+        if (!userId) return;
+        try {
+            const [incoming, outgoing] = await Promise.all([
+                friendshipService.listIncomingRequests(userId),
+                friendshipService.listOutgoingRequests(userId),
+            ]);
+            return reply.status(200).send({ incoming, outgoing });
+        } catch (error) {
+            return sendUserError(reply, error);
+        }
+    });
+
+    fastify.post<{ Params: { requesterId: string } }>(
+        "/users/me/friend-requests/:requesterId/accept",
+        async (request, reply) => {
+            const userId = requireUser(request, reply);
+            if (!userId) return;
+            try {
+                return reply
+                    .status(200)
+                    .send(await friendshipService.acceptRequest(userId, request.params.requesterId));
+            } catch (error) {
+                return sendUserError(reply, error);
+            }
+        },
+    );
+
+    fastify.post<{ Params: { requesterId: string } }>(
+        "/users/me/friend-requests/:requesterId/reject",
+        async (request, reply) => {
+            const userId = requireUser(request, reply);
+            if (!userId) return;
+            try {
+                await friendshipService.rejectRequest(userId, request.params.requesterId);
+                return reply.status(204).send();
+            } catch (error) {
+                return sendUserError(reply, error);
+            }
+        },
+    );
+
+    fastify.delete<{ Params: { friendId: string } }>(
+        "/users/me/friends/:friendId",
+        async (request, reply) => {
+            const userId = requireUser(request, reply);
+            if (!userId) return;
+            try {
+                await friendshipService.removeFriend(userId, request.params.friendId);
+                return reply.status(204).send();
+            } catch (error) {
+                return sendUserError(reply, error);
+            }
+        },
+    );
+
+    fastify.post<{ Params: { userId: string } }>(
+        "/users/:userId/friends",
+        async (request, reply) => {
+            const userId = requireUser(request, reply);
+            if (!userId) return;
+            try {
+                return reply
+                    .status(201)
+                    .send(await friendshipService.sendFriendRequest(userId, request.params.userId));
+            } catch (error) {
+                return sendUserError(reply, error);
+            }
+        },
     );
 
     // get internal whole userEntity
