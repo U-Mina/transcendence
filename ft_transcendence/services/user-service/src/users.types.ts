@@ -6,6 +6,7 @@ export interface PublicUserProfile {
     intraName?: string;
     intraUrl?: string;
     avatarUrl?: string;
+    userContact?: string;
 }
 
 export interface CommunityUser {
@@ -62,4 +63,5 @@ export interface LoginUserDTO {
 export interface UpdateUserDTO {
     userName?: string;
     userContact?: string | null;
+    intraUrl?: string | null;
 }

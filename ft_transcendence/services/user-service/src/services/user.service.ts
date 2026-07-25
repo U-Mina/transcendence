@@ -138,13 +138,18 @@ class UserService {
         const userContact = updatedInfo.userContact === undefined || updatedInfo.userContact === null
             ? updatedInfo.userContact
             : updatedInfo.userContact.trim();
+        const intraUrl = updatedInfo.intraUrl === undefined || updatedInfo.intraUrl === null
+            ? updatedInfo.intraUrl
+            : updatedInfo.intraUrl.trim();
         if ((userName !== undefined && (userName.length < 2 || userName.length > 100))
-            || (typeof userContact === "string" && userContact.length > 50)) {
+            || (typeof userContact === "string" && userContact.length > 50)
+            || (typeof intraUrl === "string" && intraUrl.length > 255)) {
             throw new UserServiceError("Invalid profile data.", 400);
         }
         const updated =  await userRepository.updateUser(targetProfileId, {
             ...(userName !== undefined ? { userName } : {}),
             ...(userContact !== undefined ? { userContact } : {}),
+            ...(intraUrl !== undefined ? { intraUrl } : {}),
         });
         if (!updated) {
             throw new UserServiceError("User not found.", 404);
