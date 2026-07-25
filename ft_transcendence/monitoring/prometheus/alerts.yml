@@ -74,3 +74,16 @@ groups:
         annotations:
           summary: "High heap utilization on {{ $labels.job }}"
           description: "Heap utilization on {{ $labels.job }} exceeded 90% for at least two minutes."
+
+      - alert: HighEventLoopLag
+        expr: |
+          1000 *
+          max by(job)(
+            nodejs_eventloop_lag_p99_seconds
+          ) > 100
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High event loop lag on {{ $labels.job }}"
+          description: "The event loop lag on {{ $labels.job }} exceeded 100 ms for at least two minutes."
