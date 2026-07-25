@@ -1,31 +1,89 @@
+/* ==========================================================================
+   Centralized Design System Tokens & CSS Variables
+   ========================================================================== */
+
 :root {
-  font-family: Georgia, "Times New Roman", Times, serif;
-  color: #29231e;
-  background: #f8f4eb;
+  /* Color Palette */
+  --ink: #29231e;
+  --muted: #756b61;
+  --cream: #f8f4eb;
+  --paper: #fffdf8;
+  --line: #e6ddd0;
+  
+  /* Brand Accent Colors */
+  --coral: #d85d42;
+  --coral-dark: #ad3f2e;
+  --indigo: #393b77;
+  --sage: #8eaa8d;
+  --soft: #f0e7d8;
+
+  /* Semantic State Colors */
+  --danger: #a5312a;
+  --success: #2e7d32;
+  --warning: #ed6c02;
+  --info: #0288d1;
+  
+  /* Semantic Background Colors */
+  --bg-error: #fff0ed;
+  --bg-success: #edf7ed;
+  --bg-warning: #fff9e6;
+  --bg-info: #e5f6fd;
+
+  /* Typography Stacks */
+  --font-serif: Georgia, "Times New Roman", Times, serif;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+
+  /* Border Radii */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(80, 57, 35, 0.04);
+  --shadow-md: 0 8px 28px rgba(80, 57, 35, 0.06);
+  --shadow-lg: 0 20px 60px rgba(86, 52, 24, 0.1);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+
+  /* Default Root Rules */
+  font-family: var(--font-serif);
+  color: var(--ink);
+  background: var(--cream);
   font-synthesis: none;
 }
+
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
   min-width: 320px;
-  background: #f8f4eb;
+  background: var(--cream);
+  color: var(--ink);
   font-family: inherit;
 }
+
 button,
 input,
 textarea,
 select {
   font: inherit;
 }
+
 button {
   cursor: pointer;
 }
+
 a {
   color: inherit;
   text-decoration: none;
 }
+
 img {
   display: block;
   max-width: 100%;

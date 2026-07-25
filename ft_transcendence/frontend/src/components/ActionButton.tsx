@@ -1,40 +1,22 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link, type LinkProps } from "react-router-dom";
+import { type ButtonVariant } from "./Button";
 
-type Variant = "primary" | "subtle" | "danger" | "ghost";
+export { Button as ActionButton } from "./Button";
 
-const classNameFor = (variant: Variant, className = "") =>
-  `button button-${variant} ${className}`.trim();
-
-type ActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: Variant;
+export type ActionLinkProps = LinkProps & {
+  variant?: ButtonVariant;
   children: ReactNode;
 };
 
-export function ActionButton({
-  variant = "primary",
-  className,
-  children,
-  type = "button",
-  ...props
-}: ActionButtonProps) {
-  return (
-    <button type={type} className={classNameFor(variant, className)} {...props}>
-      {children}
-    </button>
-  );
-}
-
-type ActionLinkProps = LinkProps & { variant?: Variant; children: ReactNode };
-
 export function ActionLink({
   variant = "primary",
-  className,
+  className = "",
   children,
   ...props
 }: ActionLinkProps) {
   return (
-    <Link className={classNameFor(variant, className)} {...props}>
+    <Link className={`button button-${variant} ${className}`.trim()} {...props}>
       {children}
     </Link>
   );

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Alert } from "../components/Alert";
+import { Avatar } from "../components/Avatar";
+import { Card } from "../components/Card";
 import { useAuth } from "../context/AuthContext";
 import { transcendenceApi } from "../lib/transcendenceApi";
 import type { UserProfile } from "../types/api";
@@ -23,25 +26,25 @@ export function CommunityPage() {
     <section className="page">
       <p className="eyebrow">{t("community.eyebrow")}</p>
       <h1>{t("community.title")}</h1>
-      {error && <p className="form-error">{error}</p>}
+      {error && <Alert variant="error">{error}</Alert>}
       <div className="people-grid">
         {users
           .filter((user) => user.id !== session?.user.id)
           .map((user) => (
             <Link
-              className="person-card"
               key={user.id || user.userName}
               to={`/users/${user.id}`}
+              style={{ textDecoration: "none" }}
             >
-              <span className="avatar">
-                {user.avatarUrl ? (
-                  <img src={user.avatarUrl} alt="" />
-                ) : (
-                  user.userName.slice(0, 1).toUpperCase()
-                )}
-              </span>
-              <strong>{user.userName}</strong>
-              <small>{t("community.view_profile")}</small>
+              <Card hoverable className="person-card">
+                <Avatar
+                  src={user.avatarUrl}
+                  name={user.userName}
+                  size="md"
+                />
+                <strong>{user.userName}</strong>
+                <small>{t("community.view_profile")}</small>
+              </Card>
             </Link>
           ))}
       </div>

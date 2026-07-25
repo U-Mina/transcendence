@@ -1,5 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { EVENT_TAGS } from "../types/api";
+import { Input } from "./Input";
+import { Select } from "./Select";
+import { SearchIcon } from "./Icon";
 
 type Props = {
   query: string;
@@ -17,13 +20,14 @@ export function EventSearchToolbar({
   const { t } = useTranslation();
   return (
     <div className="discovery-toolbar">
-      <input
+      <Input
         aria-label={t("toolbar.aria_search")}
         value={query}
         onChange={(event) => onQueryChange(event.target.value)}
         placeholder={t("toolbar.search_placeholder")}
+        prefixIcon={<SearchIcon size={16} />}
       />
-      <select
+      <Select
         aria-label={t("toolbar.aria_filter_tag")}
         value={tag}
         onChange={(event) => onTagChange(event.target.value)}
@@ -34,7 +38,7 @@ export function EventSearchToolbar({
             {t(`tags.${item}`)}
           </option>
         ))}
-      </select>
+      </Select>
     </div>
   );
 }
