@@ -9,7 +9,7 @@ groups:
         annotations:
           summary: "Service {{ $labels.instance }} is down"
           description: "Prometheus could not scrape {{ $labels.instance }} for more than one minute."
-          
+
       - alert: HighHttp5xxErrorRate
         expr: |
           (
@@ -27,3 +27,21 @@ groups:
         annotations:
           summary: "High HTTP 5xx error rate on {{ $labels.job }}"
           description: "More than 5% of requests to {{ $labels.job }} returned a 5xx response for at least two minutes."
+
+      - alert: HighAverageRequestDuration
+        expr: |
+          (
+            sum by (job) (
+              rate(http_request_duration_seconds_sum[5m])
+            )
+            /
+            sum by (job) (
+              rate(http_request_duration_seconds_count[5m])
+            )
+          ) > 1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request latency on {{ $labels.job }}"
+          description: "Average request duration on {{ $labels.job }} exceeded one second for at least two minutes."
