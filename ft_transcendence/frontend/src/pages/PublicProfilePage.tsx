@@ -52,11 +52,11 @@ export function PublicProfilePage() {
         </div>
       </div>
       <section className="panel">
-        <h2>Contact Me!</h2>
+        <h2>About me</h2>
         {user.userContact ? (
           <p>{user.userContact}</p>
         ) : (
-          <p className="muted">This person chose not to leave any contact.</p>
+          <p className="muted">This person chose not to leave any note.</p>
         )}
         {user.intraUrl && (
           <p style={{ marginTop: "16px" }}>
