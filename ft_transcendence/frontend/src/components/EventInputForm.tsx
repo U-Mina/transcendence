@@ -126,7 +126,58 @@ export function EventInputForm({ event, onSave }: Props) {
             defaultValue={event ? toLocalInput(event.endTime) : ""}
           />
         </label>
-
+        <label>
+          Tag
+          <select name="category" required defaultValue={defaultTag}>
+            <option value="" disabled>
+              Choose a tag
+            </option>
+            {EVENT_TAGS.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Minimum participants
+          <input
+            name="minParticipant"
+            type="number"
+            min="1"
+            step="1"
+            autoComplete="off"
+            defaultValue={event?.minParticipant}
+          />
+        </label>
+        <label className="full">
+          Location
+          <input
+            name="location"
+            maxLength={255}
+            autoComplete="off"
+            defaultValue={event?.location || ""}
+            placeholder="Where should people meet?"
+          />
+        </label>
+        <label className="full">
+          Description
+          <textarea
+            name="description"
+            rows={6}
+            maxLength={5000}
+            defaultValue={event?.description || ""}
+            placeholder="Share what makes this worth showing up for."
+          />
+        </label>
+        <label className="full">
+          Event image
+          <input
+            name="image"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+          />
+        </label>
       </div>
       {error && (
         <p className="form-error" role="alert">
