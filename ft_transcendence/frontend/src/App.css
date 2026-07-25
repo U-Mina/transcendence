@@ -122,13 +122,13 @@
 }
 .auth-links {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 8px;
   font-weight: 700;
 }
 .auth-links .button {
   margin-top: 0;
+  width: 100%;
 }
 .main-content {
   min-width: 0;
