@@ -207,15 +207,15 @@ services:
       - "--storage.path=/alertmanager"
       - "--web.config.file=/etc/alertmanager/web.yml"
 
-  volumes:
-    - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
-    - ./monitoring/alertmanager/web.yml:/etc/alertmanager/web.yml:ro
-    - ./.certificates/alertmanager:/certs/alertmanager:ro
-    - ./.secrets/gmail_app_password:/run/secrets/gmail_app_password:ro
-    - alertmanager_data:/alertmanager
+    volumes:
+      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./monitoring/alertmanager/web.yml:/etc/alertmanager/web.yml:ro
+      - ./.certificates/alertmanager:/certs/alertmanager:ro
+      - ./.secrets/gmail_app_password:/run/secrets/gmail_app_password:ro
+      - alertmanager_data:/alertmanager
 
     ports:
-      - "${ALERTMANAGER_PORT}:9093"
+        - "${ALERTMANAGER_PORT}:9093"
 
   frontend:
     build:
