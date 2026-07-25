@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { EventInputForm } from "../components/EventInputForm";
 import { useAuth } from "../context/AuthContext";
 import { transcendenceApi } from "../lib/transcendenceApi";
@@ -10,6 +11,7 @@ export function EventEditorPage({ edit }: { edit?: boolean }) {
   const { session } = useAuth();
   const { eventId } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [event, setEvent] = useState<EventDetail | null>(null);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -23,7 +25,7 @@ export function EventEditorPage({ edit }: { edit?: boolean }) {
   if (edit && !event && !error) {
     return (
       <div className="page">
-        <div className="empty-state">Loading event…</div>
+        <div className="empty-state">{t("events.loading")}</div>
       </div>
     );
   }
@@ -58,13 +60,13 @@ export function EventEditorPage({ edit }: { edit?: boolean }) {
   return (
     <section className="page narrow">
       <p className="eyebrow">
-        {edit ? "Keep it fresh" : "Host something good"}
+        {edit ? t("events.editor.eyebrow_edit") : t("events.editor.eyebrow_new")}
       </p>
       <h1>
-        {edit ? "Edit your event" : "Create an event"}
+        {edit ? t("events.editor.title_edit") : t("events.editor.title_new")}
       </h1>
       <p className="muted">
-        Clear details make it easier for the right people to say yes.
+        {t("events.editor.subtitle")}
       </p>
       {error ? (
         <p className="form-error">{error}</p>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ActionLink } from "../components/ActionButton";
 import { EventSearchToolbar } from "../components/EventSearchToolbar";
 import { useAuth } from "../context/AuthContext";
@@ -9,6 +10,7 @@ import { EventTile } from "../components/EventTile";
 
 export function DashboardPage() {
   const { session } = useAuth();
+  const { t } = useTranslation();
   const [events, setEvents] = useState<EventCard[]>([]);
   const [joined, setJoined] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState("");
@@ -78,14 +80,13 @@ export function DashboardPage() {
     <section className="page">
       <header className="page-hero">
         <div>
-          <p className="eyebrow">Community calendar</p>
-          <h1>Make time for what matters.</h1>
+          <p className="eyebrow">{t("dashboard.eyebrow")}</p>
+          <h1>{t("dashboard.title")}</h1>
           <p>
-            Discover simple reasons to get out, meet people, and do something
-            memorable.
+            {t("dashboard.subtitle")}
           </p>
         </div>
-        {session && <ActionLink to="/events/new">Create an event</ActionLink>}
+        {session && <ActionLink to="/events/new">{t("dashboard.create")}</ActionLink>}
       </header>
       <EventSearchToolbar
         query={query}
@@ -99,7 +100,7 @@ export function DashboardPage() {
         </p>
       )}
       {loading ? (
-        <div className="empty-state">Loading your next plans…</div>
+        <div className="empty-state">{t("dashboard.loading")}</div>
       ) : visible.length ? (
         <div>
           <div className="event-grid">
@@ -121,9 +122,9 @@ export function DashboardPage() {
         </div>
       ) : (
         <div className="empty-state">
-          <h2>No events found</h2>
-          <p>Try a different search, or be the first to make a plan.</p>
-          {session && <ActionLink to="/events/new">Create an event</ActionLink>}
+          <h2>{t("dashboard.empty.title")}</h2>
+          <p>{t("dashboard.empty.subtitle")}</p>
+          {session && <ActionLink to="/events/new">{t("dashboard.create")}</ActionLink>}
         </div>
       )}
     </section>

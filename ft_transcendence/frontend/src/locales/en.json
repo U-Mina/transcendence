@@ -1,0 +1,159 @@
+{
+  "brand": {
+    "name": "Vibe Checker",
+    "tagline": "Find your people, make a plan."
+  },
+  "nav": {
+    "discover": "Discover events",
+    "community": "Community",
+    "create": "Create an event"
+  },
+  "account": {
+    "view_profile": "View profile",
+    "logout": "Log out",
+    "login": "Log in",
+    "join_us": "Join us"
+  },
+  "lang": {
+    "label": "Language",
+    "en": "EN",
+    "fr": "FR",
+    "ar": "AR",
+    "zh": "ZH"
+  },
+  "auth": {
+    "error": {
+      "name_len": "Name must be between 2 and 100 characters.",
+      "password_len": "Password must be at most 72 characters.",
+      "password_match": "Passwords do not match."
+    },
+    "brand_title": "Your Vibe Checker",
+    "register_eyebrow": "Join the community",
+    "login_eyebrow": "Welcome back",
+    "register_title": "Make room for more good plans.",
+    "login_title": "Your next plan is waiting.",
+    "register_desc": "Create an account to host and join local moments.",
+    "login_desc": "Log in to manage your events and connections.",
+    "field": {
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "confirm_password": "Confirm password"
+    },
+    "pending": "Just a moment…",
+    "create_account": "Create account",
+    "login": "Log in",
+    "switch": {
+      "already": "Already a member?",
+      "new": "New here?"
+    }
+  },
+  "profile": {
+    "eyebrow": "Your corner of Transcendence",
+    "title_fallback": "Your profile",
+    "edit_heading": "Edit profile",
+    "delete_account": "Delete account",
+    "delete_confirm": "Delete your account permanently?",
+    "plans_eyebrow": "Your plans",
+    "joined_heading": "Joined events",
+    "empty_joined": "You have not joined anything yet.",
+    "explore_events": "Explore events",
+    "public": {
+      "eyebrow": "Community member",
+      "about_me": "About me",
+      "no_note": "This person chose not to leave any note.",
+      "view_link": "View profile link ↗",
+      "loading": "Loading profile…"
+    },
+    "form": {
+      "name_label": "Display name",
+      "contact_label": "About Me & Contact",
+      "contact_placeholder": "Optional contact detail",
+      "url_label": "Profile URL",
+      "url_placeholder": "https://profile.intra.42.fr/users/...",
+      "avatar_label": "Update avatar",
+      "saving": "Saving…",
+      "save": "Save profile",
+      "error": {
+        "name_len": "Name must be between 2 and 100 characters.",
+        "contact_len": "Contact must be at most 50 characters.",
+        "url_len": "Intra URL must be at most 255 characters.",
+        "avatar_size": "Use a JPEG, PNG, or WebP image under 5 MiB."
+      }
+    }
+  },
+  "community": {
+    "eyebrow": "The people make it",
+    "title": "Community",
+    "view_profile": "View profile"
+  },
+  "dashboard": {
+    "eyebrow": "Community calendar",
+    "title": "Make time for what matters.",
+    "subtitle": "Discover simple reasons to get out, meet people, and do something memorable.",
+    "create": "Create an event",
+    "loading": "Loading your next plans…",
+    "empty": {
+      "title": "No events found",
+      "subtitle": "Try a different search, or be the first to make a plan."
+    }
+  },
+  "toolbar": {
+    "search_placeholder": "Search events, places, ideas…",
+    "all_tags": "All tags"
+  },
+  "events": {
+    "back_to_all": "All events",
+    "not_found": {
+      "title": "We couldn’t find that event.",
+      "browse": "Browse events"
+    },
+    "loading": "Loading event…",
+    "location_tba": "Location to be announced",
+    "no_desc": "The host has not added a description yet.",
+    "hosted_by": "Hosted by",
+    "needed_to_happen": "people needed to make it happen",
+    "edit": "Edit event",
+    "delete": "Delete",
+    "delete_confirm": "Delete this event? This cannot be undone.",
+    "joined_count": "joined",
+    "saving": "Saving…",
+    "cancel_spot": "Cancel your spot",
+    "join": "Join this event",
+    "tile": {
+      "manage": "Manage",
+      "cancel": "Cancel",
+      "join": "Join event"
+    },
+    "editor": {
+      "eyebrow_edit": "Keep it fresh",
+      "eyebrow_new": "Host something good",
+      "title_edit": "Edit your event",
+      "title_new": "Create an event",
+      "subtitle": "Clear details make it easier for the right people to say yes."
+    },
+    "form": {
+      "name_label": "Event name",
+      "start_label": "Start",
+      "end_label": "End",
+      "tag_label": "Tag",
+      "choose_tag": "Choose a tag",
+      "min_label": "Minimum participants",
+      "location_label": "Location",
+      "location_placeholder": "Where should people meet?",
+      "desc_label": "Description",
+      "desc_placeholder": "Share what makes this worth showing up for.",
+      "image_label": "Event image",
+      "save_changes": "Save changes",
+      "publish": "Publish event",
+      "error": {
+        "name_req": "Event name is required and must be at most 255 characters.",
+        "tag_req": "Choose one of the available tags.",
+        "start_fut": "Start time must be in the future.",
+        "end_after": "End time must be after start time.",
+        "min_pos": "Minimum participants must be a positive whole number.",
+        "img_sup": "Use a JPEG, PNG, or WebP image under 5 MiB."
+      }
+    }
+  }
+}

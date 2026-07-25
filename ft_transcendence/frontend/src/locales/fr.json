@@ -1,0 +1,159 @@
+{
+  "brand": {
+    "name": "Vibe Checker",
+    "tagline": "Trouvez vos contacts, organisez-vous."
+  },
+  "nav": {
+    "discover": "Découvrir les événements",
+    "community": "Communauté",
+    "create": "Créer un événement"
+  },
+  "account": {
+    "view_profile": "Voir le profil",
+    "logout": "Se déconnecter",
+    "login": "Se connecter",
+    "join_us": "Rejoignez-nous"
+  },
+  "lang": {
+    "label": "Langue",
+    "en": "EN",
+    "fr": "FR",
+    "ar": "AR",
+    "zh": "ZH"
+  },
+  "auth": {
+    "error": {
+      "name_len": "Le nom doit comporter entre 2 et 100 caractères.",
+      "password_len": "Le mot de passe doit comporter au maximum 72 caractères.",
+      "password_match": "Les mots de passe ne correspondent pas."
+    },
+    "brand_title": "Votre Vibe Checker",
+    "register_eyebrow": "Rejoignez la communauté",
+    "login_eyebrow": "Bon retour",
+    "register_title": "Faites de la place pour plus de bons plans.",
+    "login_title": "Votre prochain événement vous attend.",
+    "register_desc": "Créez un compte pour organiser et rejoindre des événements locaux.",
+    "login_desc": "Connectez-vous pour gérer vos événements et vos contacts.",
+    "field": {
+      "name": "Nom",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "confirm_password": "Confirmer le mot de passe"
+    },
+    "pending": "Un instant…",
+    "create_account": "Créer un compte",
+    "login": "Se connecter",
+    "switch": {
+      "already": "Déjà membre ?",
+      "new": "Nouveau ici ?"
+    }
+  },
+  "profile": {
+    "eyebrow": "Votre espace Transcendence",
+    "title_fallback": "Votre profil",
+    "edit_heading": "Modifier le profil",
+    "delete_account": "Supprimer le compte",
+    "delete_confirm": "Supprimer définitivement votre compte ?",
+    "plans_eyebrow": "Vos projets",
+    "joined_heading": "Événements rejoints",
+    "empty_joined": "Vous n'avez encore rejoint aucun événement.",
+    "explore_events": "Explorer les événements",
+    "public": {
+      "eyebrow": "Membre de la communauté",
+      "about_me": "À propos de moi",
+      "no_note": "Cette personne n'a pas laissé de note.",
+      "view_link": "Voir le lien du profil ↗",
+      "loading": "Chargement du profil…"
+    },
+    "form": {
+      "name_label": "Nom d'affichage",
+      "contact_label": "À propos & Contact",
+      "contact_placeholder": "Détail de contact optionnel",
+      "url_label": "URL du profil",
+      "url_placeholder": "https://profile.intra.42.fr/users/...",
+      "avatar_label": "Modifier l'avatar",
+      "saving": "Enregistrement…",
+      "save": "Enregistrer",
+      "error": {
+        "name_len": "Le nom doit comporter entre 2 et 100 caractères.",
+        "contact_len": "Le contact doit comporter au maximum 50 caractères.",
+        "url_len": "L'URL doit comporter au maximum 255 caractères.",
+        "avatar_size": "Utilisez une image JPEG, PNG ou WebP de moins de 5 Mo."
+      }
+    }
+  },
+  "community": {
+    "eyebrow": "La force du collectif",
+    "title": "Communauté",
+    "view_profile": "Voir le profil"
+  },
+  "dashboard": {
+    "eyebrow": "Calendrier de la communauté",
+    "title": "Prenez du temps pour ce qui compte.",
+    "subtitle": "Découvrez des raisons simples de sortir, de faire des rencontres et de vivre des moments mémorables.",
+    "create": "Créer un événement",
+    "loading": "Chargement des prochains événements…",
+    "empty": {
+      "title": "Aucun événement trouvé",
+      "subtitle": "Essayez une autre recherche, ou soyez le premier à créer un événement."
+    }
+  },
+  "toolbar": {
+    "search_placeholder": "Rechercher des événements, des lieux, des idées…",
+    "all_tags": "Tous les tags"
+  },
+  "events": {
+    "back_to_all": "Tous les événements",
+    "not_found": {
+      "title": "Nous n'avons pas trouvé cet événement.",
+      "browse": "Parcourir les événements"
+    },
+    "loading": "Chargement de l'événement…",
+    "location_tba": "Lieu à annoncer",
+    "no_desc": "L'organisateur n'a pas encore ajouté de description.",
+    "hosted_by": "Organisé par",
+    "needed_to_happen": "personnes nécessaires pour que l'événement ait lieu",
+    "edit": "Modifier l'événement",
+    "delete": "Supprimer",
+    "delete_confirm": "Supprimer cet événement ? Cette action est irréversible.",
+    "joined_count": "participants",
+    "saving": "Enregistrement…",
+    "cancel_spot": "Annuler ma participation",
+    "join": "Rejoindre l'événement",
+    "tile": {
+      "manage": "Gérer",
+      "cancel": "Annuler",
+      "join": "Rejoindre"
+    },
+    "editor": {
+      "eyebrow_edit": "Gardez-le à jour",
+      "eyebrow_new": "Organisez quelque chose de sympa",
+      "title_edit": "Modifier votre événement",
+      "title_new": "Créer un événement",
+      "subtitle": "Des détails précis permettent aux bonnes personnes de dire oui plus facilement."
+    },
+    "form": {
+      "name_label": "Nom de l'événement",
+      "start_label": "Début",
+      "end_label": "Fin",
+      "tag_label": "Tag",
+      "choose_tag": "Choisir un tag",
+      "min_label": "Participants minimum",
+      "location_label": "Lieu",
+      "location_placeholder": "Où les gens doivent-ils se retrouver ?",
+      "desc_label": "Description",
+      "desc_placeholder": "Expliquez pourquoi cet événement vaut le détour.",
+      "image_label": "Image de l'événement",
+      "save_changes": "Enregistrer les modifications",
+      "publish": "Publier l'événement",
+      "error": {
+        "name_req": "Le nom de l'événement est requis (255 caractères max).",
+        "tag_req": "Veuillez choisir un des tags disponibles.",
+        "start_fut": "L'heure de début doit être dans le futur.",
+        "end_after": "L'heure de fin doit être postérieure à l'heure de début.",
+        "min_pos": "Le nombre minimum de participants doit être un entier positif.",
+        "img_sup": "Utilisez une image JPEG, PNG ou WebP de moins de 5 Mo."
+      }
+    }
+  }
+}

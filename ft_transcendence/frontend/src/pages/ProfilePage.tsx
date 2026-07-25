@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ActionButton } from "../components/ActionButton";
 import { EventTile } from "../components/EventTile";
 import { ProfileEditForm } from "../components/ProfileEditForm";
@@ -11,6 +12,7 @@ import { errorText } from "../utils/formatters";
 export function ProfilePage() {
   const { session, logout, updateSessionUser } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [joined, setJoined] = useState<EventCard[]>([]);
   const [error, setError] = useState("");
@@ -59,7 +61,7 @@ export function ProfilePage() {
 
   // delete one's account
   async function deleteAccount() {
-    if (!window.confirm("Delete your account permanently?")) return;
+    if (!window.confirm(t("profile.delete_confirm"))) return;
     try {
       await transcendenceApi.deleteUser(
         activeSession.user.id,
@@ -83,9 +85,9 @@ export function ProfilePage() {
           )}
         </div>
         <div>
-          <p className="eyebrow">Your corner of Transcendence</p>
+          <p className="eyebrow">{t("profile.eyebrow")}</p>
           <h1>
-            {profile?.userName || "Your profile"}
+            {profile?.userName || t("profile.title_fallback")}
           </h1>
           <p className="muted">
             {profile?.userEmail || activeSession.user.userEmail}
@@ -94,20 +96,20 @@ export function ProfilePage() {
       </div>
       <div className="profile-layout">
         <section className="panel">
-          <h2>Edit profile</h2>
+          <h2>{t("profile.edit_heading")}</h2>
           <ProfileEditForm profile={profile} onSave={save} />
           {error && <p className="form-error">{error}</p>}
           <div style={{ marginTop: '24px' }}>
             <ActionButton variant="danger" onClick={deleteAccount}>
-              Delete account
+              {t("profile.delete_account")}
             </ActionButton>
           </div>
         </section>
         <section>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Your plans</p>
-              <h2>Joined events</h2>
+              <p className="eyebrow">{t("profile.plans_eyebrow")}</p>
+              <h2>{t("profile.joined_heading")}</h2>
             </div>
           </div>
           {joined.length ? (
@@ -123,8 +125,8 @@ export function ProfilePage() {
             </div>
           ) : (
             <div className="empty-state small">
-              <p>You have not joined anything yet.</p>
-              <Link to="/">Explore events</Link>
+              <p>{t("profile.empty_joined")}</p>
+              <Link to="/">{t("profile.explore_events")}</Link>
             </div>
           )}
         </section>

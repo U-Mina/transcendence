@@ -1,0 +1,159 @@
+{
+  "brand": {
+    "name": "Vibe Checker",
+    "tagline": "寻找伙伴，规划活动。"
+  },
+  "nav": {
+    "discover": "探索活动",
+    "community": "社区",
+    "create": "创建活动"
+  },
+  "account": {
+    "view_profile": "查看个人资料",
+    "logout": "退出",
+    "login": "登录",
+    "join_us": "注册"
+  },
+  "lang": {
+    "label": "语言",
+    "en": "EN",
+    "fr": "FR",
+    "ar": "AR",
+    "zh": "ZH"
+  },
+  "auth": {
+    "error": {
+      "name_len": "姓名长度必须在 2 到 100 个字符之间。",
+      "password_len": "密码最多包含 72 个字符。",
+      "password_match": "两次输入的密码不一致。"
+    },
+    "brand_title": "您的 Vibe Checker",
+    "register_eyebrow": "加入社区",
+    "login_eyebrow": "欢迎回来",
+    "register_title": "为精彩的活动计划留出空间。",
+    "login_title": "您的下一个精彩活动正在等待。",
+    "register_desc": "创建账户以发起和参与本地活动。",
+    "login_desc": "登录以管理您的活动和社交关系。",
+    "field": {
+      "name": "姓名",
+      "email": "电子邮箱",
+      "password": "密码",
+      "confirm_password": "确认密码"
+    },
+    "pending": "请稍候…",
+    "create_account": "创建账户",
+    "login": "登录",
+    "switch": {
+      "already": "已有账户？",
+      "new": "新用户？"
+    }
+  },
+  "profile": {
+    "eyebrow": "您的 Transcendence 空间",
+    "title_fallback": "您的个人资料",
+    "edit_heading": "编辑个人资料",
+    "delete_account": "注销账户",
+    "delete_confirm": "确定要永久注销您的账户吗？",
+    "plans_eyebrow": "您的计划",
+    "joined_heading": "已参与的活动",
+    "empty_joined": "您尚未参与任何活动。",
+    "explore_events": "探索活动",
+    "public": {
+      "eyebrow": "社区成员",
+      "about_me": "关于我",
+      "no_note": "该用户未留下任何简介。",
+      "view_link": "查看个人主页链接 ↗",
+      "loading": "正在加载个人资料…"
+    },
+    "form": {
+      "name_label": "显示名称",
+      "contact_label": "关于我及联系方式",
+      "contact_placeholder": "可选的联系信息",
+      "url_label": "个人主页 URL",
+      "url_placeholder": "https://profile.intra.42.fr/users/...",
+      "avatar_label": "更新头像",
+      "saving": "正在保存…",
+      "save": "保存个人资料",
+      "error": {
+        "name_len": "姓名长度必须在 2 到 100 个字符之间。",
+        "contact_len": "联系信息最多包含 50 个字符。",
+        "url_len": "个人主页 URL 最多包含 255 个字符。",
+        "avatar_size": "请使用小于 5 MiB 的 JPEG、PNG 或 WebP 图片。"
+      }
+    }
+  },
+  "community": {
+    "eyebrow": "凝聚力量",
+    "title": "社区",
+    "view_profile": "查看资料"
+  },
+  "dashboard": {
+    "eyebrow": "社区日历",
+    "title": "把时间留给真正重要的事情。",
+    "subtitle": "探索外出、结识新朋友并创造难忘回忆的精彩契机。",
+    "create": "创建活动",
+    "loading": "正在加载接下来的计划…",
+    "empty": {
+      "title": "未找到活动",
+      "subtitle": "尝试更改搜索条件，或成为第一个发起活动的人。"
+    }
+  },
+  "toolbar": {
+    "search_placeholder": "搜索活动、地点、想法…",
+    "all_tags": "所有标签"
+  },
+  "events": {
+    "back_to_all": "所有活动",
+    "not_found": {
+      "title": "未找到该活动。",
+      "browse": "浏览活动"
+    },
+    "loading": "正在加载活动…",
+    "location_tba": "地点待定",
+    "no_desc": "发起人尚未添加活动描述。",
+    "hosted_by": "发起人：",
+    "needed_to_happen": "人成团需求",
+    "edit": "编辑活动",
+    "delete": "删除",
+    "delete_confirm": "确定要删除此活动吗？此操作无法撤销。",
+    "joined_count": "人已参与",
+    "saving": "正在保存…",
+    "cancel_spot": "取消报名",
+    "join": "参与活动",
+    "tile": {
+      "manage": "管理",
+      "cancel": "取消",
+      "join": "参与"
+    },
+    "editor": {
+      "eyebrow_edit": "保持信息更新",
+      "eyebrow_new": "举办一场优质活动",
+      "title_edit": "编辑您的活动",
+      "title_new": "创建活动",
+      "subtitle": "清晰的活动详情能让更多志同道合的人加入进来。"
+    },
+    "form": {
+      "name_label": "活动名称",
+      "start_label": "开始时间",
+      "end_label": "结束时间",
+      "tag_label": "标签",
+      "choose_tag": "选择标签",
+      "min_label": "最少参与人数",
+      "location_label": "活动地点",
+      "location_placeholder": "大家在哪里集合？",
+      "desc_label": "活动描述",
+      "desc_placeholder": "分享值得参与的亮点。",
+      "image_label": "活动封面图片",
+      "save_changes": "保存修改",
+      "publish": "发布活动",
+      "error": {
+        "name_req": "活动名称为必填项（最多 255 个字符）。",
+        "tag_req": "请选择一个可用标签。",
+        "start_fut": "开始时间必须在未来。",
+        "end_after": "结束时间必须晚于开始时间。",
+        "min_pos": "最少参与人数必须为正整数。",
+        "img_sup": "请使用小于 5 MiB 的 JPEG、PNG 或 WebP 图片。"
+      }
+    }
+  }
+}

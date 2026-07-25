@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { transcendenceApi } from "../lib/transcendenceApi";
 import type { UserProfile } from "../types/api";
@@ -8,6 +9,7 @@ import { errorText } from "../utils/formatters";
 // list out all users
 export function CommunityPage() {
   const { session } = useAuth();
+  const { t } = useTranslation();
   const [users, setUsers] = useState<UserProfile[]>([]);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -19,8 +21,8 @@ export function CommunityPage() {
   }, [session?.token]);
   return (
     <section className="page">
-      <p className="eyebrow">The people make it</p>
-      <h1>Community</h1>
+      <p className="eyebrow">{t("community.eyebrow")}</p>
+      <h1>{t("community.title")}</h1>
       {error && <p className="form-error">{error}</p>}
       <div className="people-grid">
         {users
@@ -39,7 +41,7 @@ export function CommunityPage() {
                 )}
               </span>
               <strong>{user.userName}</strong>
-              <small>View profile</small>
+              <small>{t("community.view_profile")}</small>
             </Link>
           ))}
       </div>

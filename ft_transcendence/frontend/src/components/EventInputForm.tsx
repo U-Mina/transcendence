@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useTranslation } from "react-i18next";
 import {
   EVENT_TAGS,
   type EventDetail,
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export function EventInputForm({ event, onSave }: Props) {
+  const { t } = useTranslation();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const defaultTag = EVENT_TAGS.includes(event?.category as EventTag)
@@ -34,26 +36,24 @@ export function EventInputForm({ event, onSave }: Props) {
 
     // validate event name with resonable max length
     if (!eventName || eventName.length > 255) {
-      return setError(
-        "Event name is required and must be at most 255 characters.",
-      );
+      return setError(t("events.form.error.name_req"));
     }
 
     // required field with enum value
     if (!EVENT_TAGS.includes(category as EventTag)) {
-      return setError("Choose one of the available tags.");
+      return setError(t("events.form.error.tag_req"));
     }
     if (
       Number.isNaN(start.getTime()) ||
       Number.isNaN(end.getTime()) ||
       start <= new Date()
     ) {
-      return setError("Start time must be in the future.");
+      return setError(t("events.form.error.start_fut"));
     }
 
     // frontend validation: end time must be after start time, also exist in service -> eventservice
     if (end <= start) {
-      return setError("End time must be after start time.");
+      return setError(t("events.form.error.end_after"));
     }
 
     // min people to attend
@@ -61,12 +61,12 @@ export function EventInputForm({ event, onSave }: Props) {
       minParticipant !== undefined &&
       (!Number.isInteger(minParticipant) || minParticipant < 1)
     ) {
-      return setError("Minimum participants must be a positive whole number.");
+      return setError(t("events.form.error.min_pos"));
     }
 
     // image file validation: only allow jpeg, png, webp and under 5mb
     if (image instanceof File && image.size && !imageIsSupported(image)) {
-      return setError("Use a JPEG, PNG, or WebP image under 5 MiB.");
+      return setError(t("events.form.error.img_sup"));
     }
 
     // call onSave callback
@@ -97,7 +97,7 @@ export function EventInputForm({ event, onSave }: Props) {
       <div className="form-grid">
         {/* event input form */}
         <label className="full">
-          Event name
+          {t("events.form.name_label")}
           <input
             name="eventName"
             required
@@ -107,7 +107,7 @@ export function EventInputForm({ event, onSave }: Props) {
           />
         </label>
         <label>
-          Start
+          {t("events.form.start_label")}
           <input
             name="startTime"
             type="datetime-local"
@@ -117,7 +117,7 @@ export function EventInputForm({ event, onSave }: Props) {
           />
         </label>
         <label>
-          End
+          {t("events.form.end_label")}
           <input
             name="endTime"
             type="datetime-local"
@@ -127,10 +127,10 @@ export function EventInputForm({ event, onSave }: Props) {
           />
         </label>
         <label>
-          Tag
+          {t("events.form.tag_label")}
           <select name="category" required defaultValue={defaultTag}>
             <option value="" disabled>
-              Choose a tag
+              {t("events.form.choose_tag")}
             </option>
             {EVENT_TAGS.map((item) => (
               <option key={item} value={item}>
@@ -140,7 +140,7 @@ export function EventInputForm({ event, onSave }: Props) {
           </select>
         </label>
         <label>
-          Minimum participants
+          {t("events.form.min_label")}
           <input
             name="minParticipant"
             type="number"
@@ -151,27 +151,27 @@ export function EventInputForm({ event, onSave }: Props) {
           />
         </label>
         <label className="full">
-          Location
+          {t("events.form.location_label")}
           <input
             name="location"
             maxLength={255}
             autoComplete="off"
             defaultValue={event?.location || ""}
-            placeholder="Where should people meet?"
+            placeholder={t("events.form.location_placeholder")}
           />
         </label>
         <label className="full">
-          Description
+          {t("events.form.desc_label")}
           <textarea
             name="description"
             rows={6}
             maxLength={5000}
             defaultValue={event?.description || ""}
-            placeholder="Share what makes this worth showing up for."
+            placeholder={t("events.form.desc_placeholder")}
           />
         </label>
         <label className="full">
-          Event image
+          {t("events.form.image_label")}
           <input
             name="image"
             type="file"
@@ -185,9 +185,8 @@ export function EventInputForm({ event, onSave }: Props) {
         </p>
       )}
       <ActionButton type="submit" disabled={pending}>
-        {pending ? "Saving…" : event ? "Save changes" : "Publish event"}
+        {pending ? t("events.saving") : event ? t("events.form.save_changes") : t("events.form.publish")}
       </ActionButton>
     </form>
   );
-
 }

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { displayTag, type EventCard } from "../types/api";
 import { ActionButton, ActionLink } from "./ActionButton";
 
@@ -17,6 +18,7 @@ export function EventTile({
   busy,
   onJoinToggle,
 }: Props) {
+  const { t, i18n } = useTranslation();
   const date = new Date(event.startTime);
   return (
     <article className="event-tile">
@@ -29,19 +31,19 @@ export function EventTile({
       </Link>
       <div className="event-copy">
         <p className="event-date">
-          {date.toLocaleDateString(undefined, {
+          {date.toLocaleDateString(i18n.language, {
             weekday: "short",
             month: "short",
             day: "numeric",
           })}{" "}
           ·{" "}
-          {date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          {date.toLocaleTimeString(i18n.language, { hour: "2-digit", minute: "2-digit" })}
         </p>
         <Link to={`/events/${event.eventId}`}>
           <h2>{event.eventName}</h2>
         </Link>
         <p className="event-place">
-          {event.location || "Location to be announced"}
+          {event.location || t("events.location_tba")}
         </p>
         {event.description && (
           <p className="event-description">{event.description}</p>
@@ -50,7 +52,7 @@ export function EventTile({
           <span className="tag">{displayTag(event.category)}</span>
           {isOwner ? (
             <ActionLink variant="subtle" to={`/events/${event.eventId}/edit`}>
-              Manage
+              {t("events.tile.manage")}
             </ActionLink>
           ) : (
             onJoinToggle && (
@@ -59,7 +61,7 @@ export function EventTile({
                 disabled={busy}
                 onClick={onJoinToggle}
               >
-                {busy ? "Saving…" : joined ? "Cancel" : "Join event"}
+                {busy ? t("events.saving") : joined ? t("events.tile.cancel") : t("events.tile.join")}
               </ActionButton>
             )
           )}
