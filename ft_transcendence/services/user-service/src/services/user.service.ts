@@ -45,6 +45,7 @@ function validateEmail(email: string): boolean {
 function publicProfile(user: InternalUserEntity): PublicUserProfile {
     return {
         userName: user.userName,
+        ...(user.userContact ? { userContact: user.userContact } : {}),
         ...(user.intraName ? { intraName: user.intraName } : {}),
         ...(user.intraUrl ? { intraUrl: user.intraUrl } : {}),
         ...(user.avatarUrl ? { avatarUrl: user.avatarUrl } : {}),
