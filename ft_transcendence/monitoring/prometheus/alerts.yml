@@ -111,3 +111,42 @@ groups:
         annotations:
           summary: "High resident memory usage on {{ $labels.job }}"
           description: "Resident memory usage on {{ $labels.job }} exceeded 500 MB for at least two minutes."
+
+      - alert: MySQLDown
+        expr: mysql_up{job="mysqld-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MySQL is unavailable"
+          description: "The MySQL exporter could not connect to the MySQL database for more than one minute."
+
+      - alert: HighMySQLConnections
+        expr: mysql_global_status_threads_connected{job="mysqld-exporter"} > 100
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High MySQL connection count"
+          description: "MySQL has more than 100 active connections for at least two minutes."
+
+      - alert: MySQLSlowQueries
+        expr: |
+          increase(
+            mysql_global_status_slow_queries{job="mysqld-exporter"}[5m]
+          ) > 5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MySQL is executing slow queries"
+          description: "MySQL recorded more than five slow queries within five minutes."
+
+      - alert: HighMySQLThreadsRunning
+        expr: mysql_global_status_threads_running{job="mysqld-exporter"} > 20
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High number of running MySQL threads"
+          description: "More than 20 MySQL threads have been actively executing queries for at least two minutes."

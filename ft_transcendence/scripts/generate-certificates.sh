@@ -105,3 +105,7 @@ generate_service_certificate \
 generate_service_certificate \
     "alertmanager" \
     "DNS:alertmanager,DNS:localhost,IP:127.0.0.1"    
+
+generate_service_certificate \
+    "mysqld-exporter" \
+    "DNS:mysqld-exporter,DNS:localhost,IP:127.0.0.1"

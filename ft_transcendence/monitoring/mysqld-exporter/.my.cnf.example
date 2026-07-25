@@ -1,0 +1,6 @@
+[client]
+user=mysqld_exporter
+password=replace_with_a_strong_password
+host=database
+port=3306
+ssl-ca=/certs/ca/ca.crt
