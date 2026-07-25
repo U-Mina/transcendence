@@ -30,7 +30,7 @@ export function ProfileEditForm({ profile, onSave }: Props) {
     }
 
     if (userContact.length > 50) {
-      return setError("About me must be at most 50 characters.");
+      return setError("Contact must be at most 50 characters.");
     }
 
     if (intraUrl.length > 255) {

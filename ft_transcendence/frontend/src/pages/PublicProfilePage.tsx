@@ -56,7 +56,7 @@ export function PublicProfilePage() {
         {user.userContact ? (
           <p>{user.userContact}</p>
         ) : (
-          <p className="muted">This member has not added an "About me" section yet.</p>
+          <p className="muted">This person chose not to leave any contact.</p>
         )}
         {user.intraUrl && (
           <p style={{ marginTop: "16px" }}>
