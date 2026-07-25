@@ -80,7 +80,6 @@ export function ProfilePage() {
         <div>
           <p className="eyebrow">Your corner of Transcendence</p>
           <h1>
-            arial-label="Profile Name"
             {profile?.userName || "Your profile"}
           </h1>
           <p className="muted">
@@ -90,10 +89,10 @@ export function ProfilePage() {
       </div>
       <div className="profile-layout">
         <section className="panel">
-          <h2>Edit profile</h2>
+          <h2 className="mb-3">Edit profile</h2>
           <ProfileEditForm profile={profile} onSave={save} />
           {error && <p className="form-error">{error}</p>}
-          <ActionButton variant="danger" onClick={deleteAccount}>
+          <ActionButton variant="danger" onClick={deleteAccount} className="mt-3">
             Delete account
           </ActionButton>
         </section>
