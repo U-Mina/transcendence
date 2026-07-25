@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ActionButton } from "../components/ActionButton";
 import { Alert, Avatar, Button, EmptyState, Modal } from "../components";
 import { EventTile } from "../components/EventTile";
 import { ProfileEditForm } from "../components/ProfileEditForm";
@@ -55,7 +54,7 @@ export function ProfilePage() {
     );
     const avatar = input.avatar
       ? (await transcendenceApi.uploadAvatar(input.avatar, activeSession.token))
-          .avatarUrl
+        .avatarUrl
       : user.avatarUrl;
     setProfile({ ...user, avatarUrl: avatar });
     updateSessionUser({ userName: user.userName, avatarUrl: avatar });
