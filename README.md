@@ -38,12 +38,13 @@ The application is composed of a React frontend, a Fastify API gateway, separate
 | --- | --- | --- |
 | Erya Wuu (`ewu`) |  | Developer |
 | Paula Drettas (`pdrettas`) | | Developer |
-| Halime (`hpehliva`) |  | Developer |
+| Halime Pehlivan (`hpehliva`) |  | Developer |
 | Dariusz Paluszkiewicz (`dpaluszk`) |  | Developer |
 
 ### Working practices
 
-The Git history shows 33 focused feature branches, merge commits, and small, descriptive commits. Docker Compose and the project `Makefile` provide a repeatable shared development environment.
+The Git history shows 33 focused feature branches, including a main and dev branch. 
+Docker Compose and the project `Makefile` provide a repeatable shared development environment.
 
 The following project-management practices were executed:
 
@@ -108,19 +109,19 @@ ft_transcendence/
 
 ## Features
 
-| Area | Available functionality |
-| --- | --- |
-| Authentication | Email-and-password registration and login. Passwords are hashed with `bcryptjs`; the gateway issues JWT access tokens. |
-| Profiles | Public profiles, authenticated own-profile viewing, profile editing, account deletion, optional contact/Intra URL fields, and avatar uploads. |
-| Friendships and presence | Send, accept, reject, and remove friend requests. The frontend sends heartbeats and displays online status based on recent activity. |
-| Events | Browse event cards and details; authenticated users can create, edit, delete, join, and leave events. Event owners can retrieve the number of joined users. |
-| Advanced search | Server-side text search, category filtering, sorting, page-size selection, and paginated event results.|
-| Media | Avatar and event-image uploads through the gateway. Uploads are stored and served from the gateway's `/uploads/` path. |
-| Internationalization | English, French, Arabic, and Chinese locale files, a language switcher, and document-direction handling for right-to-left Arabic. |
-| Legal pages | Privacy Policy and Terms of Service routes linked from authentication and application layouts. |
-| Public API | API-key-protected, rate-limited public event CRUD and public-profile endpoints, documented in Swagger UI. |
-| Observability and recovery | Health and metrics endpoints, Prometheus, Grafana, Alertmanager, MySQL metrics, automated backups, and a documented restore workflow. |
-| UI system | A custom CSS-token design system with reusable React components, SVG icons, accessible modal behavior, form controls, alerts, cards, avatars, and empty states. |
+| Area | Available functionality | Primary contributors |
+| --- | --- | --- |
+| Authentication | Email-and-password registration and login. Passwords are hashed with `bcryptjs`; the gateway issues JWT access tokens. | `ewu`, `hpehliva` |
+| Profiles | Public profiles, authenticated own-profile viewing, profile editing, account deletion, optional contact/Intra URL fields, and avatar uploads. | `ewu`, `hpehliva`, `pdrettas` |
+| Friendships and presence | Send, accept, reject, and remove friend requests. The frontend sends heartbeats and displays online status based on recent activity. | `ewu`, `hpehliva` |
+| Events | Browse event cards and details; authenticated users can create, edit, delete, join, and leave events. Event owners can retrieve the number of joined users. | `ewu`, `pdrettas`, `hpehliva` |
+| Advanced search | Server-side text search, category filtering, sorting, page-size selection, and paginated event results. | `pdrettas` |
+| Media | Avatar and event-image uploads through the gateway. Uploads are stored and served from the gateway's `/uploads/` path. | `ewu`, `pdrettas`, `hpehliva` |
+| Internationalization | English, French, Arabic, and Chinese locale files, a language switcher, and document-direction handling for right-to-left Arabic. | `ewu`, `hpehliva` |
+| Legal pages | Privacy Policy and Terms of Service routes linked from authentication and application layouts. | `hpehliva` |
+| Public API | API-key-protected, rate-limited public event CRUD and public-profile endpoints, documented in Swagger UI. | `hpehliva` |
+| Observability and recovery | Health and metrics endpoints, Prometheus, Grafana, Alertmanager, MySQL metrics, automated backups, and a documented restore workflow. | `dpaluszk`, `hpehliva` |
+| UI system | A custom CSS-token design system with reusable React components, SVG icons, accessible modal behavior, form controls, alerts, cards, avatars, and empty states. | `ewu` |
 
 ## Technical Stack
 
@@ -407,7 +408,7 @@ erDiagram
 | Health checks, backups, and recovery | Minor | 1 | Health/status endpoints, scheduled backup service, `make backup`, restore script, and recovery notes. |
 | Advanced search *(pending merge)* | Minor | 1 | `feat/advanced-search`: Prisma text search, category filtering, sorting, pagination, gateway query forwarding, and dashboard controls. |
 
-**Candidate total: 15 / 14 required points
+**Total: 15 / 14 required points
 
 ## Testing and Verification
 
@@ -459,11 +460,6 @@ make restore FILE=backups/mysql-full-YYYYMMDDTHHMMSSZ.sql.gz
 ```
 
 > Restoring overwrites MySQL databases. Confirm the selected file before running this command, then restart the application services.
-
-## Project Status and Limitations
-
-- Automated application tests are not configured in this branch.
-- Local certificates are generated for development. Browsers or command-line clients may need to trust `.certificates/ca/ca.crt` to access HTTPS endpoints without certificate warnings.
 
 ## Resources and AI Use
 
