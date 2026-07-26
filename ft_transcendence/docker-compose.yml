@@ -124,6 +124,8 @@ services:
       - api_gateway_node_modules:/app/node_modules
       - ./.certificates/api-gateway:/certs/api-gateway:ro
       - ./.certificates/ca:/certs/ca:ro
+      # Seeded default profile pictures (see user-service prisma seed)
+      - ./database/assets:/app/uploads/avatars/defaults:ro
 
     environment:
       PORT: 3000
