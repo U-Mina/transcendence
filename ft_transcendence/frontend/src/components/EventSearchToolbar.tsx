@@ -48,23 +48,23 @@ export function EventSearchToolbar({
         ))}
       </Select>
       <Select
-        aria-label="Sort events"
+        aria-label={t("toolbar.aria_sort")}
         value={sort}
         onChange={(event) => onSortChange(event.target.value)}
       >
-        <option value="startTime:asc">Date: soonest</option>
-        <option value="startTime:desc">Date: latest</option>
-        <option value="eventName:asc">Name: A–Z</option>
-        <option value="eventName:desc">Name: Z–A</option>
+        <option value="startTime:asc">{t("toolbar.sort.start_time_asc")}</option>
+        <option value="startTime:desc">{t("toolbar.sort.start_time_desc")}</option>
+        <option value="eventName:asc">{t("toolbar.sort.event_name_asc")}</option>
+        <option value="eventName:desc">{t("toolbar.sort.event_name_desc")}</option>
       </Select>
       <Select
-        aria-label="Events per page"
+        aria-label={t("toolbar.aria_page_size")}
         value={pageSize}
         onChange={(event) => onPageSizeChange(Number(event.target.value))}
       >
-        <option value={6}>6 per page</option>
-        <option value={10}>10 per page</option>
-        <option value={20}>20 per page</option>
+        <option value={6}>{t("toolbar.page_size", { count: 6 })}</option>
+        <option value={10}>{t("toolbar.page_size", { count: 10 })}</option>
+        <option value={20}>{t("toolbar.page_size", { count: 20 })}</option>
       </Select>
     </div>
   );

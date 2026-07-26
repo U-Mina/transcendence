@@ -144,13 +144,13 @@ export function DashboardPage() {
             ))}
           </div>
           {totalPages > 0 && (
-            <div className="pagination" aria-label="Event pagination">
+            <div className="pagination" aria-label={t("pagination.aria_label")}>
               <button type="button" onClick={() => setPage(page - 1)} disabled={page === 1}>
-                Previous
+                {t("pagination.previous")}
               </button>
-              <span>Page {page} of {totalPages}</span>
+              <span>{t("pagination.status", { page, totalPages })}</span>
               <button type="button" onClick={() => setPage(page + 1)} disabled={page === totalPages}>
-                Next
+                {t("pagination.next")}
               </button>
             </div>
           )}
