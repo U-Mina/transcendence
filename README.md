@@ -36,10 +36,10 @@ The application is composed of a React frontend, a Fastify API gateway, separate
 
 | Member | Documented implementation areas | Formal role |
 | --- | --- | --- |
-| Erya Wuu (`ewu`) |  | Developer |
-| Paula Drettas (`pdrettas`) | | Developer |
-| Halime Pehlivan (`hpehliva`) |  | Developer |
-| Dariusz Paluszkiewicz (`dpaluszk`) |  | Developer |
+| Erya Wuu (`ewu`) | Backend, Frontend, Design | Developer |
+| Paula Drettas (`pdrettas`) | Frontend, Design | Developer |
+| Halime Pehlivan (`hpehliva`) | Database | Developer |
+| Dariusz Paluszkiewicz (`dpaluszk`) | Cybersecurity | Developer |
 
 ### Working practices
 
