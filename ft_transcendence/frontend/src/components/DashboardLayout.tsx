@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
+import { transcendenceApi } from "../lib/transcendenceApi";
 import { ActionLink } from "./ActionButton";
 import { Button } from "./Button";
 
@@ -17,6 +19,17 @@ export function DashboardLayout() {
   const { session, logout } = useAuth();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    if (!session?.token) return;
+    // Send heartbeat immediately on mount
+    transcendenceApi.sendHeartbeat(session.token).catch(() => {});
+    // Repeat heartbeat every 5s while active
+    const interval = setInterval(() => {
+      transcendenceApi.sendHeartbeat(session.token).catch(() => {});
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [session?.token]);
 
   function signOut() {
     logout();
@@ -35,6 +48,7 @@ export function DashboardLayout() {
             {t("nav.discover")}
           </NavLink>
           {session && <NavLink to="/people">{t("nav.community")}</NavLink>}
+          {session && <NavLink to="/friends">{t("nav.friends")}</NavLink>}
           {session && (
             <NavLink
               className="nav-create button button-primary"

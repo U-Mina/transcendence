@@ -14,6 +14,18 @@ const userIdParams = {
     required: ["userId"],
     properties: { userId: { type: "string", format: "uuid" } },
 };
+const friendIdParams = {
+    type: "object",
+    additionalProperties: false,
+    required: ["friendId"],
+    properties: { friendId: { type: "string", format: "uuid" } },
+};
+const requesterIdParams = {
+    type: "object",
+    additionalProperties: false,
+    required: ["requesterId"],
+    properties: { requesterId: { type: "string", format: "uuid" } },
+};
 const profileBody = {
     type: "object",
     additionalProperties: false,
@@ -26,11 +38,111 @@ const profileBody = {
 };
 
 export async function UserGatewayRoutes(fastify: FastifyInstance) {
+    // --- Friends & presence (before /users/:userId) ---
+
+    fastify.post(
+        "/users/me/heartbeat",
+        { preHandler: authMiddleware },
+        async (request, reply) => {
+            const result = await proxyToService(
+                "POST",
+                `${USER_SERVICE_URL}/users/me/heartbeat`,
+                {},
+                identityHeaders(request),
+            );
+            return reply.status(result.statusCode).send(result.body);
+        },
+    );
+
+    fastify.get(
+        "/users/me/friends",
+        { preHandler: authMiddleware },
+        async (request, reply) => {
+            const result = await proxyToService(
+                "GET",
+                `${USER_SERVICE_URL}/users/me/friends`,
+                undefined,
+                identityHeaders(request),
+            );
+            return reply.status(result.statusCode).send(result.body);
+        },
+    );
+
+    fastify.get(
+        "/users/me/friend-requests",
+        { preHandler: authMiddleware },
+        async (request, reply) => {
+            const result = await proxyToService(
+                "GET",
+                `${USER_SERVICE_URL}/users/me/friend-requests`,
+                undefined,
+                identityHeaders(request),
+            );
+            return reply.status(result.statusCode).send(result.body);
+        },
+    );
+
+    fastify.post<{ Params: { requesterId: string } }>(
+        "/users/me/friend-requests/:requesterId/accept",
+        { preHandler: authMiddleware, schema: { params: requesterIdParams } },
+        async (request, reply) => {
+            const result = await proxyToService(
+                "POST",
+                `${USER_SERVICE_URL}/users/me/friend-requests/${request.params.requesterId}/accept`,
+                {},
+                identityHeaders(request),
+            );
+            return reply.status(result.statusCode).send(result.body);
+        },
+    );
+
+    fastify.post<{ Params: { requesterId: string } }>(
+        "/users/me/friend-requests/:requesterId/reject",
+        { preHandler: authMiddleware, schema: { params: requesterIdParams } },
+        async (request, reply) => {
+            const result = await proxyToService(
+                "POST",
+                `${USER_SERVICE_URL}/users/me/friend-requests/${request.params.requesterId}/reject`,
+                {},
+                identityHeaders(request),
+            );
+            return reply.status(result.statusCode).send(result.body);
+        },
+    );
+
+    fastify.delete<{ Params: { friendId: string } }>(
+        "/users/me/friends/:friendId",
+        { preHandler: authMiddleware, schema: { params: friendIdParams } },
+        async (request, reply) => {
+            const result = await proxyToService(
+                "DELETE",
+                `${USER_SERVICE_URL}/users/me/friends/${request.params.friendId}`,
+                undefined,
+                identityHeaders(request),
+            );
+            return reply.status(result.statusCode).send(result.body);
+        },
+    );
+
+    fastify.post<{ Params: { userId: string } }>(
+        "/users/:userId/friends",
+        { preHandler: authMiddleware, schema: { params: userIdParams } },
+        async (request, reply) => {
+            const result = await proxyToService(
+                "POST",
+                `${USER_SERVICE_URL}/users/${request.params.userId}/friends`,
+                {},
+                identityHeaders(request),
+            );
+            return reply.status(result.statusCode).send(result.body);
+        },
+    );
+
     // get all users is now implemented, but it SHOULD go 'advanced user management' module
     fastify.get(
         "/users",
         { preHandler: authMiddleware },
-        async (request, reply) => {
+        async (_request, reply) => {
             const result = await proxyToService(
                 "GET",
                 `${USER_SERVICE_URL}/users`

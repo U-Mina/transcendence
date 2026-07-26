@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert } from "../components/Alert";
 import { Avatar } from "../components/Avatar";
+import { Badge } from "../components/Badge";
 import { Button } from "../components/Button";
 import { EmptyState } from "../components/EmptyState";
 import { Modal } from "../components/Modal";
@@ -19,6 +20,7 @@ export function ProfilePage() {
   const { t } = useTranslation();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [joined, setJoined] = useState<EventCard[]>([]);
+  const [friendCount, setFriendCount] = useState<number>(0);
   const [error, setError] = useState("");
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
@@ -27,10 +29,12 @@ export function ProfilePage() {
       Promise.all([
         transcendenceApi.user(session.user.id, session.token),
         transcendenceApi.joinedEvents(session.token),
+        transcendenceApi.getFriends(session.token).catch(() => []),
       ])
-        .then(([user, events]) => {
+        .then(([user, events, friendsList]) => {
           setProfile(user);
           setJoined(events);
+          setFriendCount(friendsList.length);
         })
         .catch((cause) => setError(errorText(cause)));
     }
@@ -88,14 +92,27 @@ export function ProfilePage() {
           name={profile?.userName || activeSession.user.userName || "?"}
           className="profile-avatar"
         />
-        <div>
+        <div style={{ flex: 1 }}>
           <p className="eyebrow">{t("profile.eyebrow")}</p>
-          <h1>
-            {profile?.userName || t("profile.title_fallback")}
-          </h1>
-          <p className="muted">
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+            <h1 style={{ margin: 0 }}>
+              {profile?.userName || t("profile.title_fallback")}
+            </h1>
+            <Badge variant={profile?.isOnline ? "success" : "default"} size="sm">
+              <span className={`status-dot ${profile?.isOnline ? "online" : "offline"}`} />
+              {profile?.isOnline ? t("friends.online") : t("friends.offline")}
+            </Badge>
+          </div>
+          <p className="muted" style={{ margin: "8px 0 12px" }}>
             {profile?.userEmail || activeSession.user.userEmail}
           </p>
+          <Link
+            to="/friends"
+            className="button button-subtle small"
+            style={{ textDecoration: "none", display: "inline-flex", gap: "6px", alignItems: "center" }}
+          >
+            <span>{t("friends.title")} ({friendCount})</span>
+          </Link>
         </div>
       </div>
       <div className="profile-layout">

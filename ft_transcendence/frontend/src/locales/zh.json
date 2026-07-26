@@ -4,9 +4,10 @@
     "tagline": "寻找伙伴，规划活动。"
   },
   "nav": {
-    "discover": "探索活动",
+    "discover": "发现活动",
     "community": "社区",
-    "create": "创建活动"
+    "friends": "好友",
+    "create": "发布活动"
   },
   "account": {
     "view_profile": "查看个人资料",
@@ -84,6 +85,24 @@
         "avatar_size": "请使用小于 5 MiB 的 JPEG、PNG 或 WebP 图片。"
       }
     }
+  },
+  "friends": {
+    "eyebrow": "你的社交圈",
+    "title": "好友",
+    "tab_all": "所有好友",
+    "tab_requests": "好友请求",
+    "online": "在线",
+    "offline": "离线",
+    "empty_friends": "暂无好友，去社区中添加新伙伴吧！",
+    "empty_requests": "暂无待处理的好友请求。",
+    "add_friend": "添加好友",
+    "remove_friend": "删除好友",
+    "accept": "接受",
+    "reject": "拒绝",
+    "cancel_request": "取消请求",
+    "request_sent": "请求已发送",
+    "incoming_header": "收到的请求",
+    "outgoing_header": "发出的请求"
   },
   "community": {
     "eyebrow": "凝聚力量",

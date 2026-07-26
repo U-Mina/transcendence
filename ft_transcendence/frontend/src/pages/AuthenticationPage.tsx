@@ -7,10 +7,10 @@ import { errorText } from "../utils/formatters";
 
 const returnPath = (state: unknown) =>
   typeof state === "object" &&
-  state !== null &&
-  "from" in state &&
-  typeof (state as { from?: unknown }).from === "string" &&
-  (state as { from: string }).from.startsWith("/")
+    state !== null &&
+    "from" in state &&
+    typeof (state as { from?: unknown }).from === "string" &&
+    (state as { from: string }).from.startsWith("/")
     ? (state as { from: string }).from
     : "/";
 
@@ -46,7 +46,7 @@ export function AuthenticationPage({ register }: { register?: boolean }) {
     }
 
     setPending(true);
-    
+
     try {
       if (register) await signUp(userName, email, password);
       else await login(email, password);

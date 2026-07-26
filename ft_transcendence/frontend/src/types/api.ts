@@ -15,6 +15,30 @@ export type UserProfile = {
   intraUrl?: string;
   createdAt?: string;
   updatedAt?: string;
+  isOnline?: boolean;
+  friendCount?: number;
+  friendshipStatus?: "none" | "pending_incoming" | "pending_outgoing" | "accepted";
+};
+
+export type FriendUser = {
+  id: string;
+  userName: string;
+  avatarUrl?: string;
+  isOnline?: boolean;
+  lastSeenAt?: string;
+  friendshipId?: string;
+  status?: "pending" | "accepted";
+};
+
+export type FriendRequestsResponse = {
+  incoming: FriendUser[];
+  outgoing: FriendUser[];
+};
+
+export type HeartbeatResponse = {
+  lastSeenAt: string;
+  isOnline: boolean;
+  onlineThresholdSeconds: number;
 };
 
 export const EVENT_TAGS = [

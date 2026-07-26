@@ -7,12 +7,14 @@ export interface PublicUserProfile {
     intraUrl?: string;
     avatarUrl?: string;
     userContact?: string;
+    isOnline?: boolean;
 }
 
 export interface CommunityUser {
     id: string;
     userName: string;
     avatarUrl?: string;
+    isOnline?: boolean;
 }
 
 /**
@@ -25,8 +27,31 @@ export interface InternalUserEntity extends PublicUserProfile {
     passwordHash?: string;
     friendList?: string;
     userContact?: string;
+    lastSeenAt?: Date;
     createdAt: Date;
     updatedAt: Date;
+}
+
+export type FriendshipStatus = "pending" | "accepted";
+
+export interface FriendshipRecord {
+    id: string;
+    userId: string;
+    friendId: string;
+    status: FriendshipStatus;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+/** Friend (or requester) as returned to the client. */
+export interface FriendUser {
+    id: string;
+    userName: string;
+    avatarUrl?: string;
+    isOnline: boolean;
+    lastSeenAt?: string;
+    friendshipId: string;
+    status: FriendshipStatus;
 }
 
 /**

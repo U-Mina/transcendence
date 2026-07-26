@@ -7,6 +7,7 @@ import { CommunityPage } from "./pages/CommunityPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { EventDetailsPage } from "./pages/EventDetailsPage";
 import { EventEditorPage } from "./pages/EventEditorPage";
+import { FriendsPage } from "./pages/FriendsPage";
 import { LegalPage } from "./pages/LegalPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { PublicProfilePage } from "./pages/PublicProfilePage";
@@ -53,6 +54,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <CommunityPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/friends"
+              element={
+                <ProtectedRoute>
+                  <FriendsPage />
                 </ProtectedRoute>
               }
             />
