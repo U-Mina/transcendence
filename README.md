@@ -38,7 +38,7 @@ The application is composed of a React frontend, a Fastify API gateway, separate
 | --- | --- | --- |
 | Erya Wuu (`ewu`) | Backend, Frontend, Design | Developer |
 | Paula Drettas (`pdrettas`) | Frontend, Design | Developer |
-| Halime Pehlivan (`hpehliva`) | Database | Developer |
+| Halime Pehlivan (`hpehliva`) | Backend, Database | Developer |
 | Dariusz Paluszkiewicz (`dpaluszk`) | Cybersecurity | Developer |
 
 ### Working practices
@@ -406,7 +406,7 @@ erDiagram
 | Microservices backend | Major | 2 | API gateway, user service, and event service with HTTPS internal communication and clear service ownership. |
 | Monitoring system | Major | 2 | Prometheus, Grafana dashboards, Alertmanager, service metrics, and MySQL exporter. |
 | Health checks, backups, and recovery | Minor | 1 | Health/status endpoints, scheduled backup service, `make backup`, restore script, and recovery notes. |
-| Advanced search *(pending merge)* | Minor | 1 | `feat/advanced-search`: Prisma text search, category filtering, sorting, pagination, gateway query forwarding, and dashboard controls. |
+| Advanced search | Minor | 1 | Prisma text search, category filtering, sorting, pagination, gateway query forwarding, and dashboard controls. |
 
 **Total: 15 / 14 required points
 
