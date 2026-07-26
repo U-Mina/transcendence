@@ -67,6 +67,10 @@ export async function removeStoredUpload(url: unknown) {
     if (typeof url !== "string" || !url.startsWith("/uploads/")) {
         return;
     }
+    // Seeded default avatars are mounted read-only; never delete them.
+    if (url.startsWith("/uploads/avatars/defaults/")) {
+        return;
+    }
     const relativePath = url.slice("/uploads/".length);
     const filePath = path.resolve(uploadDirectory, relativePath);
     if (filePath !== uploadDirectory && filePath.startsWith(`${uploadDirectory}${path.sep}`)) {
