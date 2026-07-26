@@ -138,7 +138,22 @@
     "aria_search": "البحث عن الفعاليات",
     "aria_filter_tag": "التصفية حسب الوسم",
     "search_placeholder": "ابحث عن فعاليات، أماكن، أو أفكار…",
-    "all_tags": "جميع الوسوم"
+    "all_tags": "جميع الوسوم",
+    "aria_sort": "ترتيب الفعاليات",
+    "aria_page_size": "الفعاليات في كل صفحة",
+    "page_size": "{{count}} لكل صفحة",
+    "sort": {
+      "start_time_asc": "التاريخ: الأقرب",
+      "start_time_desc": "التاريخ: الأحدث",
+      "event_name_asc": "الاسم: أ–ي",
+      "event_name_desc": "الاسم: ي–أ"
+    }
+  },
+  "pagination": {
+    "aria_label": "ترقيم صفحات الفعاليات",
+    "previous": "السابق",
+    "next": "التالي",
+    "status": "الصفحة {{page}} من {{totalPages}}"
   },
   "events": {
     "back_to_all": "جميع الفعاليات",
