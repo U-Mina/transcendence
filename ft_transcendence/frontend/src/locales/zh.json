@@ -138,7 +138,22 @@
     "aria_search": "搜索活动",
     "aria_filter_tag": "按标签筛选",
     "search_placeholder": "搜索活动、地点、想法…",
-    "all_tags": "所有标签"
+    "all_tags": "所有标签",
+    "aria_sort": "排序活动",
+    "aria_page_size": "每页活动数",
+    "page_size": "每页 {{count}} 个",
+    "sort": {
+      "start_time_asc": "日期：最早",
+      "start_time_desc": "日期：最新",
+      "event_name_asc": "名称：A–Z",
+      "event_name_desc": "名称：Z–A"
+    }
+  },
+  "pagination": {
+    "aria_label": "活动分页",
+    "previous": "上一页",
+    "next": "下一页",
+    "status": "第 {{page}} 页，共 {{totalPages}} 页"
   },
   "events": {
     "back_to_all": "所有活动",
