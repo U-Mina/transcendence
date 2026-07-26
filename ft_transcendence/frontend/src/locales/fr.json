@@ -138,7 +138,22 @@
     "aria_search": "Rechercher des événements",
     "aria_filter_tag": "Filtrer par tag",
     "search_placeholder": "Rechercher des événements, des lieux, des idées…",
-    "all_tags": "Tous les tags"
+    "all_tags": "Tous les tags",
+    "aria_sort": "Trier les événements",
+    "aria_page_size": "Événements par page",
+    "page_size": "{{count}} par page",
+    "sort": {
+      "start_time_asc": "Date : la plus proche",
+      "start_time_desc": "Date : la plus tardive",
+      "event_name_asc": "Nom : A–Z",
+      "event_name_desc": "Nom : Z–A"
+    }
+  },
+  "pagination": {
+    "aria_label": "Pagination des événements",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "status": "Page {{page}} sur {{totalPages}}"
   },
   "events": {
     "back_to_all": "Tous les événements",
