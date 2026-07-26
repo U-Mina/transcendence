@@ -7,15 +7,23 @@ import { SearchIcon } from "./Icon";
 type Props = {
   query: string;
   tag: string;
+  sort: string;
+  pageSize: number;
   onQueryChange: (value: string) => void;
   onTagChange: (value: string) => void;
+  onSortChange: (value: string) => void;
+  onPageSizeChange: (value: number) => void;
 };
 
 export function EventSearchToolbar({
   query,
   tag,
+  sort,
+  pageSize,
   onQueryChange,
   onTagChange,
+  onSortChange,
+  onPageSizeChange,
 }: Props) {
   const { t } = useTranslation();
   return (
@@ -38,6 +46,25 @@ export function EventSearchToolbar({
             {t(`tags.${item}`)}
           </option>
         ))}
+      </Select>
+      <Select
+        aria-label="Sort events"
+        value={sort}
+        onChange={(event) => onSortChange(event.target.value)}
+      >
+        <option value="startTime:asc">Date: soonest</option>
+        <option value="startTime:desc">Date: latest</option>
+        <option value="eventName:asc">Name: A–Z</option>
+        <option value="eventName:desc">Name: Z–A</option>
+      </Select>
+      <Select
+        aria-label="Events per page"
+        value={pageSize}
+        onChange={(event) => onPageSizeChange(Number(event.target.value))}
+      >
+        <option value={6}>6 per page</option>
+        <option value={10}>10 per page</option>
+        <option value={20}>20 per page</option>
       </Select>
     </div>
   );

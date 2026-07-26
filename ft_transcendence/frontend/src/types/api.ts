@@ -86,3 +86,20 @@ export type EventInput = {
   location?: string;
   minParticipant?: number;
 };
+
+export type EventSearchOptions = {
+  q?: string;
+  category?: string;
+  sort?: "startTime" | "eventName" | "createdAt";
+  order?: "asc" | "desc";
+  page?: number;
+  pageSize?: number;
+};
+
+export type PaginatedEvents = {
+  items: EventCard[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+};

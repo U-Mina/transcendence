@@ -84,3 +84,24 @@ export interface UpdateEventDTO {
     location?: string;
     minParticipant?: number;
 }
+
+// options to choose when searching events, and the data we send back one page at a time
+export type EventSort = "startTime" | "eventName" | "createdAt";
+export type SortOrder = "asc" | "desc";
+
+export interface EventListQuery {
+    q?: string;
+    category?: EventTag;
+    sort: EventSort;
+    order: SortOrder;
+    page: number;
+    pageSize: number;
+}
+
+export interface PaginatedEventList {
+    items: EventCard[];
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+}

@@ -234,7 +234,7 @@
 }
 .discovery-toolbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 200px;
+  grid-template-columns: minmax(0, 1fr) repeat(3, minmax(140px, 200px));
   gap: 12px;
   margin-bottom: 28px;
 }
@@ -271,6 +271,25 @@
 .event-form textarea:focus {
   border-color: var(--indigo);
   box-shadow: 0 0 0 3px rgba(57, 59, 119, 0.12);
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+.pagination button {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 9px 14px;
+  color: var(--ink);
+  background: var(--paper);
+  cursor: pointer;
+}
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 .custom-file-input-wrapper {
   width: 100%;

@@ -21,6 +21,15 @@ const eventBodyProperties = {
     location: { type: "string", maxLength: 255 },
     minParticipant: { type: "integer", minimum: 1 },
 };
+// search and pagination options accepted from the frontend URL
+type EventListQuerystring = {
+    q?: string;
+    category?: string;
+    sort?: string;
+    order?: string;
+    page?: string;
+    pageSize?: string;
+};
 
 export async function eventGatewayRoutes(fastify: FastifyInstance) {
     // get event by id
@@ -51,18 +60,38 @@ export async function eventGatewayRoutes(fastify: FastifyInstance) {
     );
 
     // get all event
-    fastify.get(
+    fastify.get<{
+        Querystring: EventListQuerystring;
+    }>(
         "/events",
         {
             // schema is for api spec, describe what frontend receives from api-gateway
             schema: {
-                summary: "List all events",
-                description: "Returns all public event cards",
+                summary: "Search and list public events",
+                description: "Filters, sorts, and paginates public event cards",
+                querystring: {
+                    type: "object",
+                    additionalProperties: false,
+                    properties: {
+                        q: { type: "string", maxLength: 255 },
+                        category: { type: "string", enum: EVENT_TAGS },
+                        sort: { type: "string", enum: ["startTime", "eventName", "createdAt"] },
+                        order: { type: "string", enum: ["asc", "desc"] },
+                        page: { type: "string", pattern: "^[1-9][0-9]*$" },
+                        pageSize: { type: "string", pattern: "^[1-9][0-9]*$" },
+                    },
+                },
             }
-        }, async (_, reply) => {
+        }, async (request, reply) => {
+            // rebuild and safely encode the URL search options before forwarding them
+            const search = new URLSearchParams();
+            for (const [key, value] of Object.entries(request.query)) {
+                if (value !== undefined) search.set(key, value);
+            }
+            const query = search.toString();
             const result = await proxyToService(
                 "GET",
-                `${EVENT_SERVICE_URL}/events`,
+                `${EVENT_SERVICE_URL}/events${query ? `?${query}` : ""}`,
             );
             return reply.status(result.statusCode).send(result.body);
         }

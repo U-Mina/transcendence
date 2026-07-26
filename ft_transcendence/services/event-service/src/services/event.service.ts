@@ -1,7 +1,7 @@
 /**
  * event service implementation
  */
-import { EVENT_TAGS, type EventCard, type EventManageView, type UserSummary, type EventDetailView, type InternalEventEntity, type CreateEventDTO, type UpdateEventDTO, type EventTag } from "../event.types";
+import { EVENT_TAGS, type EventCard, type EventManageView, type UserSummary, type EventDetailView, type InternalEventEntity, type CreateEventDTO, type UpdateEventDTO, type EventListQuery, type EventSort, type EventTag, type PaginatedEventList, type SortOrder } from "../event.types";
 import { eventRepository } from "../event.repository";
 
 // centralize error handler, using super()
@@ -71,6 +71,42 @@ function normalizeEventInput(input: unknown, required: boolean): CreateEventDTO 
     };
 }
 
+// parse url search values input, convert values, add default if no option provided by user, 
+// and return clean object for database
+function parseEventListQuery(query: unknown): EventListQuery {
+    const value = typeof query === "object" && query !== null && !Array.isArray(query)
+        ? query as Record<string, unknown>
+        : {};
+    const q = optionalText(value.q, "search query", 255);
+    const category = optionalTag(value.category, false);
+    const sort = value.sort === undefined ? "startTime" : value.sort;
+    const order = value.order === undefined ? "asc" : value.order;
+    const page = value.page === undefined ? 1 : Number(value.page);
+    const pageSize = value.pageSize === undefined ? 10 : Number(value.pageSize);
+
+    if (sort !== "startTime" && sort !== "eventName" && sort !== "createdAt") {
+        throw new EventServiceError("Invalid sort field.", 400);
+    }
+    if (order !== "asc" && order !== "desc") {
+        throw new EventServiceError("Invalid sort order.", 400);
+    }
+    if (!Number.isInteger(page) || page < 1) {
+        throw new EventServiceError("Page must be a positive integer.", 400);
+    }
+    if (!Number.isInteger(pageSize) || pageSize < 1 || pageSize > 100) {
+        throw new EventServiceError("Page size must be between 1 and 100.", 400);
+    }
+
+    return {
+        ...(q ? { q } : {}),
+        ...(category ? { category } : {}),
+        sort: sort as EventSort,
+        order: order as SortOrder,
+        page,
+        pageSize,
+    };
+}
+
 // public view of card, centrailized here
 function publicCard(event: InternalEventEntity): EventCard {
     const {
@@ -105,16 +141,16 @@ class EventService {
     }
 
     // get all events
-    async getAllEvents(): Promise<EventCard[] | undefined> {
-        return ((await eventRepository.getAll()).map(event => {
-            const {
-                safetyCheck,
-                createdAt,
-                updatedAt,
-                ...publicView
-            } = event;
-            return publicView;
-        }));
+    async getAllEvents(query: unknown): Promise<PaginatedEventList> {
+        const options = parseEventListQuery(query);
+        const result = await eventRepository.search(options);
+        return {
+            items: result.items.map(publicCard),
+            page: options.page,
+            pageSize: options.pageSize,
+            total: result.total,
+            totalPages: Math.ceil(result.total / options.pageSize),
+        };
     }
 
     // usr GET joined event list
