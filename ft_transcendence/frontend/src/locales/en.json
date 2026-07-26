@@ -139,7 +139,22 @@
     "aria_search": "Search events",
     "aria_filter_tag": "Filter by tag",
     "search_placeholder": "Search events, places, ideas…",
-    "all_tags": "All tags"
+    "all_tags": "All tags",
+    "aria_sort": "Sort events",
+    "aria_page_size": "Events per page",
+    "page_size": "{{count}} per page",
+    "sort": {
+      "start_time_asc": "Date: soonest",
+      "start_time_desc": "Date: latest",
+      "event_name_asc": "Name: A–Z",
+      "event_name_desc": "Name: Z–A"
+    }
+  },
+  "pagination": {
+    "aria_label": "Event pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "status": "Page {{page}} of {{totalPages}}"
   },
   "events": {
     "back_to_all": "All events",
