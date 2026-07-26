@@ -112,16 +112,19 @@ ft_transcendence/
 | Area | Available functionality | Primary contributors |
 | --- | --- | --- |
 | Authentication | Email-and-password registration and login. Passwords are hashed with `bcryptjs`; the gateway issues JWT access tokens. | `ewu`, `hpehliva` |
-| Profiles | Public profiles, authenticated own-profile viewing, profile editing, account deletion, optional contact/Intra URL fields, and avatar uploads. | `ewu`, `hpehliva`, `pdrettas` |
-| Friendships and presence | Send, accept, reject, and remove friend requests. The frontend sends heartbeats and displays online status based on recent activity. | `ewu`, `hpehliva` |
-| Events | Browse event cards and details; authenticated users can create, edit, delete, join, and leave events. Event owners can retrieve the number of joined users. | `ewu`, `pdrettas`, `hpehliva` |
-| Advanced search | Server-side text search, category filtering, sorting, page-size selection, and paginated event results. | `pdrettas` |
+| Decoupled Services | User service and event service are decoupled and communicate through HTTPS. | `ewu`, `hpehliva` |
+| Events management | Browse event cards and details; authenticated users can create, edit, delete, join, and leave events. Event owners can retrieve the number of joined users. | `ewu`, `pdrettas`, `hpehliva` |
+| Users management | Users have different roles, each role has different permissions and views, users can send, accept and decline friend requests. Role based account management system. | `ewu`, `hpehliva`, `pdrettas` |
+| Public endpoints | CRUD public endpoints for profile and event management with OpenAPI 3.0.0 specification. | `ewu` |
+| Endpoints protection | Endpoints are protected with API keys and rate limiting. | `hpehliva` |
+| Health check and Disaster recovery | Health and status endpoints for every services, database backup and restore. | `ewu`, `dpaluszk`, `hpehliva` |
+| Observability and monitoring | Health and metrics endpoints, Prometheus, Grafana, Alertmanager, MySQL metrics. | `dpaluszk` |
+| Advanced search | Server-side text search, category filtering, sorting and pagination. | `pdrettas` |
+| UI system | A custom CSS-token design system with reusable React components, SVG icons, accessible modal behavior, form controls, alerts, cards, avatars, and empty states. | `ewu` |
 | Media | Avatar and event-image uploads through the gateway. Uploads are stored and served from the gateway's `/uploads/` path. | `ewu`, `pdrettas`, `hpehliva` |
+| Browser compatibility | Full compatibility with Chrome, Firefox, Edge, 90% compatibility with Safari. 404 and 500 page design is not yet implemented. | `ewu`, `pdrettas` |
 | Internationalization | English, French, Arabic, and Chinese locale files, a language switcher, and document-direction handling for right-to-left Arabic. | `ewu`, `hpehliva` |
 | Legal pages | Privacy Policy and Terms of Service routes linked from authentication and application layouts. | `hpehliva` |
-| Public API | API-key-protected, rate-limited public event CRUD and public-profile endpoints, documented in Swagger UI. | `hpehliva` |
-| Observability and recovery | Health and metrics endpoints, Prometheus, Grafana, Alertmanager, MySQL metrics, automated backups, and a documented restore workflow. | `dpaluszk`, `hpehliva` |
-| UI system | A custom CSS-token design system with reusable React components, SVG icons, accessible modal behavior, form controls, alerts, cards, avatars, and empty states. | `ewu` |
 
 ## Technical Stack
 
